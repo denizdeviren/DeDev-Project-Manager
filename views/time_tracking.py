@@ -54,7 +54,7 @@ def show_time_tracking(data):
         st.markdown('### 📊 Son Çalışma Kayıtları')
         if "time_logs" in data and data["time_logs"]:
             st.markdown("**Çalışma Kayıtları:**")
-            for log in reversed(data["time_logs"]):
+            for idx, log in enumerate(reversed(data["time_logs"])):
                 p_name = next((p['name'] for p in data["projects"] if p['id'] == log['project_id']), "Bilinmeyen")
                 
                 # Column structure to separate card and the delete button
@@ -73,7 +73,7 @@ def show_time_tracking(data):
                 
                 with del_col:
                     st.write("")  # small spacer
-                    if st.button("🗑️", key=f"del_log_{log['date']}_{log['task'][:5]}", help="Kaydı Sil", use_container_width=True):
+                    if st.button("🗑️", key=f"del_log_{idx}_{log['date']}_{log['task'][:5]}", help="Kaydı Sil", use_container_width=True):
                         data["time_logs"] = [l for l in data["time_logs"] if not (l["date"] == log["date"] and l["task"] == log["task"] and l["project_id"] == log["project_id"])]
                         save_data(data)
                         st.toast("Çalışma kaydı silindi!", icon="🗑️")
