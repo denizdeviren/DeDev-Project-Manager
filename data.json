@@ -1,0 +1,707 @@
+{
+  "owner": {
+    "name": "Deniz Deviren",
+    "role": "Solo Full-Stack Developer & AI Engineer",
+    "company": "DeDev",
+    "location": "Remote / Global",
+    "since": "2023",
+    "bio": "Tek kişilik ekip. Yapay zeka, web, mobil ve oyun geliştirme projeleri."
+  },
+  "notes": [],
+  "time_logs": [],
+  "finances": [],
+  "deployments": [
+    {
+      "id": "DEP-001",
+      "project": "PRJ-001",
+      "platform": "Streamlit Cloud",
+      "status": "Success",
+      "last_deploy": "2024-03-20 10:30",
+      "url": "https://washington-emlak-ai.streamlit.app/"
+    },
+    {
+      "id": "DEP-002",
+      "project": "PRJ-004",
+      "platform": "Vercel",
+      "status": "Success",
+      "last_deploy": "2025-05-18 15:45",
+      "url": "localhost"
+    }
+  ],
+  "projects": [
+    {
+      "id": "PRJ-001",
+      "name": "Washington Emlak AI",
+      "category": "Makine Öğrenimi / Web Uygulaması",
+      "description": "Washington bölgesi için yapay zeka destekli emlak fiyat tahmin sistemi. Scikit-learn ile eğitilmiş regresyon modeli, Streamlit arayüzü ile yayında.",
+      "status": "Production",
+      "progress": 100,
+      "priority": "High",
+      "start_date": "2024-01-15",
+      "end_date": "2024-03-20",
+      "live_url": "https://washington-emlak-ai.streamlit.app/",
+      "repo_url": "https://github.com/denizdeviren/washington-emlak-ai",
+      "tech_stack": [
+        "Python",
+        "Streamlit",
+        "Scikit-learn",
+        "Pandas",
+        "NumPy",
+        "Plotly"
+      ],
+      "lines_of_code": 2840,
+      "commits": 142,
+      "tasks_total": 24,
+      "tasks_completed": 24,
+      "milestones": [
+        {
+          "name": "Veri Seti Araştırma",
+          "date": "2024-01-20",
+          "done": true
+        },
+        {
+          "name": "Model Eğitimi",
+          "date": "2024-02-10",
+          "done": true
+        },
+        {
+          "name": "Streamlit UI",
+          "date": "2024-03-01",
+          "done": true
+        },
+        {
+          "name": "Deployment",
+          "date": "2024-03-20",
+          "done": true
+        }
+      ]
+    },
+    {
+      "id": "PRJ-002",
+      "name": "ComTerms DeDe AI",
+      "category": "Eğitim / Mobil Uygulama",
+      "description": "Bilgisayar, yazılım ve teknoloji terimlerini öğrenmek için tasarlanmış kapsamlı bir mobil eğitim uygulaması. AI asistan (Ollama), interaktif quizler ve yazılım mimarisi tarihi oyunu (Flame) içerir.",
+      "status": "Production",
+      "progress": 100,
+      "priority": "High",
+      "start_date": "2024-04-01",
+      "end_date": "2024-07-15",
+      "live_url": "",
+      "repo_url": "https://gitlab.com/dedev/ComTermsDeDeAI",
+      "tech_stack": [
+        "Dart",
+        "Flutter",
+        "Node.js",
+        "Ollama",
+        "Flame",
+        "Provider"
+      ],
+      "lines_of_code": 12500,
+      "commits": 380,
+      "tasks_total": 56,
+      "tasks_completed": 56,
+      "milestones": [
+        {
+          "name": "UI/UX Tasarım",
+          "date": "2024-04-15",
+          "done": true
+        },
+        {
+          "name": "Backend Entegrasyon",
+          "date": "2024-05-20",
+          "done": true
+        },
+        {
+          "name": "AI Modülü",
+          "date": "2024-06-10",
+          "done": true
+        },
+        {
+          "name": "Store Yayını",
+          "date": "2024-07-15",
+          "done": true
+        }
+      ]
+    },
+    {
+      "id": "PRJ-003",
+      "name": "DeDev FPS: Shadow Ops",
+      "category": "Bilgisayar Oyunu (FPS)",
+      "description": "Unreal Engine 5 ile geliştirilmekte olan çok oyunculu first-person shooter oyunu. Blueprint ve C++ hibrit geliştirme. Early Access hedefi Q4 2025.",
+      "status": "In Progress",
+      "progress": 35,
+      "priority": "Critical",
+      "start_date": "2025-01-10",
+      "end_date": "2025-12-31",
+      "live_url": "",
+      "repo_url": "",
+      "tech_stack": [
+        "C++",
+        "Unreal Engine 5",
+        "Blueprints",
+        "Blender",
+        "Audacity"
+      ],
+      "lines_of_code": 45000,
+      "commits": 890,
+      "tasks_total": 128,
+      "tasks_completed": 45,
+      "milestones": [
+        {
+          "name": "Konsept & GDD",
+          "date": "2025-02-01",
+          "done": true
+        },
+        {
+          "name": "Level Design Alpha",
+          "date": "2025-04-15",
+          "done": true
+        },
+        {
+          "name": "Karakter Mekaniği",
+          "date": "2025-06-01",
+          "done": false
+        },
+        {
+          "name": "Multiplayer Backend",
+          "date": "2025-08-01",
+          "done": false
+        },
+        {
+          "name": "Beta Test",
+          "date": "2025-10-01",
+          "done": false
+        },
+        {
+          "name": "Early Access",
+          "date": "2025-12-01",
+          "done": false
+        }
+      ]
+    },
+    {
+      "id": "PRJ-004",
+      "name": "DeDev Project Manager",
+      "category": "Proje Yönetim Yazılımı",
+      "description": "Streamlit tabanlı, solo geliştiriciler için tasarlanmış gelişmiş proje yönetim ve takip dashboard'u. (Bu uygulama)",
+      "status": "In Progress",
+      "progress": 80,
+      "priority": "Medium",
+      "start_date": "2025-05-01",
+      "end_date": "2025-05-25",
+      "live_url": "",
+      "repo_url": "",
+      "tech_stack": [
+        "Python",
+        "Streamlit",
+        "Plotly",
+        "Pandas",
+        "Pillow"
+      ],
+      "lines_of_code": 3200,
+      "commits": 45,
+      "tasks_total": 18,
+      "tasks_completed": 14,
+      "milestones": [
+        {
+          "name": "Mimari Tasarım",
+          "date": "2025-05-05",
+          "done": true
+        },
+        {
+          "name": "Dashboard Modülü",
+          "date": "2025-05-12",
+          "done": true
+        },
+        {
+          "name": "Kanban & Timeline",
+          "date": "2025-05-18",
+          "done": true
+        },
+        {
+          "name": "Deployment",
+          "date": "2025-05-25",
+          "done": false
+        }
+      ]
+    },
+    {
+      "id": "PRJ-SPARKZ",
+      "name": "Sparkz",
+      "category": "Sosyal Medya & Oyun",
+      "description": "wgVDNQ7wx1AiAUE0xLOL/Z5X0Nmu9YN3cofrisAak8LoG0M+BNiKG2lcGXjItCEl3fwYwKGnMaM8lrTClTvYyOhcAjMExC/BjOtMOsyxKyU5DAiZ70LYo3TO9p/QBtaNUsNYIgmKgBEkBO7k1v0gKJz/AMcLNimifYf3nMYN0sH9EOfYAMiCHC0d6cfM/Tkp3eoAxa7+Z7x5zOXT0RHA2fQeTi5FzoIeKBlEM4W8IziE8hFxfvSDd2XL5dPdEcGN6xRPJguKzBMoGkGcFPpvJJTgEtC78y60ecmkitAa2tv0GUsspg2CUCsdX3jWsjw1nP9BxaPmM6Bz1emXwAad",
+      "status": "In Progress",
+      "progress": 50,
+      "priority": "Critical",
+      "start_date": "2026-05-20",
+      "end_date": "2026-12-31",
+      "live_url": "",
+      "repo_url": "",
+      "tech_stack": [
+        "1xlXMxHPmVxpMEwq0fFvCpThBNeu9CLqPOnrl9Ba2d69VW0rCcuGEWVUbD/Kry5svMMome/AKKl7y+HT5RjS1LE3SysJw4UXZVRsKNX9HDiS4QSVje4rqnXJ4w=="
+      ],
+      "lines_of_code": 0,
+      "commits": 0,
+      "tasks_total": 10,
+      "tasks_completed": 1,
+      "milestones": [
+        {
+          "name": "MVP Tasarımı & Onboarding",
+          "date": "2026-05-20",
+          "done": true
+        },
+        {
+          "name": "Bot & Canlılık Altyapısı",
+          "date": "2026-05-20",
+          "done": true
+        },
+        {
+          "name": "Konum Tabanlı Keşfet & ASO",
+          "date": "2026-05-20",
+          "done": true
+        },
+        {
+          "name": "Bildirim & Push (Firebase Cloud Messaging)",
+          "date": "2026-05-20",
+          "done": true
+        },
+        {
+          "name": "Kişisel DM & Gerçek Veritabanı",
+          "date": "2026-06-30",
+          "done": false
+        },
+        {
+          "name": "Mini Oyunlar & 101 Okey Motoru",
+          "date": "2026-10-31",
+          "done": false
+        },
+        {
+          "name": "Sesli Sohbet & Agora API",
+          "date": "2026-07-31",
+          "done": false
+        },
+        {
+          "name": "VIP, Coin & Google Play Billing",
+          "date": "2026-11-30",
+          "done": false
+        }
+      ],
+      "is_secret": true,
+      "team": [
+        "Deniz Deviren",
+        "M. Furkan Işık"
+      ]
+    }
+  ],
+  "tasks": [
+    {
+      "id": "T-001",
+      "project_id": "PRJ-001",
+      "title": "Kaggle'dan veri seti bulma",
+      "status": "Done",
+      "priority": "High",
+      "date": "2024-01-18"
+    },
+    {
+      "id": "T-002",
+      "project_id": "PRJ-001",
+      "title": "Veri temizleme & ön işleme",
+      "status": "Done",
+      "priority": "High",
+      "date": "2024-01-25"
+    },
+    {
+      "id": "T-003",
+      "project_id": "PRJ-001",
+      "title": "EDA - Keşifsel veri analizi",
+      "status": "Done",
+      "priority": "Medium",
+      "date": "2024-02-01"
+    },
+    {
+      "id": "T-004",
+      "project_id": "PRJ-001",
+      "title": "Random Forest model eğitimi",
+      "status": "Done",
+      "priority": "High",
+      "date": "2024-02-15"
+    },
+    {
+      "id": "T-005",
+      "project_id": "PRJ-001",
+      "title": "Model değerlendirme & tuning",
+      "status": "Done",
+      "priority": "High",
+      "date": "2024-02-25"
+    },
+    {
+      "id": "T-006",
+      "project_id": "PRJ-001",
+      "title": "Streamlit arayüz tasarımı",
+      "status": "Done",
+      "priority": "Medium",
+      "date": "2024-03-05"
+    },
+    {
+      "id": "T-007",
+      "project_id": "PRJ-001",
+      "title": "Streamlit Cloud deployment",
+      "status": "Done",
+      "priority": "High",
+      "date": "2024-03-20"
+    },
+    {
+      "id": "T-008",
+      "project_id": "PRJ-002",
+      "title": "Flutter proje yapılandırma",
+      "status": "Done",
+      "priority": "High",
+      "date": "2024-04-05"
+    },
+    {
+      "id": "T-009",
+      "project_id": "PRJ-002",
+      "title": "Firebase Auth entegrasyonu",
+      "status": "Done",
+      "priority": "High",
+      "date": "2024-04-20"
+    },
+    {
+      "id": "T-010",
+      "project_id": "PRJ-002",
+      "title": "OpenAI API bağlantısı",
+      "status": "Done",
+      "priority": "Critical",
+      "date": "2024-05-10"
+    },
+    {
+      "id": "T-011",
+      "project_id": "PRJ-002",
+      "title": "PDF upload & parse",
+      "status": "Done",
+      "priority": "High",
+      "date": "2024-05-25"
+    },
+    {
+      "id": "T-012",
+      "project_id": "PRJ-002",
+      "title": "Özetleme algoritması",
+      "status": "Done",
+      "priority": "High",
+      "date": "2024-06-15"
+    },
+    {
+      "id": "T-013",
+      "project_id": "PRJ-002",
+      "title": "UI polish & animasyonlar",
+      "status": "Done",
+      "priority": "Medium",
+      "date": "2024-07-01"
+    },
+    {
+      "id": "T-014",
+      "project_id": "PRJ-002",
+      "title": "App Store & Play Store yayını",
+      "status": "Done",
+      "priority": "High",
+      "date": "2024-07-20"
+    },
+    {
+      "id": "T-015",
+      "project_id": "PRJ-003",
+      "title": "Oyun tasarım dokümanı (GDD)",
+      "status": "Done",
+      "priority": "Critical",
+      "date": "2025-01-20"
+    },
+    {
+      "id": "T-016",
+      "project_id": "PRJ-003",
+      "title": "UE5 proje kurulumu",
+      "status": "Done",
+      "priority": "High",
+      "date": "2025-02-05"
+    },
+    {
+      "id": "T-017",
+      "project_id": "PRJ-003",
+      "title": "İlk harita blokout",
+      "status": "Done",
+      "priority": "High",
+      "date": "2025-03-01"
+    },
+    {
+      "id": "T-018",
+      "project_id": "PRJ-003",
+      "title": "Karakter hareket sistemi",
+      "status": "Done",
+      "priority": "High",
+      "date": "2025-03-20"
+    },
+    {
+      "id": "T-019",
+      "project_id": "PRJ-003",
+      "title": "Silah mekaniği & recoil",
+      "status": "In Progress",
+      "priority": "Critical",
+      "date": "2025-04-15"
+    },
+    {
+      "id": "T-020",
+      "project_id": "PRJ-003",
+      "title": "AI Enemy bot davranışları",
+      "status": "In Progress",
+      "priority": "High",
+      "date": "2025-05-01"
+    },
+    {
+      "id": "T-021",
+      "project_id": "PRJ-003",
+      "title": "Multiplayer networking (UE5)",
+      "status": "To Do",
+      "priority": "Critical",
+      "date": "2025-06-01"
+    },
+    {
+      "id": "T-022",
+      "project_id": "PRJ-003",
+      "title": "Ses efektleri & müzik",
+      "status": "To Do",
+      "priority": "Medium",
+      "date": "2025-07-01"
+    },
+    {
+      "id": "T-023",
+      "project_id": "PRJ-003",
+      "title": "UI/HUD tasarımı",
+      "status": "To Do",
+      "priority": "Medium",
+      "date": "2025-07-15"
+    },
+    {
+      "id": "T-024",
+      "project_id": "PRJ-003",
+      "title": "Optimizasyon & lighting",
+      "status": "To Do",
+      "priority": "High",
+      "date": "2025-09-01"
+    },
+    {
+      "id": "T-025",
+      "project_id": "PRJ-003",
+      "title": "Closed Beta test",
+      "status": "To Do",
+      "priority": "High",
+      "date": "2025-10-15"
+    },
+    {
+      "id": "T-026",
+      "project_id": "PRJ-004",
+      "title": "Streamlit mimari planlama",
+      "status": "Done",
+      "priority": "High",
+      "date": "2025-05-03"
+    },
+    {
+      "id": "T-027",
+      "project_id": "PRJ-004",
+      "title": "JSON veri yapısı tasarımı",
+      "status": "Done",
+      "priority": "High",
+      "date": "2025-05-06"
+    },
+    {
+      "id": "T-028",
+      "project_id": "PRJ-004",
+      "title": "Dashboard ekranı",
+      "status": "Done",
+      "priority": "High",
+      "date": "2025-05-10"
+    },
+    {
+      "id": "T-029",
+      "project_id": "PRJ-004",
+      "title": "Kanban board komponenti",
+      "status": "Done",
+      "priority": "Medium",
+      "date": "2025-05-14"
+    },
+    {
+      "id": "T-030",
+      "project_id": "PRJ-004",
+      "title": "Gantt chart timeline",
+      "status": "Done",
+      "priority": "Medium",
+      "date": "2025-05-17"
+    },
+    {
+      "id": "T-031",
+      "project_id": "PRJ-004",
+      "title": "Tech stack görselleştirme",
+      "status": "Done",
+      "priority": "Low",
+      "date": "2025-05-19"
+    },
+    {
+      "id": "T-032",
+      "project_id": "PRJ-004",
+      "title": "Streamlit Cloud deploy",
+      "status": "In Progress",
+      "priority": "High",
+      "date": "2025-05-22"
+    },
+    {
+      "id": "T-SPK-001",
+      "project_id": "PRJ-SPARKZ",
+      "title": "Kod Kalitesi: 70+ uyarının temizlenmesi (Refactoring)",
+      "status": "Done",
+      "priority": "High",
+      "date": "2026-05-20",
+      "assignee": "M. Furkan Işık"
+    },
+    {
+      "id": "T-SPK-002",
+      "project_id": "PRJ-SPARKZ",
+      "title": "Firebase Entegrasyonu: Firestore ve Google Auth bağlantısı",
+      "status": "To Do",
+      "priority": "High",
+      "date": "2026-06-15",
+      "assignee": "Deniz Deviren"
+    },
+    {
+      "id": "T-SPK-003",
+      "project_id": "PRJ-SPARKZ",
+      "title": "Kişisel DM Kutusu: Birebir sohbet ekranı arayüzü",
+      "status": "To Do",
+      "priority": "High",
+      "date": "2026-06-30",
+      "assignee": "M. Furkan Işık"
+    },
+    {
+      "id": "T-SPK-004",
+      "project_id": "PRJ-SPARKZ",
+      "title": "Sesli Sohbet Entegrasyonu: Agora API veya WebRTC",
+      "status": "To Do",
+      "priority": "Medium",
+      "date": "2026-07-31",
+      "assignee": "Deniz Deviren"
+    },
+    {
+      "id": "T-SPK-005",
+      "project_id": "PRJ-SPARKZ",
+      "title": "Mini Oyunların Ekranları ve Mantığı (Kelime Avı, Çiz-Tahmin)",
+      "status": "To Do",
+      "priority": "Medium",
+      "date": "2026-08-31",
+      "assignee": "M. Furkan Işık"
+    },
+    {
+      "id": "T-SPK-006",
+      "project_id": "PRJ-SPARKZ",
+      "title": "101 Okey Oyun Motoru: Taş dağıtma, per ve ceza algoritmaları",
+      "status": "To Do",
+      "priority": "Critical",
+      "date": "2026-10-31",
+      "assignee": "Deniz Deviren"
+    },
+    {
+      "id": "T-SPK-007",
+      "project_id": "PRJ-SPARKZ",
+      "title": "Mesaj Geçmişinin Saklanması (Bulut/Firebase)",
+      "status": "To Do",
+      "priority": "Medium",
+      "date": "2026-06-20",
+      "assignee": "M. Furkan Işık"
+    },
+    {
+      "id": "T-SPK-008",
+      "project_id": "PRJ-SPARKZ",
+      "title": "Gerçek Google Girişi (Firebase Auth)",
+      "status": "To Do",
+      "priority": "High",
+      "date": "2026-06-10",
+      "assignee": "Deniz Deviren"
+    },
+    {
+      "id": "T-SPK-009",
+      "project_id": "PRJ-SPARKZ",
+      "title": "Bot Diyaloglarının İyileştirilmesi (ChatGPT/Gemini API)",
+      "status": "To Do",
+      "priority": "Medium",
+      "date": "2026-09-30",
+      "assignee": "Deniz Deviren"
+    },
+    {
+      "id": "T-SPK-010",
+      "project_id": "PRJ-SPARKZ",
+      "title": "Uygulama İçi Satın Alma: VIP & Coin (Google Play Billing, App Store)",
+      "status": "To Do",
+      "priority": "High",
+      "date": "2026-11-30",
+      "assignee": "M. Furkan Işık"
+    }
+  ],
+  "activities": [
+    {
+      "date": "2025-05-20",
+      "time": "13:54",
+      "action": "🔥 Yeni proje eklendi: DeDev Project Manager",
+      "project": "PRJ-004"
+    },
+    {
+      "date": "2025-05-19",
+      "time": "22:15",
+      "action": "✅ Görev tamamlandı: Tech stack görselleştirme",
+      "project": "PRJ-004"
+    },
+    {
+      "date": "2025-05-18",
+      "time": "18:30",
+      "action": "✅ Görev tamamlandı: Gantt chart timeline",
+      "project": "PRJ-004"
+    },
+    {
+      "date": "2025-05-15",
+      "time": "14:20",
+      "action": "🎮 FPS oyununda silah mekaniği geliştiriliyor",
+      "project": "PRJ-003"
+    },
+    {
+      "date": "2025-05-10",
+      "time": "09:45",
+      "action": "📱 ComTermsDeDeAI - Store başvurusu yapıldı",
+      "project": "PRJ-002"
+    },
+    {
+      "date": "2025-04-01",
+      "time": "11:00",
+      "action": "🎯 FPS Oyun projesi başlatıldı",
+      "project": "PRJ-003"
+    },
+    {
+      "date": "2024-07-15",
+      "time": "16:30",
+      "action": "📱 ComTermsDeDeAI tamamlandı",
+      "project": "PRJ-002"
+    },
+    {
+      "date": "2024-03-20",
+      "time": "10:00",
+      "action": "🌐 Washington Emlak AI yayına alındı",
+      "project": "PRJ-001"
+    },
+    {
+      "date": "2024-01-15",
+      "time": "08:00",
+      "action": "🏠 Washington Emlak AI projesi başlatıldı",
+      "project": "PRJ-001"
+    }
+  ],
+  "team": [
+    {
+      "id": "USR-FURKAN",
+      "name": "M. Furkan Işık",
+      "role": "Co-Founder / Developer"
+    }
+  ]
+}

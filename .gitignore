@@ -1,0 +1,25 @@
+# Python cache files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.ipynb_checkpoints/
+
+# Virtual environment folder
+venv/
+.venv/
+env/
+ENV/
+
+# Streamlit config (optional to ignore)
+.streamlit/
+
+# App-specific caches or logs
+.gemini/
+.git/
+*.log
+
+# Google Cloud credentials JSON
+gen-lang-client-*.json
+
