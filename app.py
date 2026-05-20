@@ -177,7 +177,7 @@ with st.sidebar:
             "🔒 Gizli Kasa",
             "📋 Kanban Board", 
             "📅 Takvim Görünümü",
-            "📅 Timeline", 
+            "📊 Şemalar ve Gantt", 
             "💻 Tech Stack", 
             "👥 Ekip Yönetimi",
             "📈 Raporlar", 
@@ -319,7 +319,7 @@ elif page == "📋 Kanban Board":
     show_kanban(data)
 elif page == "📅 Takvim Görünümü":
     show_calendar(data)
-elif page == "📅 Timeline":
+elif page == "📊 Şemalar ve Gantt":
     show_timeline(data)
 elif page == "💻 Tech Stack":
     show_techstack(data)
