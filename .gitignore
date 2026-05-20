@@ -23,3 +23,7 @@ ENV/
 # Google Cloud credentials JSON
 gen-lang-client-*.json
 
+# Project Report / PDF Sources
+proje_soru_cevap.txt
+*.pdf
+

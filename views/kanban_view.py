@@ -2,6 +2,7 @@ import streamlit as st
 import uuid
 from datetime import datetime
 from utils.data_handler import save_data
+from views.task_details import render_task_details
 
 def clean_html(html_str):
     return "\n".join([line.strip() for line in html_str.split("\n")])
@@ -130,8 +131,35 @@ def show_kanban(data):
                     assignee_name = "Şifreli" if is_locked else task.get("assignee", "Atanmadı")
                     assignee_initial = "?" if is_locked else (assignee_name[0].upper() if assignee_name and assignee_name != "Atanmadı" else "?")
                     
+                    # 1. Dependency checking
+                    dep_warning_html = ""
+                    dep_id = task.get("depends_on")
+                    if dep_id and not is_locked:
+                        dep_task = next((t for t in data.get("tasks", []) if t.get("id") == dep_id), None)
+                        if dep_task and dep_task.get("status") != "Done":
+                            dep_warning_html = f"""
+                            <div style="background-color: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.2); border-radius: 6px; padding: 6px; font-size: 10px; color: #fca5a5; margin-bottom: 8px;">
+                                🔗 Önkoşul Bekleniyor: {dep_task.get('title')}
+                            </div>
+                            """
+                            
+                    # 2. Sub-tasks progress indicator
+                    subtasks_html = ""
+                    subtasks = task.get("subtasks", [])
+                    if subtasks and not is_locked:
+                        completed = sum(1 for st_item in subtasks if st_item.get("done", False))
+                        total = len(subtasks)
+                        pct = int((completed / total) * 100) if total > 0 else 0
+                        subtasks_html = f"""
+                        <div style="margin-top: 8px; font-size: 10px; color: #9ca3af; display: flex; justify-content: space-between; align-items: center;">
+                            <span>📋 Alt Görevler: {completed}/{total}</span>
+                            <span style="font-weight: bold; color: #818cf8;">%{pct}</span>
+                        </div>
+                        """
+                    
                     st.markdown(clean_html(f"""
                     <div style="background-color: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 16px; margin-bottom: 12px; transition: transform 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                        {dep_warning_html}
                         <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
                             <div style="font-size: 14px; font-weight: 600; color: white;">{task_title}</div>
                             <div title="{assignee_name}" style="background: linear-gradient(135deg, #667eea, #764ba2); width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: bold; color: white; flex-shrink: 0; box-shadow: 0 2px 5px rgba(102,126,234,0.5);">
@@ -142,32 +170,57 @@ def show_kanban(data):
                             <span style="color: #9ca3af; background: rgba(255,255,255,0.05); padding: 4px 8px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1);">{proj_name}</span>
                             <span style="color: {prio_color}; font-weight: 700; background: {prio_color}15; padding: 4px 8px; border-radius: 6px; border: 1px solid {prio_color}40;">{task['priority']}</span>
                         </div>
+                        {subtasks_html}
                     </div>
                     """), unsafe_allow_html=True)
                     
-                    # Durum değiştirme butonları
+                    # Detaylar & Durum Değiştirme
                     if not is_locked:
-                        with st.expander("Durumu Değiştir", expanded=False):
-                            new_statuses = [s for s in status_columns.keys() if s != status]
-                            for ns in new_statuses:
-                                if st.button(f"Taşı: {ns}", key=f"move_{task['id']}_{ns}"):
-                                    task['status'] = ns
-                                    if ns == "Done":
-                                        for p in data["projects"]:
-                                            if p["id"] == task["project_id"]:
-                                                p["tasks_completed"] += 1
-                                                break
-                                        # Aktivite ekle
-                                        data["activities"].insert(0, {
-                                            "date": datetime.now().strftime("%Y-%m-%d"),
-                                            "time": datetime.now().strftime("%H:%M"),
-                                            "action": f"✅ Görev tamamlandı: {task['title']}",
-                                            "project": task['project_id']
-                                        })
-                                    elif status == "Done":
-                                        for p in data["projects"]:
-                                            if p["id"] == task["project_id"]:
-                                                p["tasks_completed"] -= 1
-                                                break
-                                    save_data(data)
-                                    st.rerun()
+                        col_det, col_mov = st.columns(2)
+                        with col_det:
+                            if st.button("🔍 Detaylar", key=f"det_{task['id']}", use_container_width=True):
+                                st.session_state.active_kanban_task_id = task['id']
+                                st.rerun()
+                                
+                        with col_mov:
+                            with st.expander("Taşı", expanded=False):
+                                new_statuses = [s for s in status_columns.keys() if s != status]
+                                for ns in new_statuses:
+                                    if st.button(f"{ns}", key=f"move_{task['id']}_{ns}", use_container_width=True):
+                                        task['status'] = ns
+                                        if ns == "Done":
+                                            for p in data["projects"]:
+                                                if p["id"] == task["project_id"]:
+                                                    p["tasks_completed"] += 1
+                                                    break
+                                            # Aktivite ekle
+                                            data["activities"].insert(0, {
+                                                "date": datetime.now().strftime("%Y-%m-%d"),
+                                                "time": datetime.now().strftime("%H:%M"),
+                                                "action": f"✅ Görev tamamlandı: {task['title']}",
+                                                "project": task['project_id']
+                                            })
+                                        elif status == "Done":
+                                            for p in data["projects"]:
+                                                if p["id"] == task["project_id"]:
+                                                    p["tasks_completed"] -= 1
+                                                    break
+                                        save_data(data)
+                                        st.rerun()
+
+    # -------------------------------------------------------------
+    # DETAILED TASK VIEW DRAWER (BOTTOM OF KANBAN)
+    # -------------------------------------------------------------
+    active_task_id = st.session_state.get("active_kanban_task_id")
+    if active_task_id:
+        active_task = next((t for t in data.get("tasks", []) if t.get("id") == active_task_id), None)
+        if active_task:
+            st.markdown("---")
+            st.markdown("### 📋 Görev Detay Çalışma Alanı")
+            col_space, col_close = st.columns([5, 1])
+            with col_close:
+                if st.button("❌ Detayları Kapat", key="close_kanban_details", use_container_width=True):
+                    del st.session_state.active_kanban_task_id
+                    st.rerun()
+            
+            render_task_details(active_task, data)

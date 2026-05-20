@@ -29,6 +29,13 @@ def load_data():
         return {"projects": [], "tasks": [], "notes": [], "time_logs": [], "finances": [], "deployments": [], "activities": []}
 
 def save_data(data):
+    # Run smart automations in-place
+    try:
+        from utils.automations import run_automations
+        run_automations(data)
+    except Exception:
+        pass
+
     # Save locally first
     with open(DATA_FILE, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)

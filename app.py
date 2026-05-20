@@ -19,6 +19,7 @@ from views.projects_view import show_projects
 from views.secret_vault import show_secret_vault
 from views.kanban_view import show_kanban
 from views.timeline import show_timeline
+from views.calendar_view import show_calendar
 from views.techstack import show_techstack
 from views.reports import show_reports
 from views.notes import show_notes
@@ -175,6 +176,7 @@ with st.sidebar:
             "📁 Projeler", 
             "🔒 Gizli Kasa",
             "📋 Kanban Board", 
+            "📅 Takvim Görünümü",
             "📅 Timeline", 
             "💻 Tech Stack", 
             "👥 Ekip Yönetimi",
@@ -315,6 +317,8 @@ elif page == "🔒 Gizli Kasa":
     show_secret_vault(data)
 elif page == "📋 Kanban Board":
     show_kanban(data)
+elif page == "📅 Takvim Görünümü":
+    show_calendar(data)
 elif page == "📅 Timeline":
     show_timeline(data)
 elif page == "💻 Tech Stack":

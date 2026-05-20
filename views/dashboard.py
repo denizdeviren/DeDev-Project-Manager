@@ -116,3 +116,42 @@ def show_dashboard(data):
             </div>
             """), unsafe_allow_html=True)
         st.markdown('</div>', unsafe_allow_html=True)
+        
+    st.markdown("<div style='height: 30px;'></div>", unsafe_allow_html=True)
+    
+    # -------------------------------------------------------------
+    # ⚡ SMART AUTOMATIONS CONFIGURATION
+    # -------------------------------------------------------------
+    st.markdown('<div class="section-title" style="font-size: 18px;">⚡ Akıllı İş Otomasyonları (Smart Automations)</div>', unsafe_allow_html=True)
+    
+    # Initialize automations list if not present
+    if "automations" not in data:
+        from utils.automations import run_automations
+        run_automations(data)
+        from utils.data_handler import save_data
+        save_data(data)
+        
+    with st.expander("⚙️ Arka Plan Otomasyon Kurallarını Yönet", expanded=False):
+        st.markdown("""
+        <div style="font-size: 13px; color: #9ca3af; margin-bottom: 20px;">
+            Aşağıdaki kurallar, projeler veya görevler güncellendiğinde otomatik olarak çalıştırılır. İş süreçlerinizi otomatikleştirmek için dilediğinizi aktif veya pasif yapabilirsiniz.
+        </div>
+        """, unsafe_allow_html=True)
+        
+        has_changes = False
+        for idx, rule in enumerate(data.get("automations", [])):
+            enabled = st.toggle(
+                label=rule.get("name"),
+                value=rule.get("enabled", True),
+                key=f"auto_rule_toggle_{rule.get('id')}",
+                help=rule.get("description")
+            )
+            if enabled != rule.get("enabled"):
+                data["automations"][idx]["enabled"] = enabled
+                has_changes = True
+                
+        if has_changes:
+            from utils.data_handler import save_data
+            save_data(data)
+            st.toast("⚡ Otomasyon kuralları başarıyla güncellendi!", icon="⚡")
+            st.rerun()
