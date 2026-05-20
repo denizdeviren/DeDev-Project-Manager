@@ -11,31 +11,70 @@ READABLE_TASKS_SHEET = "Görevler"
 def is_gsheets_configured():
     """Checks if Google Sheets connection is fully configured in secrets."""
     try:
-        if "connections" not in st.secrets:
-            return False
-        if "gsheets" not in st.secrets["connections"]:
-            return False
-        
-        cfg = st.secrets["connections"]["gsheets"]
+        # Debug helper: print available keys to help diagnose issues in logs
+        print(f"DEBUG: Available keys in st.secrets: {list(st.secrets.keys())}")
+        if "connections" in st.secrets:
+            print(f"DEBUG: Available keys in connections: {list(st.secrets['connections'].keys())}")
+            if "gsheets" in st.secrets["connections"]:
+                print(f"DEBUG: Available keys in connections.gsheets: {list(st.secrets['connections']['gsheets'].keys())}")
+
         required_keys = ["spreadsheet", "type", "project_id", "private_key", "client_email"]
-        return all(key in cfg for key in required_keys)
-    except Exception:
+
+        # Check nested connections.gsheets
+        if "connections" in st.secrets and "gsheets" in st.secrets["connections"]:
+            cfg = st.secrets["connections"]["gsheets"]
+            if all(key in cfg for key in required_keys):
+                return True
+
+        # Check flat root-level st.secrets
+        if all(key in st.secrets for key in required_keys):
+            return True
+
+        # Also support st.secrets["gsheets"] directly
+        if "gsheets" in st.secrets:
+            cfg = st.secrets["gsheets"]
+            if all(key in cfg for key in required_keys):
+                return True
+
+        return False
+    except Exception as e:
+        print(f"DEBUG: Error checking secrets config: {e}")
         return False
 
 def get_gsheets_client():
     """Initializes and returns the gspread client."""
-    if not is_gsheets_configured():
-        raise ValueError("Google Sheets secrets are not fully configured in .streamlit/secrets.toml")
+    required_keys = ["spreadsheet", "type", "project_id", "private_key", "client_email"]
     
-    # Extract credentials from Streamlit secrets
-    creds_dict = dict(st.secrets["connections"]["gsheets"])
-    
-    # Extract spreadsheet URL/ID (it's not part of service account JSON)
-    spreadsheet_url = creds_dict.pop("spreadsheet", None)
-    
-    # Authenticate using the service account dict
-    gc = gspread.service_account_from_dict(creds_dict)
-    return gc, spreadsheet_url
+    # 1. Try nested connections.gsheets
+    if "connections" in st.secrets and "gsheets" in st.secrets["connections"]:
+        cfg = st.secrets["connections"]["gsheets"]
+        if all(key in cfg for key in required_keys):
+            creds_dict = dict(cfg)
+            spreadsheet_url = creds_dict.pop("spreadsheet", None)
+            gc = gspread.service_account_from_dict(creds_dict)
+            return gc, spreadsheet_url
+
+    # 2. Try flat root-level st.secrets
+    if all(key in st.secrets for key in required_keys):
+        creds_dict = {key: st.secrets[key] for key in required_keys}
+        # Include optional ones if present
+        for key in ["private_key_id", "client_id", "auth_uri", "token_uri", "auth_provider_x509_cert_url", "client_x509_cert_url", "universe_domain"]:
+            if key in st.secrets:
+                creds_dict[key] = st.secrets[key]
+        spreadsheet_url = creds_dict.pop("spreadsheet", None)
+        gc = gspread.service_account_from_dict(creds_dict)
+        return gc, spreadsheet_url
+
+    # 3. Try st.secrets["gsheets"] directly
+    if "gsheets" in st.secrets:
+        cfg = st.secrets["gsheets"]
+        if all(key in cfg for key in required_keys):
+            creds_dict = dict(cfg)
+            spreadsheet_url = creds_dict.pop("spreadsheet", None)
+            gc = gspread.service_account_from_dict(creds_dict)
+            return gc, spreadsheet_url
+            
+    raise ValueError("Google Sheets secrets are not fully configured in st.secrets")
 
 def get_worksheet(sh, name, default_cols=10, default_rows=100):
     """Gets a worksheet by name, creating it if it doesn't exist."""
