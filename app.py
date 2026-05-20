@@ -139,7 +139,7 @@ data = load_data()
 with st.sidebar:
     st.markdown("""
     <div style="text-align: center; margin-bottom: 30px;">
-        <h1 style="font-size: 24px; font-weight: 900; background: -webkit-linear-gradient(45deg, #667eea, #764ba2); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">DeDev AI</h1>
+        <h1 style="font-size: 24px; font-weight: 900; background: -webkit-linear-gradient(45deg, #667eea, #764ba2); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">DeDev</h1>
         <p style="font-size: 12px; color: #9ca3af; letter-spacing: 1px;">COMMAND CENTER V2</p>
     </div>
     """, unsafe_allow_html=True)
