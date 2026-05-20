@@ -54,10 +54,33 @@ st.markdown("""
         border-right: 1px solid rgba(255,255,255,0.05);
     }
     
-    /* Hide Streamlit Branding */
+    /* Hide Streamlit Branding & Footer */
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
-    header {visibility: hidden;}
+    
+    /* Make header transparent instead of hiding it entirely (so mobile sidebar toggle button is visible) */
+    header {
+        background: transparent !important;
+    }
+    [data-testid="stHeader"] {
+        background: transparent !important;
+    }
+    
+    /* Style the sidebar collapse button to look premium and always be visible */
+    [data-testid="stSidebarCollapseButton"] {
+        visibility: visible !important;
+        display: flex !important;
+        background-color: rgba(255, 255, 255, 0.05) !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        backdrop-filter: blur(10px) !important;
+        border-radius: 8px !important;
+        color: white !important;
+        z-index: 999999 !important;
+    }
+    [data-testid="stSidebarCollapseButton"]:hover {
+        background-color: rgba(102, 126, 234, 0.2) !important;
+        border-color: rgba(102, 126, 234, 0.4) !important;
+    }
     
     /* Metric Cards */
     .metric-card {
