@@ -129,11 +129,33 @@ def init_defaults(data):
     data.setdefault("deployments", [])
     data.setdefault("activities", [])
     data.setdefault("team", [])
-    # Filter out mock team members from Deniz's production database
-    data["team"] = [m for m in data["team"] if m.get("name") not in ["Ahmet Yılmaz", "Elif Demir"]]
     
-    # Initialize empty lists for bank accounts and ledger to let user define them
-    data.setdefault("bank_accounts", [])
+    # Define exact case-insensitive mock names to scrub
+    mock_names = ["ahmet yılmaz", "elif demir", "elif aksoy", "ahmet", "elif", "ahmet yilmaz", "elif demır"]
+    
+    # Robustly scrub mock team members from Deniz's production team
+    data["team"] = [
+        m for m in data["team"] 
+        if m.get("name") and m.get("name").strip().lower() not in mock_names
+    ]
+    
+    # Clean tasks and projects assigned to mock members in the production database
+    for t in data["tasks"]:
+        if t.get("assignee") and t.get("assignee").strip().lower() in mock_names:
+            t["assignee"] = "Deniz Deviren"
+            
+    for p in data["projects"]:
+        if p.get("owner_name") and p.get("owner_name").strip().lower() in mock_names:
+            p["owner_name"] = "Deniz Deviren"
+    
+    # Initialize bank accounts with a default cash account if empty to prevent finance form blocker
+    if "bank_accounts" not in data or not data["bank_accounts"]:
+        data["bank_accounts"] = [
+            {"id": "ACC-DEFAULT-CASH", "name": "Merkez Kasa", "balance": 0.0, "currency": "TRY"}
+        ]
+    else:
+        data.setdefault("bank_accounts", [])
+        
     data.setdefault("accounting_ledger", [])
         
     # Initialize departments
@@ -196,6 +218,8 @@ def init_demo_defaults(data):
     
     # 2. Team
     data["team"] = [
+        {"id": "USR-AHMET", "name": "Ahmet Yılmaz", "role": "Product Manager", "department": "Yönetim", "email": "ahmet@dedev.com"},
+        {"id": "USR-ELIF", "name": "Elif Demir", "role": "Backend Developer", "department": "Yazılım Geliştirme", "email": "elif@dedev.com"},
         {"id": "USR-METEHAN", "name": "Metehan Şahin", "role": "Senior Developer", "department": "Yazılım Geliştirme", "email": "metehan@dedev.com"},
         {"id": "USR-SELIN", "name": "Selin Kaya", "role": "UI/UX Tasarımcı", "department": "Tasarım & UI/UX", "email": "selin@dedev.com"},
         {"id": "USR-ALPEREN", "name": "Alperen Yılmaz", "role": "Mali Müşavir", "department": "Yönetim", "email": "alperen@dedev.com"}
@@ -259,7 +283,7 @@ def init_demo_defaults(data):
             "priority": "Medium",
             "date": "2026-05-28",
             "project_id": "PROJ-DEMO-1",
-            "assignee": "Metehan Şahin",
+            "assignee": "Elif Demir",
             "effort": 4
         },
         {
@@ -279,7 +303,7 @@ def init_demo_defaults(data):
             "priority": "Medium",
             "date": "2026-05-22",
             "project_id": "PROJ-DEMO-1",
-            "assignee": "Örnek Simülasyon",
+            "assignee": "Ahmet Yılmaz",
             "effort": 3
         }
     ]

@@ -1,6 +1,6 @@
 import streamlit as st
 import plotly.graph_objects as go
-from utils.data_handler import save_data
+from utils.data_handler import save_data, get_all_accounts
 
 PAGE_KEYS = {
     "🏠 Dashboard": "dashboard",
@@ -61,7 +61,8 @@ def show_admin(data):
         </div>
         """, unsafe_allow_html=True)
         
-        account_names = [acc["name"] for acc in data["accounts"]]
+        all_accounts = get_all_accounts()
+        account_names = [acc["name"] for acc in all_accounts]
         
         # Determine active index
         try:
@@ -77,21 +78,29 @@ def show_admin(data):
         )
         
         if selected_acc_name != active_owner_name:
-            data["active_owner"] = selected_acc_name
-            # Update root owner details to match selected profile so that legacy parts are kept in sync
-            selected_acc = next((acc for acc in data["accounts"] if acc["name"] == selected_acc_name), None)
+            selected_acc = next((acc for acc in all_accounts if acc["name"] == selected_acc_name), None)
             if selected_acc:
-                data["owner"] = selected_acc
-            save_data(data)
-            st.toast(f"⚡ Çalışma alanı '{selected_acc_name}' olarak değiştirildi!", icon="⚡")
-            st.rerun()
+                selected_username = selected_acc.get("username")
+                # Swap workspace database by changing logged_in_user
+                st.session_state["logged_in_user"] = selected_username
+                
+                # Load the new database context so we can modify its active_owner
+                from utils.data_handler import load_data, save_data
+                db_data = load_data()
+                db_data["active_owner"] = selected_acc_name
+                db_data["owner"] = selected_acc
+                save_data(db_data)
+                
+                st.toast(f"⚡ Çalışma alanı '{selected_acc_name}' olarak değiştirildi!", icon="⚡")
+                st.rerun()
             
         st.markdown("---")
         st.markdown("### 🏢 Kayıtlı Profiller")
         
         # Grid of accounts
         cols = st.columns(3)
-        for idx, acc in enumerate(data["accounts"]):
+        all_accounts = get_all_accounts()
+        for idx, acc in enumerate(all_accounts):
             col_idx = idx % 3
             with cols[col_idx]:
                 is_active = acc["name"] == active_owner_name
@@ -139,7 +148,7 @@ def show_admin(data):
                 """), unsafe_allow_html=True)
                 
                 # Admin role and permission editor
-                if acc.get("username") not in ["1denizdeviren", "furkan"]:
+                if acc.get("username") not in ["1denizdeviren", "furkan", "demo_erpsim"]:
                     with st.expander("⚙️ Yetki ve Rol Düzenle"):
                         current_role_type = acc.get("role_type", "admin")
                         role_type_opts = ["Yönetici (Admin)", "Ekip Üyesi (Sınırlı)"]
@@ -177,16 +186,16 @@ def show_admin(data):
                             st.toast(f"🔑 '{acc['name']}' yetkileri başarıyla güncellendi!", icon="✅")
                             st.rerun()
                 
-                # Delete account button (cannot delete if active or if it's the only account)
-                if not is_active and len(data["accounts"]) > 1:
+                # Delete account button (cannot delete if active, if it's the only account, or if it is demo_erpsim)
+                if not is_active and len(all_accounts) > 1 and acc.get("username") != "demo_erpsim":
                     if st.button(f"🗑️ Hesabı Sil", key=f"del_acc_{acc['name']}", type="secondary", use_container_width=True):
                         # Reassign projects of deleted owner to the active owner
                         for p in data.get("projects", []):
                             if p.get("owner_name") == acc["name"]:
                                 p["owner_name"] = active_owner_name
-                        data["accounts"] = [a for a in data["accounts"] if a["name"] != acc["name"]]
+                        data["accounts"] = [a for a in data.get("accounts", []) if a["name"] != acc["name"]]
                         save_data(data)
-                        st.warning(f"'{acc['name']}' hesabı silindi ve projeleri aktif hesaba devredildi.")
+                        st.warning(f"'{acc['name']}' hesabı silindi.")
                         st.rerun()
                         
     # =============================================================
@@ -227,7 +236,7 @@ def show_admin(data):
             if st.form_submit_button("Yeni Profil Oluştur"):
                 if n_name and n_username and n_password:
                     # Check duplication
-                    if any(a["name"].lower() == n_name.lower() or a.get("username", "").lower() == n_username.lower() for a in data["accounts"]):
+                    if any(a["name"].lower() == n_name.lower() or a.get("username", "").lower() == n_username.lower() for a in get_all_accounts()):
                         st.error("❌ Bu isimle veya kullanıcı adıyla kayıtlı bir profil zaten mevcut!")
                     else:
                         from utils.encryption import hash_password

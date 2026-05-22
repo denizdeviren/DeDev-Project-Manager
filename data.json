@@ -1049,17 +1049,17 @@
     },
     {
       "username": "furkan",
-      "name": "Furkan",
-      "role": "Co-Founder & Product Manager",
+      "name": "M. Furkan Işık",
+      "role": "Co-Founder & Developer",
       "company": "DeDev",
       "location": "Remote / Global",
       "since": "2024",
-      "bio": "Furkan, DeDev ortağı ve ürün yöneticisi.",
+      "bio": "M. Furkan Işık, DeDev ortağı ve yazılım geliştiricisi.",
       "password_hash": "e90a7836b4aac93e331b0416f994eba94e92eec17790d5f3004843c1f473e4c2",
       "password_salt": "0459dabe80d2e59637c3ae3d2e25ed22"
     }
   ],
-  "active_owner": "Furkan",
+  "active_owner": "M. Furkan Işık",
   "departments": [
     {
       "id": "DEP-YAZILIM",
@@ -1117,6 +1117,13 @@
       "enabled": true
     }
   ],
-  "bank_accounts": [],
+  "bank_accounts": [
+    {
+      "id": "ACC-DEFAULT-CASH",
+      "name": "Merkez Kasa",
+      "balance": 0.0,
+      "currency": "TRY"
+    }
+  ],
   "accounting_ledger": []
 }
