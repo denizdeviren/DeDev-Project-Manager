@@ -129,6 +129,8 @@ def init_defaults(data):
     data.setdefault("deployments", [])
     data.setdefault("activities", [])
     data.setdefault("team", [])
+    # Filter out mock team members from Deniz's production database
+    data["team"] = [m for m in data["team"] if m.get("name") not in ["Ahmet Yılmaz", "Elif Demir"]]
     
     # Initialize empty lists for bank accounts and ledger to let user define them
     data.setdefault("bank_accounts", [])
