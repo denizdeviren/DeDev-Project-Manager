@@ -115,8 +115,86 @@ def show_team(data):
                         </div>
                         """), unsafe_allow_html=True)
                         
-                        # Delete button
+                        # Login credentials lifecycle
+                        from utils.data_handler import get_all_accounts
+                        from utils.encryption import hash_password
+                        
+                        all_accs = get_all_accounts()
+                        matched_acc = next((acc for acc in all_accs if acc.get("name") == member.get("name")), None)
+                        
                         m_id = member.get("id", member.get("name", "unknown"))
+                        exp_title = f"🔑 Giriş Bilgileri ({matched_acc.get('username')})" if matched_acc else "🔑 Giriş Yetkisi Ver"
+                        with st.expander(exp_title):
+                            if matched_acc:
+                                # Update existing credentials
+                                st.markdown(f"**👤 Kullanıcı Adı:** `{matched_acc.get('username')}`")
+                                with st.form(f"edit_credentials_form_{m_id}"):
+                                    new_uname = st.text_input("Kullanıcı Adı Güncelle", value=matched_acc.get('username', ''))
+                                    new_pass = st.text_input("Yeni Şifre Belirle", type="password", placeholder="Değiştirmek istemiyorsanız boş bırakın")
+                                    
+                                    if st.form_submit_button("Giriş Bilgilerini Güncelle"):
+                                        if not new_uname:
+                                            st.error("Kullanıcı adı boş olamaz.")
+                                        else:
+                                            # Check uniqueness if username changed
+                                            username_taken = any(
+                                                acc.get("username").lower() == new_uname.lower() and acc.get("name") != member.get("name")
+                                                for acc in all_accs
+                                            )
+                                            if username_taken:
+                                                st.error("❌ Bu kullanıcı adı başka bir hesap tarafından kullanılıyor!")
+                                            else:
+                                                # Update account inside data["accounts"]
+                                                db_acc = next((acc for acc in data.setdefault("accounts", []) if acc.get("name") == member.get("name")), None)
+                                                if not db_acc:
+                                                    db_acc = matched_acc
+                                                    data["accounts"].append(db_acc)
+                                                    
+                                                db_acc["username"] = new_uname
+                                                if new_pass:
+                                                    h_val, s_val = hash_password(new_pass)
+                                                    db_acc["password_hash"] = h_val
+                                                    db_acc["password_salt"] = s_val
+                                                    if "password" in db_acc:
+                                                        del db_acc["password"]
+                                                
+                                                save_data(data)
+                                                st.success("🎉 Giriş bilgileri başarıyla güncellendi!")
+                                                st.rerun()
+                            else:
+                                # Create new credentials
+                                with st.form(f"create_credentials_form_{m_id}"):
+                                    new_uname = st.text_input("Kullanıcı Adı", placeholder="Örn: elif_demir")
+                                    new_pass = st.text_input("Şifre", type="password", placeholder="Şifre belirleyin")
+                                    
+                                    if st.form_submit_button("Giriş Yetkisi Tanımla"):
+                                        if not new_uname or not new_pass:
+                                            st.error("Lütfen tüm alanları doldurun.")
+                                        else:
+                                            username_taken = any(acc.get("username").lower() == new_uname.lower() for acc in all_accs)
+                                            if username_taken:
+                                                st.error("❌ Bu kullanıcı adı zaten mevcut!")
+                                            else:
+                                                h_val, s_val = hash_password(new_pass)
+                                                new_acc = {
+                                                    "username": new_uname,
+                                                    "password_hash": h_val,
+                                                    "password_salt": s_val,
+                                                    "name": member.get("name"),
+                                                    "role": member.get("role", "Geliştirici"),
+                                                    "company": "DeDev",
+                                                    "location": "Remote",
+                                                    "since": "2026",
+                                                    "bio": f"{member.get('name')} - Ekip Üyesi Profili.",
+                                                    "role_type": "member",
+                                                    "permissions": ["dashboard", "projects", "kanban", "timeline", "calendar", "time_tracking", "reports"]
+                                                }
+                                                data.setdefault("accounts", []).append(new_acc)
+                                                save_data(data)
+                                                st.success(f"🎉 {member.get('name')} için giriş yetkisi tanımlandı!")
+                                                st.rerun()
+                        
+                        # Delete button
                         if st.button("🗑️ Ekipten Çıkar", key=f"del_worker_{m_id}", type="secondary", use_container_width=True):
                             data["team"] = [m for m in data["team"] if m.get("id") != member.get("id") or m.get("name") != member.get("name")]
                             save_data(data)

@@ -461,8 +461,8 @@ def show_finance(data):
     st.markdown('<div class="section-title">💰 ERP Bütçe, Gelir & Muhasebe Sistemleri</div>', unsafe_allow_html=True)
     st.markdown('<div class="section-subtitle">Çift taraflı değiştirilemez yevmiye defteri, banka bakiyeleri, mizan, bilanço ve Excel raporlayıcı</div>', unsafe_allow_html=True)
     
-    active_owner = data.get("active_owner", "Deniz Deviren")
-    active_projects = [p for p in data.get("projects", []) if p.get("owner_name", "Deniz Deviren") == active_owner]
+    from utils.data_handler import get_filtered_elements
+    active_owner, active_projects, _, _, _, _, _ = get_filtered_elements(data)
     active_project_ids = {p["id"] for p in active_projects}
     
     current_username = st.session_state.get("logged_in_user", "1denizdeviren")

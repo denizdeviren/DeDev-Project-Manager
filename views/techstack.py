@@ -9,8 +9,8 @@ def show_techstack(data):
     st.markdown('<div class="section-title">💻 Teknoloji Stack Haritası</div>', unsafe_allow_html=True)
     st.markdown('<div class="section-subtitle">Tüm genel ve şifresi çözülmüş gizli projelerde kullanılan diller, frameworkler ve kütüphaneler</div>', unsafe_allow_html=True)
 
-    active_owner = data.get("active_owner", "Deniz Deviren")
-    projects = [p for p in data.get("projects", []) if p.get("owner_name", "Deniz Deviren") == active_owner]
+    from utils.data_handler import get_filtered_elements
+    active_owner, projects, _, _, _, _, _ = get_filtered_elements(data)
 
     # 1. Dynamic Technology Counter and Decryption
     unlocked_secrets = st.session_state.get("unlocked_secrets", {})

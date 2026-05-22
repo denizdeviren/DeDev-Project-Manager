@@ -1,7 +1,7 @@
 import streamlit as st
 import uuid
 from datetime import datetime
-from utils.data_handler import save_data
+from utils.data_handler import save_data, get_filtered_elements
 from views.task_details import render_task_details
 
 def clean_html(html_str):
@@ -9,8 +9,7 @@ def clean_html(html_str):
 
 def show_kanban(data):
     st.markdown('<div class="section-title">📋 Kanban Board</div>', unsafe_allow_html=True)
-    active_owner = data.get("active_owner", "Deniz Deviren")
-    active_projects = [p for p in data.get("projects", []) if p.get("owner_name", "Deniz Deviren") == active_owner]
+    active_owner, active_projects, active_tasks, _, _, _, _ = get_filtered_elements(data)
     active_project_ids = {p["id"] for p in active_projects}
     
     # -------------------------------------------------------------
@@ -112,7 +111,7 @@ def show_kanban(data):
             </div>
             """), unsafe_allow_html=True)
             
-            for task in [t for t in data.get("tasks", []) if t.get("project_id") in active_project_ids]:
+            for task in [t for t in active_tasks if t.get("project_id") in active_project_ids]:
                 if task['status'] == status:
                     proj = next((p for p in active_projects if p['id'] == task['project_id']), None)
                     if selected_project != "Tüm Projeler" and (proj is None or proj['name'] != selected_project):
@@ -233,7 +232,7 @@ def show_kanban(data):
     # -------------------------------------------------------------
     active_task_id = st.session_state.get("active_kanban_task_id")
     if active_task_id:
-        active_task = next((t for t in data.get("tasks", []) if t.get("id") == active_task_id), None)
+        active_task = next((t for t in active_tasks if t.get("id") == active_task_id), None)
         if active_task:
             st.markdown("---")
             st.markdown("### 📋 Görev Detay Çalışma Alanı")

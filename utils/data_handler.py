@@ -495,6 +495,7 @@ def get_all_accounts():
     return dedup_accounts
 
 def get_filtered_elements(data):
+    import streamlit as st
     active_owner = data.get("active_owner", "Deniz Deviren")
     
     projects = [p for p in data.get("projects", []) if p.get("owner_name", "Deniz Deviren") == active_owner]
@@ -506,6 +507,33 @@ def get_filtered_elements(data):
     activities = [a for a in data.get("activities", []) if not a.get("project") or a.get("project") in project_ids]
     deployments = [d for d in data.get("deployments", []) if d.get("project") in project_ids]
     
+    # Check if a restricted team member is logged in
+    current_user = st.session_state.get("logged_in_user")
+    if current_user:
+        current_acc = next((acc for acc in data.get("accounts", []) if acc.get("username") == current_user), None)
+        if current_acc and current_acc.get("role_type") == "member":
+            member_name = current_acc.get("name")
+            
+            # 1. Members only see tasks assigned to them
+            tasks = [t for t in tasks if t.get("assignee") == member_name]
+            
+            # 2. Members only see projects where they are listed in team OR listed as owner OR have an assigned task
+            member_proj_ids = {t["project_id"] for t in tasks if "project_id" in t}
+            projects = [
+                p for p in projects 
+                if p.get("owner_name") == member_name 
+                or p["id"] in member_proj_ids 
+                or member_name in p.get("team", [])
+            ]
+            project_ids = {p["id"] for p in projects}
+            
+            # 3. Re-filter dependent lists based on filtered projects
+            tasks = [t for t in tasks if t.get("project_id") in project_ids]
+            time_logs = [log for log in time_logs if log.get("project_id") in project_ids]
+            finances = [f for f in finances if f.get("project_id") in project_ids]
+            activities = [a for a in activities if a.get("project") in project_ids]
+            deployments = [d for d in deployments if d.get("project") in project_ids]
+            
     return active_owner, projects, tasks, time_logs, finances, activities, deployments
 
 def load_data():

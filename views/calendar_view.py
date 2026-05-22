@@ -2,18 +2,16 @@ import streamlit as st
 import calendar
 from datetime import datetime
 from views.task_details import render_task_details, clean_html
-from utils.data_handler import colors_map
+from utils.data_handler import colors_map, get_filtered_elements
 
 def show_calendar(data):
     st.markdown('<div class="section-title">📅 Takvim Görünümü</div>', unsafe_allow_html=True)
     st.markdown('<div class="section-subtitle">Görevlerinizin teslim tarihlerini (deadline) aylık takvim üzerinde izleyin</div>', unsafe_allow_html=True)
 
     # 1. Gather all tasks and filter secret ones if locked
-    active_owner = data.get("active_owner", "Deniz Deviren")
+    active_owner, all_projects, all_tasks, _, _, _, _ = get_filtered_elements(data)
     unlocked_secrets = st.session_state.get("unlocked_secrets", {})
-    all_projects = [p for p in data.get("projects", []) if p.get("owner_name", "Deniz Deviren") == active_owner]
     active_project_ids = {p["id"] for p in all_projects}
-    all_tasks = [t for t in data.get("tasks", []) if t.get("project_id") in active_project_ids]
 
     filtered_tasks = []
     for t in all_tasks:

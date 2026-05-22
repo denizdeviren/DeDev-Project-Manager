@@ -1,11 +1,11 @@
 import streamlit as st
 import plotly.graph_objects as go
+from utils.data_handler import get_filtered_elements
 
 def show_reports(data):
     st.markdown('<div class="section-title">📈 Performans Raporları</div>', unsafe_allow_html=True)
     st.markdown('<div class="section-subtitle">Developer üretkenlik metrikleri, proje bazlı ilerlemeler ve analitikler</div>', unsafe_allow_html=True)
-    active_owner = data.get("active_owner", "Deniz Deviren")
-    active_projects = [p for p in data.get("projects", []) if p.get("owner_name", "Deniz Deviren") == active_owner]
+    active_owner, active_projects, active_tasks, _, _, _, _ = get_filtered_elements(data)
     active_project_ids = {p["id"] for p in active_projects}
 
     # -------------------------------------------------------------
@@ -104,7 +104,7 @@ def show_reports(data):
             if not is_sec or p["id"] in unlocked_secrets:
                 valid_project_ids.append(p["id"])
                 
-        tasks = data.get("tasks", [])
+        tasks = active_tasks
         filtered_tasks = [t for t in tasks if t.get("project_id") in valid_project_ids]
         
         # Resolve assignee with project owner fallback to prevent "Atanmamış" (unassigned) slice clutter

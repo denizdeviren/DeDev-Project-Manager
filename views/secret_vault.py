@@ -106,6 +106,43 @@ def show_secret_vault(data):
                         st.session_state.unlocked_secrets[proj_id] = pwd_input
                         st.success("🔓 Başarıyla deşifre edildi!")
                         st.rerun()
+
+                # Password Reset Expander for Locked Projects
+                with st.expander("⚠️ Şifre Sıfırlama (Şifremi Unuttum)"):
+                    st.error("""
+                    **UYARI: VERİ KAYBI RİSKİ!**
+                    
+                    Bu projenin şifresini unuttuysanız, yeni bir kasa şifresi belirleyerek şifreyi sıfırlayabilirsiniz. 
+                    Ancak eski şifreyle şifrelenmiş olan **Proje Açıklaması** ve **Teknoloji Listesi** verileri kurtarılamayacaktır.
+                    Bu veriler güvenli varsayılan metinlerle sıfırlanıp yeni şifrenizle şifrelenecektir. 
+                    *Diğer proje üst bilgileri (isim, durum, ekip, vb.) korunacaktır.*
+                    """)
+                    confirm_reset = st.checkbox("Şifrelenmiş proje detaylarının kalıcı olarak silineceğini ve sıfırlanacağını onaylıyorum.", key=f"confirm_reset_{proj_id}")
+                    
+                    with st.form(f"reset_pwd_form_{proj_id}"):
+                        reset_pwd = st.text_input("Yeni Kasa Şifresi", type="password", key=f"reset_pwd_{proj_id}")
+                        reset_pwd_confirm = st.text_input("Yeni Kasa Şifresini Doğrulayın", type="password", key=f"reset_pwd_conf_{proj_id}")
+                        submit_reset = st.form_submit_button("⚠️ Şifreyi Sıfırla ve Kasayı Aç")
+                        if submit_reset:
+                            if not confirm_reset:
+                                st.error("Lütfen önce verilerin sıfırlanacağını onaylayan kutucuğu işaretleyin.")
+                            elif not reset_pwd:
+                                st.error("Lütfen geçerli bir yeni şifre girin.")
+                            elif reset_pwd != reset_pwd_confirm:
+                                st.error("Girdiğiniz şifreler birbiriyle eşleşmiyor.")
+                            else:
+                                # Reset description and tech stack to safe defaults
+                                default_desc = "Bu projenin şifresi sıfırlanmıştır. Yeni açıklama detaylarını Proje Ayarlarını Yönet panelinden düzenleyebilirsiniz."
+                                default_tech = "Python, Streamlit"
+                                
+                                proj["description"] = encrypt_text(default_desc, reset_pwd)
+                                proj["tech_stack"] = [encrypt_text(default_tech, reset_pwd)]
+                                
+                                save_data(data)
+                                st.session_state.unlocked_secrets[proj_id] = reset_pwd
+                                st.success("🎉 Şifre başarıyla sıfırlandı! Kasa kilidi açıldı ve varsayılan bilgiler oluşturuldu.")
+                                st.rerun()
+
                 st.markdown("<div style='height: 25px;'></div>", unsafe_allow_html=True)
             
             else:
@@ -354,6 +391,39 @@ def show_secret_vault(data):
                                 st.success("Kilometre taşı başarıyla silindi!")
                                 st.rerun()
                                 
+                    # Password Change Expander (only for unlocked projects)
+                    with st.expander("🔑 Kasa Şifresini Değiştir (Şifre Yenileme)"):
+                        st.markdown("##### 🔑 Proje Kasa Şifresini Yenile")
+                        st.info("Bu işlem projenin tüm gizli detaylarını çözüp yeni belirleyeceğiniz şifre ile yeniden şifreler.")
+                        with st.form(f"change_pwd_form_{proj_id}"):
+                            new_vault_pwd = st.text_input("Yeni Kasa Şifresi", type="password", key=f"new_v_pwd_{proj_id}")
+                            new_vault_pwd_confirm = st.text_input("Yeni Kasa Şifresini Doğrulayın", type="password", key=f"new_v_pwd_conf_{proj_id}")
+                            submit_change_pwd = st.form_submit_button("🔑 Şifreyi Yenile")
+                            if submit_change_pwd:
+                                if not new_vault_pwd:
+                                    st.error("Lütfen geçerli bir şifre girin.")
+                                elif new_vault_pwd != new_vault_pwd_confirm:
+                                    st.error("Girdiğiniz şifreler birbiriyle eşleşmiyor.")
+                                else:
+                                    # Decrypt using old password (saved_pwd)
+                                    desc_dec = decrypt_text(proj.get('description', ''), saved_pwd)
+                                    tech_dec = ""
+                                    if proj.get('tech_stack') and len(proj['tech_stack']) > 0:
+                                        t_res = decrypt_text(proj['tech_stack'][0], saved_pwd)
+                                        if t_res and t_res != "ERROR_WRONG_PASSWORD":
+                                            tech_dec = t_res
+                                        else:
+                                            tech_dec = ",".join(proj['tech_stack'])
+                                    
+                                    # Re-encrypt with new password
+                                    proj["description"] = encrypt_text(desc_dec, new_vault_pwd)
+                                    proj["tech_stack"] = [encrypt_text(tech_dec, new_vault_pwd)]
+                                    
+                                    save_data(data)
+                                    st.session_state.unlocked_secrets[proj_id] = new_vault_pwd
+                                    st.success("🎉 Kasa şifresi başarıyla yenilendi ve veriler yeni anahtarla tekrar şifrelendi!")
+                                    st.rerun()
+
                     st.markdown("---")
                     st.markdown("##### ⚠️ Tehlikeli Alan")
                     confirm_delete = st.checkbox("Bu gizli projeyi kalıcı olarak kasadan silmek istediğimi onaylıyorum.", key=f"confirm_del_secret_{proj_id}")

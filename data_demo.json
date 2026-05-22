@@ -146,8 +146,8 @@
   "accounts": [
     {
       "username": "demo_erpsim",
-      "password_hash": "34b2c33059387320fbd3ba9a2c994ecffaa6d6356888cf24fe499db9823edbdf",
-      "password_salt": "7588c04b45c84bdf102e3361d23e6efb",
+      "password_hash": "dd706a459b8db580d08bb32c078de6a1486924978a1b3e65883bf64156f0ce9f",
+      "password_salt": "4f3fe672e2b330b3e51366a7afef7462",
       "name": "Örnek Simülasyon",
       "role": "Kurumsal Admin & Test Sorumlusu",
       "company": "DeDev Kurumsal",

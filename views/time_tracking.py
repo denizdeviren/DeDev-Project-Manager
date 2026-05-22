@@ -1,7 +1,7 @@
 import streamlit as st
 import time
 from datetime import datetime
-from utils.data_handler import save_data
+from utils.data_handler import save_data, get_filtered_elements
 
 def clean_html(html_str):
     return "\n".join([line.strip() for line in html_str.split("\n")])
@@ -9,10 +9,8 @@ def clean_html(html_str):
 def show_time_tracking(data):
     st.markdown('<div class="section-title">⏱️ Pomodoro & Zaman Takibi</div>', unsafe_allow_html=True)
     st.markdown('<div class="section-subtitle">Görevlerine odaklan ve harcadığın süreyi projelerine kaydet</div>', unsafe_allow_html=True)
-    active_owner = data.get("active_owner", "Deniz Deviren")
-    active_projects = [p for p in data.get("projects", []) if p.get("owner_name", "Deniz Deviren") == active_owner]
+    active_owner, active_projects, active_tasks, active_time_logs, _, _, _ = get_filtered_elements(data)
     active_project_ids = {p["id"] for p in active_projects}
-    active_time_logs = [log for log in data.get("time_logs", []) if log.get("project_id") in active_project_ids]
 
     col1, col2 = st.columns([1.1, 1.9])
 

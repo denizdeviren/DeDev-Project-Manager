@@ -5,11 +5,9 @@ def show_deployments(data):
     st.markdown('<div class="section-title">🔄 CI/CD & Sunucular</div>', unsafe_allow_html=True)
     st.markdown('<div class="section-subtitle">Canlı sistemler, otomatik dağıtımlar ve sunucu durumları</div>', unsafe_allow_html=True)
     
-    active_owner = data.get("active_owner", "Deniz Deviren")
-    projects = [p for p in data.get("projects", []) if p.get("owner_name", "Deniz Deviren") == active_owner]
+    from utils.data_handler import get_filtered_elements
+    active_owner, projects, _, _, _, _, filtered_deps = get_filtered_elements(data)
     project_ids = {p["id"] for p in projects}
-    
-    filtered_deps = [d for d in data.get("deployments", []) if d.get("project") in project_ids]
     
     if filtered_deps:
         cols = st.columns(2)

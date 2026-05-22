@@ -1,21 +1,21 @@
 import streamlit as st
 import uuid
 from datetime import datetime
-from utils.data_handler import save_data
+from utils.data_handler import save_data, get_filtered_elements
 from views.task_details import render_task_details
 
 def clean_html(html_str):
     return "\n".join([line.strip() for line in html_str.split("\n")])
 
 def show_projects(data):
-    active_owner = data.get("active_owner", "Deniz Deviren")
+    active_owner, active_projects, active_tasks, _, _, _, _ = get_filtered_elements(data)
     st.markdown('<div class="section-title">📁 Projeler Command Center</div>', unsafe_allow_html=True)
     st.markdown('<div class="section-subtitle">Tüm genel projelerin, kilometre taşlarının, kod metriklerinin ve ekip atamalarının tek bir merkezden takibi.</div>', unsafe_allow_html=True)
     
     # -------------------------------------------------------------
     # 1. PREMIUM EXECUTIVE METRIC CARDS
     # -------------------------------------------------------------
-    public_projects = [p for p in data.get("projects", []) if p.get("owner_name", "Deniz Deviren") == active_owner and not p.get("is_secret", False)]
+    public_projects = [p for p in active_projects if not p.get("is_secret", False)]
     total_pub = len(public_projects)
     avg_progress = int(sum(p.get("progress", 0) for p in public_projects) / total_pub) if total_pub else 0
     total_loc = sum(p.get("lines_of_code", 0) for p in public_projects)
@@ -57,9 +57,7 @@ def show_projects(data):
     
     # Filter public projects
     filtered_projects = []
-    for proj in data.get("projects", []):
-        if proj.get("owner_name", "Deniz Deviren") != active_owner:
-            continue
+    for proj in active_projects:
         if proj.get("is_secret", False):
             continue
         
@@ -106,7 +104,7 @@ def show_projects(data):
             lines_of_code = proj.get("lines_of_code", 0)
             commits = proj.get("commits", 0)
             
-            proj_tasks = [t for t in data.get("tasks", []) if t.get("project_id") == proj_id]
+            proj_tasks = [t for t in active_tasks if t.get("project_id") == proj_id]
             tasks_total = len(proj_tasks)
             tasks_completed = sum(1 for t in proj_tasks if t.get("status") == "Done")
             tasks_pct = int((tasks_completed / tasks_total) * 100) if tasks_total else 0

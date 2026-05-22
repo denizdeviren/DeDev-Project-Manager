@@ -416,6 +416,80 @@ with st.sidebar:
     """, unsafe_allow_html=True)
     
     st.markdown("<div style='height: 15px;'></div>", unsafe_allow_html=True)
+    
+    # ⚙️ Profil Ayarları (Self-Service)
+    with st.expander("⚙️ Profil Ayarları"):
+        st.markdown("##### 👤 Bilgilerimi Güncelle")
+        current_acc = next((acc for acc in data.get("accounts", []) if acc.get("username") == current_user), None)
+        if current_acc:
+            with st.form("profile_settings_form"):
+                new_uname = st.text_input("Kullanıcı Adı", value=current_acc.get("username", ""))
+                new_name = st.text_input("Ad Soyad", value=current_acc.get("name", ""))
+                new_pwd = st.text_input("Yeni Şifre", type="password", placeholder="Değiştirmek istemiyorsanız boş bırakın")
+                new_pwd_confirm = st.text_input("Şifre Doğrulama", type="password", placeholder="Yeni şifrenizi doğrulayın")
+                
+                profile_save_btn = st.form_submit_button("💾 Profilimi Güncelle")
+                if profile_save_btn:
+                    if not new_uname or not new_name:
+                        st.error("Kullanıcı Adı ve Ad Soyad alanları boş bırakılamaz.")
+                    elif new_pwd and new_pwd != new_pwd_confirm:
+                        st.error("Girdiğiniz şifreler uyuşmuyor.")
+                    else:
+                        # Check unique username, excluding the current account
+                        other_exists = any(acc.get("username", "").lower() == new_uname.lower() and acc != current_acc for acc in data.get("accounts", []))
+                        if other_exists:
+                            st.error("Bu kullanıcı adı başka bir hesap tarafından kullanılıyor.")
+                        else:
+                            # Update account info
+                            old_name = current_acc.get("name")
+                            current_acc["username"] = new_uname
+                            current_acc["name"] = new_name
+                            
+                            # If password changed
+                            if new_pwd:
+                                from utils.encryption import hash_password
+                                h_val, s_val = hash_password(new_pwd)
+                                current_acc["password_hash"] = h_val
+                                current_acc["password_salt"] = s_val
+                                if "password" in current_acc:
+                                    del current_acc["password"]
+                            
+                            # Update active owner name in data
+                            if data.get("active_owner") == old_name:
+                                data["active_owner"] = new_name
+                            
+                            # Also update names of team members in team array if names match!
+                            for member in data.get("team", []):
+                                if member.get("name") == old_name:
+                                    member["name"] = new_name
+                            
+                            # Also update owner of projects/tasks/logs if names match
+                            for p in data.get("projects", []):
+                                if p.get("owner_name") == old_name:
+                                    p["owner_name"] = new_name
+                                if p.get("team") and old_name in p["team"]:
+                                    p["team"] = [new_name if t == old_name else t for t in p["team"]]
+                            
+                            for t in data.get("tasks", []):
+                                if t.get("assignee") == old_name:
+                                    t["assignee"] = new_name
+                                if t.get("owner_name") == old_name:
+                                    t["owner_name"] = new_name
+                                    
+                            for fl in data.get("finance", {}).get("transactions", []):
+                                if fl.get("spent_by") == old_name:
+                                    fl["spent_by"] = new_name
+                                    
+                            for act in data.get("activities", []):
+                                if act.get("spent_by") == old_name:
+                                    act["spent_by"] = new_name
+                            
+                            save_data(data)
+                            st.session_state["logged_in_user"] = new_uname
+                            st.success("Profiliniz başarıyla güncellendi!")
+                            st.rerun()
+
+    st.markdown("<div style='height: 15px;'></div>", unsafe_allow_html=True)
     if st.button("🔒 Oturumu Kapat", use_container_width=True, type="secondary"):
         st.session_state["logged_in_user"] = None
         st.toast("Oturum güvenli bir şekilde kapatıldı.", icon="🔒")
