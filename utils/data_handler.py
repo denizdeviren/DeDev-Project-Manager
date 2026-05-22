@@ -57,17 +57,17 @@ def init_defaults(data):
         deniz_acc.setdefault("since", "2023")
         deniz_acc.setdefault("bio", "Tek kişilik ekip. Yapay zeka, web, mobil ve oyun geliştirme projeleri.")
         if "password_hash" not in deniz_acc:
-            h_val, s_val = hash_password("104691")
-            deniz_acc["password_hash"] = h_val
-            deniz_acc["password_salt"] = s_val
+            # Pre-hashed PBKDF2 credentials for safety (no plain-text in source code)
+            deniz_acc["password_hash"] = "6a13b67f7ff4538333b55e6800d33ced0b897f9a75612319c3631b9e8ab67b13"
+            deniz_acc["password_salt"] = "019769293f90510166382122020ef513"
             if "password" in deniz_acc:
                 del deniz_acc["password"]
     else:
-        h_val, s_val = hash_password("104691")
+        # Pre-hashed PBKDF2 credentials for safety (no plain-text in source code)
         data["accounts"].append({
             "username": "1denizdeviren",
-            "password_hash": h_val,
-            "password_salt": s_val,
+            "password_hash": "6a13b67f7ff4538333b55e6800d33ced0b897f9a75612319c3631b9e8ab67b13",
+            "password_salt": "019769293f90510166382122020ef513",
             "name": "Deniz Deviren",
             "role": "Solo Full-Stack Developer & AI Engineer",
             "company": "DeDev",

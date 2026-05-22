@@ -82,7 +82,7 @@ Hassas ticari projelerinizi veya gizli fikirlerinizi üçüncü gözlerden tamam
 * **Otomatik Veri Kurtarma (Cloud Restore):** Streamlit Cloud sunucuları yeniden başlatıldığında yerel `data.json` dosyanız silinse bile, uygulama ilk açılışta Google Sheets yedeğini tespit eder ve sistem verilerini otomatik olarak geri yükler.
 
 ### 👑 13. Çoklu Profil & Yönetim (Admin View)
-* **Yönetici Kimlik Maskeleme:** Güvenlik gereği orijinal yönetici (`1denizdeviren` / `104691`) giriş bilgileri ve verileri gizlenerek tamamen izole edilmiştir.
+* **Yönetici Kimlik Maskeleme:** Güvenlik gereği orijinal yönetici giriş bilgileri ve verileri gizlenerek tamamen izole edilmiştir.
 * **Simülasyon Modu Kontrolü:** Test ve tanıtım süreçleri için özel olarak oluşturulmuş örnek yönetici hesabı (`furkan` / `123456`) ve simülasyon giriş paneli sunar. Admin paneli altından bu simülasyon hesap bilgileri güvenle takip edilebilir.
 * **Kayıt Olma Arayüzü:** ERP sistemine yeni ekip üyeleri ve yöneticiler eklemek için şifrelenmiş kayıt (Sign Up) ekranı entegrasyonu.
 
