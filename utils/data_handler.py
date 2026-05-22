@@ -205,31 +205,31 @@ def init_demo_defaults(data):
         "username": "demo_erpsim",
         "password_hash": h_val,
         "password_salt": s_salt,
-        "name": "Örnek Simülasyon",
-        "role": "Kurumsal Admin & Test Sorumlusu",
-        "company": "DeDev Kurumsal",
+        "name": "Murat Yıldırım",
+        "role": "CEO & Software Architect",
+        "company": "Aura Yazılım Teknolojileri",
         "location": "İstanbul, Türkiye",
         "since": "2026",
-        "bio": "ERP Sistemi test ve simülasyon yönetici hesabı. Tam yetkilidir.",
+        "bio": "Aura Yazılım Teknolojileri kurucu ortağı ve baş mimarı. Tüm iş süreçlerini ve projeleri buradan yönetir.",
         "role_type": "admin"
     })
     
-    data["active_owner"] = "Örnek Simülasyon"
+    data["active_owner"] = "Murat Yıldırım"
     
     # 2. Team
     data["team"] = [
-        {"id": "USR-AHMET", "name": "Ahmet Yılmaz", "role": "Product Manager", "department": "Yönetim", "email": "ahmet@dedev.com"},
-        {"id": "USR-ELIF", "name": "Elif Demir", "role": "Backend Developer", "department": "Yazılım Geliştirme", "email": "elif@dedev.com"},
-        {"id": "USR-METEHAN", "name": "Metehan Şahin", "role": "Senior Developer", "department": "Yazılım Geliştirme", "email": "metehan@dedev.com"},
-        {"id": "USR-SELIN", "name": "Selin Kaya", "role": "UI/UX Tasarımcı", "department": "Tasarım & UI/UX", "email": "selin@dedev.com"},
-        {"id": "USR-ALPEREN", "name": "Alperen Yılmaz", "role": "Mali Müşavir", "department": "Yönetim", "email": "alperen@dedev.com"}
+        {"id": "USR-AHMET", "name": "Ahmet Yılmaz", "role": "Product Manager", "department": "Yönetim", "email": "ahmet@auratech.com"},
+        {"id": "USR-ELIF", "name": "Elif Demir", "role": "Backend Developer", "department": "Yazılım Geliştirme", "email": "elif@auratech.com"},
+        {"id": "USR-METEHAN", "name": "Metehan Şahin", "role": "Senior Developer", "department": "Yazılım Geliştirme", "email": "metehan@auratech.com"},
+        {"id": "USR-SELIN", "name": "Selin Kaya", "role": "UI/UX Tasarımcı", "department": "Tasarım & UI/UX", "email": "selin@auratech.com"},
+        {"id": "USR-ALPEREN", "name": "Alperen Yılmaz", "role": "Mali Müşavir", "department": "Yönetim", "email": "alperen@auratech.com"}
     ]
     
     # 3. Projects
     data["projects"] = [
         {
             "id": "PROJ-DEMO-1",
-            "name": "DeDev Kurumsal ERP Uygulaması",
+            "name": "Aura Kurumsal ERP Uygulaması",
             "category": "Kurumsal Sistem",
             "status": "In Progress",
             "priority": "High",
@@ -237,9 +237,9 @@ def init_demo_defaults(data):
             "end_date": "2026-08-20",
             "budget": 250000.0,
             "lines_of_code": 34500,
-            "description": "Örnek simülasyon kullanıcısı için geniş kapsamlı modüllerin, Kanban panosunun ve maliyet analizlerinin sergilendiği ana proje.",
+            "description": "Kurumsal süreçlerin, finansal yönetim araçlarının ve proje planlama modüllerinin sergilendiği ana ERP projesi.",
             "tech_stack": ["Python", "Streamlit", "Plotly", "PostgreSQL"],
-            "owner_name": "Örnek Simülasyon",
+            "owner_name": "Murat Yıldırım",
             "milestones": [
                 {"id": "MS-DEMO-1", "name": "Veritabanı Şeması Tasarımı", "date": "2026-05-20", "status": "Completed"},
                 {"id": "MS-DEMO-2", "name": "Muhasebe Modülü Entegrasyonu", "date": "2026-06-15", "status": "Pending"}
@@ -257,7 +257,7 @@ def init_demo_defaults(data):
             "lines_of_code": 18200,
             "description": "Müşterilerin siparişlerini takip edip faturalarını görüntüleyebileceği mobil ara yüz geliştirme süreci.",
             "tech_stack": ["Flutter", "Dart", "Firebase"],
-            "owner_name": "Örnek Simülasyon",
+            "owner_name": "Murat Yıldırım",
             "milestones": [
                 {"id": "MS-DEMO-3", "name": "Tasarım Onayı", "date": "2026-05-28", "status": "Pending"}
             ]
@@ -417,7 +417,7 @@ def init_demo_defaults(data):
             "id": "TX-DEMO-TX-01",
             "date": "2026-05-12",
             "voucher_no": "FAT-20260512-001",
-            "description": "DeDev Kurumsal ERP 1. Faz Fatura Tahsilatı",
+            "description": "Aura Kurumsal ERP 1. Faz Fatura Tahsilatı",
             "debit_account": "Akbank Ticari",
             "credit_account": "Yurtiçi Satışlar (Gelir)",
             "amount": 125000.0,

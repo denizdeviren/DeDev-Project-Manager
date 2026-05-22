@@ -2,7 +2,7 @@
   "projects": [
     {
       "id": "PROJ-DEMO-1",
-      "name": "DeDev Kurumsal ERP Uygulaması",
+      "name": "Aura Kurumsal ERP Uygulaması",
       "category": "Kurumsal Sistem",
       "status": "In Progress",
       "priority": "High",
@@ -10,14 +10,14 @@
       "end_date": "2026-08-20",
       "budget": 250000.0,
       "lines_of_code": 34500,
-      "description": "Örnek simülasyon kullanıcısı için geniş kapsamlı modüllerin, Kanban panosunun ve maliyet analizlerinin sergilendiği ana proje.",
+      "description": "Kurumsal süreçlerin, finansal yönetim araçlarının ve proje planlama modüllerinin sergilendiği ana ERP projesi.",
       "tech_stack": [
         "Python",
         "Streamlit",
         "Plotly",
         "PostgreSQL"
       ],
-      "owner_name": "Örnek Simülasyon",
+      "owner_name": "Murat Yıldırım",
       "milestones": [
         {
           "id": "MS-DEMO-1",
@@ -49,7 +49,7 @@
         "Dart",
         "Firebase"
       ],
-      "owner_name": "Örnek Simülasyon",
+      "owner_name": "Murat Yıldırım",
       "milestones": [
         {
           "id": "MS-DEMO-3",
@@ -148,51 +148,51 @@
       "username": "demo_erpsim",
       "password_hash": "dd706a459b8db580d08bb32c078de6a1486924978a1b3e65883bf64156f0ce9f",
       "password_salt": "4f3fe672e2b330b3e51366a7afef7462",
-      "name": "Örnek Simülasyon",
-      "role": "Kurumsal Admin & Test Sorumlusu",
-      "company": "DeDev Kurumsal",
+      "name": "Murat Yıldırım",
+      "role": "CEO & Software Architect",
+      "company": "Aura Yazılım Teknolojileri",
       "location": "İstanbul, Türkiye",
       "since": "2026",
-      "bio": "ERP Sistemi test ve simülasyon yönetici hesabı. Tam yetkilidir.",
+      "bio": "Aura Yazılım Teknolojileri kurucu ortağı ve baş mimarı. Tüm iş süreçlerini ve projeleri buradan yönetir.",
       "role_type": "admin"
     }
   ],
-  "active_owner": "Örnek Simülasyon",
+  "active_owner": "Murat Yıldırım",
   "team": [
     {
       "id": "USR-AHMET",
       "name": "Ahmet Yılmaz",
       "role": "Product Manager",
       "department": "Yönetim",
-      "email": "ahmet@dedev.com"
+      "email": "ahmet@auratech.com"
     },
     {
       "id": "USR-ELIF",
       "name": "Elif Demir",
       "role": "Backend Developer",
       "department": "Yazılım Geliştirme",
-      "email": "elif@dedev.com"
+      "email": "elif@auratech.com"
     },
     {
       "id": "USR-METEHAN",
       "name": "Metehan Şahin",
       "role": "Senior Developer",
       "department": "Yazılım Geliştirme",
-      "email": "metehan@dedev.com"
+      "email": "metehan@auratech.com"
     },
     {
       "id": "USR-SELIN",
       "name": "Selin Kaya",
       "role": "UI/UX Tasarımcı",
       "department": "Tasarım & UI/UX",
-      "email": "selin@dedev.com"
+      "email": "selin@auratech.com"
     },
     {
       "id": "USR-ALPEREN",
       "name": "Alperen Yılmaz",
       "role": "Mali Müşavir",
       "department": "Yönetim",
-      "email": "alperen@dedev.com"
+      "email": "alperen@auratech.com"
     }
   ],
   "bank_accounts": [
@@ -274,7 +274,7 @@
       "id": "TX-DEMO-TX-01",
       "date": "2026-05-12",
       "voucher_no": "FAT-20260512-001",
-      "description": "DeDev Kurumsal ERP 1. Faz Fatura Tahsilatı",
+      "description": "Aura Kurumsal ERP 1. Faz Fatura Tahsilatı",
       "debit_account": "Akbank Ticari",
       "credit_account": "Yurtiçi Satışlar (Gelir)",
       "amount": 125000.0,

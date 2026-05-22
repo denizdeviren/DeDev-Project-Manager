@@ -5,13 +5,21 @@ def run_automations(data):
     """
     Runs configured smart automations on data in-place before saving.
     """
+    # Determine dynamic assignee based on logged-in user
+    active_user = None
+    try:
+        active_user = st.session_state.get("logged_in_user")
+    except Exception:
+        pass
+    auto_assignee = "Murat Yıldırım" if active_user == "demo_erpsim" else "Deniz Deviren"
+
     # 1. Initialize automations state if not present
     if "automations" not in data:
         data["automations"] = [
             {
                 "id": "auto_crit",
                 "name": "🚨 Kritik Görevleri Ata",
-                "description": "Kritik öncelikli (Critical) bir görev oluşturulduğunda veya güncellendiğinde otomatik olarak Deniz Deviren'e ata.",
+                "description": f"Kritik öncelikli (Critical) bir görev oluşturulduğunda veya güncellendiğinde otomatik olarak {auto_assignee}'e ata.",
                 "enabled": True
             },
             {
@@ -37,12 +45,12 @@ def run_automations(data):
     # 2. Rule: Auto-Assign Critical Tasks
     if rules.get("auto_crit"):
         for task in data.get("tasks", []):
-            if task.get("priority") == "Critical" and task.get("assignee") != "Deniz Deviren":
+            if task.get("priority") == "Critical" and task.get("assignee") != auto_assignee:
                 old_assignee = task.get("assignee", "Atanmamış")
-                task["assignee"] = "Deniz Deviren"
+                task["assignee"] = auto_assignee
                 
                 # Log Activity
-                act_msg = f"⚡ [Kritik Görev Otomasyonu] '{task.get('title')}' görevi kritik olduğu için {old_assignee} yerine otomatik olarak Deniz Deviren'e atandı."
+                act_msg = f"⚡ [Kritik Görev Otomasyonu] '{task.get('title')}' görevi kritik olduğu için {old_assignee} yerine otomatik olarak {auto_assignee}'e atandı."
                 data["activities"].append({
                     "date": datetime.now().strftime("%Y-%m-%d %H:%M"),
                     "text": act_msg,
@@ -50,7 +58,7 @@ def run_automations(data):
                 })
                 # Show dynamic toast if in streamlit context
                 try:
-                    st.toast(f"⚡ Görev otomatik atandı: Deniz Deviren", icon="🚨")
+                    st.toast(f"⚡ Görev otomatik atandı: {auto_assignee}", icon="🚨")
                 except Exception:
                     pass
 
