@@ -9,6 +9,10 @@ def clean_html(html_str):
 def show_time_tracking(data):
     st.markdown('<div class="section-title">⏱️ Pomodoro & Zaman Takibi</div>', unsafe_allow_html=True)
     st.markdown('<div class="section-subtitle">Görevlerine odaklan ve harcadığın süreyi projelerine kaydet</div>', unsafe_allow_html=True)
+    active_owner = data.get("active_owner", "Deniz Deviren")
+    active_projects = [p for p in data.get("projects", []) if p.get("owner_name", "Deniz Deviren") == active_owner]
+    active_project_ids = {p["id"] for p in active_projects}
+    active_time_logs = [log for log in data.get("time_logs", []) if log.get("project_id") in active_project_ids]
 
     col1, col2 = st.columns([1.1, 1.9])
 
@@ -285,33 +289,36 @@ def show_time_tracking(data):
         
         st.markdown('### 📝 Süreyi Günlüğe Kaydet')
         
-        # Duration recording form
-        selected_proj = st.selectbox("Çalışılan Proje", [p['name'] for p in data.get("projects", [])], key="tracking_proj_select")
-        task_desc = st.text_input("Şu an ne üzerinde çalışıyorsun?", placeholder="Örn: Emlak AI modeli eğitimi", key="tracking_task_desc")
-        duration_mins = st.number_input("Harcadığın Süre (Dakika)", min_value=1, max_value=480, value=25, step=5, help="Çalışma kaydına yazılacak dakikayı buradan ayarlayabilirsiniz.")
-        
-        if st.button("Bitir & Kaydet", use_container_width=True, key="save_time_log_btn"):
-            if selected_proj and task_desc:
-                proj_id = next((p['id'] for p in data["projects"] if p['name'] == selected_proj), None)
-                data.setdefault("time_logs", []).append({
-                    "date": datetime.now().strftime("%Y-%m-%d"),
-                    "project_id": proj_id,
-                    "task": task_desc,
-                    "duration": int(duration_mins)
-                })
-                save_data(data)
-                st.success("Çalışma süresi kaydedildi!")
-                time.sleep(0.5)
-                st.rerun()
-            else:
-                st.warning("Lütfen proje ve açıklama alanlarını doldurun.")
+        if not active_projects:
+            st.info("💡 Süre kaydetmek için önce bu profile ait en az bir proje oluşturmalısınız.")
+        else:
+            # Duration recording form
+            selected_proj = st.selectbox("Çalışılan Proje", [p['name'] for p in active_projects], key="tracking_proj_select")
+            task_desc = st.text_input("Şu an ne üzerinde çalışıyorsun?", placeholder="Örn: Emlak AI modeli eğitimi", key="tracking_task_desc")
+            duration_mins = st.number_input("Harcadığın Süre (Dakika)", min_value=1, max_value=480, value=25, step=5, help="Çalışma kaydına yazılacak dakikayı buradan ayarlayabilirsiniz.")
+            
+            if st.button("Bitir & Kaydet", use_container_width=True, key="save_time_log_btn"):
+                if selected_proj and task_desc:
+                    proj_id = next((p['id'] for p in active_projects if p['name'] == selected_proj), None)
+                    data.setdefault("time_logs", []).append({
+                        "date": datetime.now().strftime("%Y-%m-%d"),
+                        "project_id": proj_id,
+                        "task": task_desc,
+                        "duration": int(duration_mins)
+                    })
+                    save_data(data)
+                    st.success("Çalışma süresi kaydedildi!")
+                    time.sleep(0.5)
+                    st.rerun()
+                else:
+                    st.warning("Lütfen proje ve açıklama alanlarını doldurun.")
 
     with col2:
         st.markdown('### 📊 Son Çalışma Kayıtları')
-        if "time_logs" in data and data["time_logs"]:
+        if active_time_logs:
             st.markdown("**Çalışma Kayıtları:**")
-            for idx, log in enumerate(reversed(data["time_logs"])):
-                p_name = next((p['name'] for p in data["projects"] if p['id'] == log['project_id']), "Bilinmeyen")
+            for idx, log in enumerate(reversed(active_time_logs)):
+                p_name = next((p['name'] for p in active_projects if p['id'] == log['project_id']), "Bilinmeyen")
                 
                 # Column structure to separate card and the delete button
                 item_col, del_col = st.columns([5, 1])

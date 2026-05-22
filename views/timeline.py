@@ -2,7 +2,7 @@ import streamlit as st
 import plotly.graph_objects as go
 import plotly.express as px
 from datetime import datetime, timedelta
-from utils.data_handler import colors_map
+from utils.data_handler import colors_map, get_filtered_elements
 
 def clean_html(html_str):
     return "\n".join([line.strip() for line in html_str.split("\n")])
@@ -14,10 +14,8 @@ def show_timeline(data):
     # -------------------------------------------------------------
     # GEREKLİ ORTAK VERİ YAPILARININ HAZIRLANMASI & FİLTRELENMESİ
     # -------------------------------------------------------------
-    projects = data.get("projects", [])
-    tasks = data.get("tasks", [])
-    time_logs = data.get("time_logs", [])
-    finances = data.get("finances", [])
+    # Filter projects and tasks by the active account profile!
+    active_owner, projects, tasks, time_logs, finances, activities, deployments = get_filtered_elements(data)
     
     # 1. Proje Filtreleme & Şifreli Kilitleme Mantığı
     unlocked_secrets = st.session_state.get("unlocked_secrets", {})
@@ -50,6 +48,9 @@ def show_timeline(data):
                 "end_date": p.get("end_date", datetime.now().strftime("%Y-%m-%d")),
                 "progress": p.get("progress", 0),
                 "status": p.get("status", "Planning"),
+                "category": p.get("category", "Genel"),
+                "lines_of_code": p.get("lines_of_code", 0),
+                "team": p.get("team", []),
                 "is_locked": False,
                 "color": color
             })
@@ -89,6 +90,7 @@ def show_timeline(data):
                 # Duration in milliseconds
                 duration_ms = max(86400000, (e_dt - s_dt).total_seconds() * 1000)
                 
+                team_list = ", ".join(p.get("team", [])) if p.get("team") else "Atanmadı"
                 fig_proj_gantt.add_trace(go.Bar(
                     name=p["name"],
                     x=[duration_ms],
@@ -96,7 +98,15 @@ def show_timeline(data):
                     base=[p["start_date"]],
                     orientation='h',
                     marker_color=p["color"],
-                    hovertemplate=f"<b>{p['name']}</b><br>İlerleme: {p['progress']}%<br>Durum: {p['status']}<extra></extra>",
+                    hovertemplate=(
+                        f"<b>{p['name']}</b><br>"
+                        f"Kategori: {p.get('category', 'Genel')}<br>"
+                        f"Zaman Aralığı: {p['start_date']} / {p['end_date']}<br>"
+                        f"Kod Boyutu: {p.get('lines_of_code', 0):,} LOC<br>"
+                        f"Sorumlu Ekip: {team_list}<br>"
+                        f"İlerleme: {p['progress']}%<br>"
+                        f"Durum: {p['status']}<extra></extra>"
+                    ),
                     showlegend=False
                 ))
             
@@ -117,75 +127,214 @@ def show_timeline(data):
             
         st.markdown("<hr style='border-color: rgba(255,255,255,0.05); margin: 30px 0;'>", unsafe_allow_html=True)
         
+        # -------------------------------------------------------------
+        # DİNAMİK VE GELİŞMİŞ GÖREV ZAMAN ÇİZELGESİ (ZAMAN ÖLÇEKLİ)
+        # -------------------------------------------------------------
         st.markdown('### 📋 Görev Detaylı Zaman Çizelgesi')
-        if visible_tasks:
-            fig_task_gantt = go.Figure()
+        
+        # Timeline Controls
+        st.markdown("""
+        <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05); padding: 15px; border-radius: 12px; margin-bottom: 20px;">
+            <div style="font-size: 13px; font-weight: bold; color: #a5b4fc; margin-bottom: 10px;">⏳ Görev Çizelgesi Zaman Filtreleri ve Ölçekleme</div>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        col_ctrl1, col_ctrl2 = st.columns([2, 1])
+        time_scale = col_ctrl1.radio(
+            "Zaman Ölçeği Seçimi:",
+            ["Günlük (Gantt)", "Aylık (Yol Haritası)", "Saatlik (Günlük Plan)"],
+            horizontal=True,
+            key="timeline_scale_select"
+        )
+        
+        # Dynamic project filter
+        project_options = ["Tüm Projeler"] + [p["name"] for p in visible_projects if not p.get("is_locked", False)]
+        selected_gantt_proj = col_ctrl2.selectbox("Filtrelenecek Proje", project_options, key="timeline_proj_select")
+        
+        # Apply project filter to tasks
+        gantt_tasks = visible_tasks
+        if selected_gantt_proj != "Tüm Projeler":
+            gantt_proj_id = next((p["id"] for p in projects if p["name"] == selected_gantt_proj), None)
+            gantt_tasks = [t for t in gantt_tasks if t["project_id"] == gantt_proj_id]
             
-            # Görevleri başlangıç tarihlerine göre sıralayalım
-            sorted_tasks = sorted(visible_tasks, key=lambda x: x.get("date", ""))
+        if time_scale == "Saatlik (Günlük Plan)":
+            # ---------------------------------------------------------
+            # SAATLİK ZAMAN PLANI (POMODORO & SAATLİK GÜNLÜK AKIŞ)
+            # ---------------------------------------------------------
+            st.markdown("#### ⏱️ Günlük Çalışma & Saatlik Görev Akışı")
             
-            # Statüye göre stabil renkler
-            status_colors = {
-                "Done": "#10b981",       # Emerald
-                "In Progress": "#f59e0b", # Amber
-                "To Do": "#3b82f6",       # Blue
-                "Testing": "#8b5cf6"      # Purple
-            }
-            
-            for t_idx, t in enumerate(sorted_tasks):
-                p_name = proj_id_to_name.get(t["project_id"], "Bilinmeyen Proje")
+            # Fetch dates from time logs, if empty default to today
+            log_dates = sorted(list(set(log.get("date", datetime.now().strftime("%Y-%m-%d")) for log in time_logs)), reverse=True)
+            if not log_dates:
+                log_dates = [datetime.now().strftime("%Y-%m-%d")]
                 
-                # Görevin bitiş tarihi task['date']'dir. Başlangıç tarihini 4 gün öncesi varsayıyoruz
-                end_str = t.get("date", datetime.now().strftime("%Y-%m-%d"))
-                try:
-                    e_dt = datetime.strptime(end_str, "%Y-%m-%d")
-                except ValueError:
-                    e_dt = datetime.now()
-                    end_str = e_dt.strftime("%Y-%m-%d")
+            selected_log_date = st.selectbox("Çalışma Tarihi Seçin:", log_dates, key="timeline_log_date_select")
+            
+            # Filter logs for selected date
+            day_logs = [log for log in time_logs if log.get("date") == selected_log_date]
+            
+            if day_logs:
+                fig_hourly = go.Figure()
+                
+                # We group logs by task name or assignee to draw a horizontal timeline.
+                # In each log, we assign a start time. Pomodoro logs do not have explicit start times.
+                # We will programmatically structure them starting at 09:00 and cascading forward.
+                user_times = {} # Keeps track of active end time for each developer
+                
+                for log_idx, log in enumerate(day_logs):
+                    p_name = proj_id_to_name.get(log.get("project_id"), "Genel")
+                    task_name = log.get("task", "Çalışma Seansı")
+                    duration_mins = int(log.get("duration", 25))
                     
-                s_dt = e_dt - timedelta(days=4)
-                start_str = s_dt.strftime("%Y-%m-%d")
+                    # Since logs might not have an assignee, we assign the active owner
+                    dev_name = log.get("assignee", active_owner)
+                    if not dev_name:
+                        dev_name = active_owner
+                        
+                    # Calculate start/end time for this block of work
+                    if dev_name not in user_times:
+                        user_times[dev_name] = datetime.strptime(f"{selected_log_date} 09:00", "%Y-%m-%d %H:%M")
+                        
+                    s_time = user_times[dev_name]
+                    e_time = s_time + timedelta(minutes=duration_mins)
+                    
+                    # Store end time for next log
+                    # Add 10 mins break after each block automatically for realism
+                    user_times[dev_name] = e_time + timedelta(minutes=10)
+                    
+                    s_str = s_time.strftime("%Y-%m-%d %H:%M:%S")
+                    e_str = e_time.strftime("%Y-%m-%d %H:%M:%S")
+                    dur_ms = duration_mins * 60 * 1000
+                    
+                    hover_txt = f"<b>{task_name}</b><br>Ekip Üyesi: {dev_name}<br>Proje: {p_name}<br>Süre: {duration_mins} Dakika<br>Zaman: {s_time.strftime('%H:%M')} - {e_time.strftime('%H:%M')}"
+                    
+                    fig_hourly.add_trace(go.Bar(
+                        name=dev_name,
+                        x=[dur_ms],
+                        y=[dev_name],
+                        base=[s_str],
+                        orientation='h',
+                        marker_color="#3b82f6" if log_idx % 2 == 0 else "#8b5cf6",
+                        hovertemplate=f"{hover_txt}<extra></extra>",
+                        showlegend=False
+                    ))
+                    
+                fig_hourly.update_yaxes(autorange="reversed")
+                fig_hourly.update_layout(
+                    xaxis_type='date',
+                    paper_bgcolor='rgba(0,0,0,0)',
+                    plot_bgcolor='rgba(0,0,0,0)',
+                    font_color='white',
+                    height=200 + (len(user_times) * 45),
+                    margin=dict(l=150, r=20, t=30, b=20),
+                    xaxis=dict(
+                        showgrid=True, 
+                        gridcolor='rgba(255,255,255,0.06)', 
+                        zeroline=False,
+                        tickformat="%H:%M",
+                        title="Günlük Çalışma Saatleri (09:00'dan İtibaren Kümülatif Akış)"
+                    ),
+                    yaxis=dict(showgrid=False)
+                )
+                st.plotly_chart(fig_hourly, use_container_width=True)
+            else:
+                st.info(f"📅 {selected_log_date} tarihinde kaydedilmiş herhangi bir Pomodoro/Zaman günlük çalışması bulunamadı.")
                 
-                duration_ms = 4 * 86400 * 1000 # 4 gün milisaniye
-                
-                color = status_colors.get(t.get("status", "To Do"), "#6b7280")
-                task_label = f"{t.get('title')} ({p_name})"
-                
-                fig_task_gantt.add_trace(go.Bar(
-                    name=t.get("status", "To Do"),
-                    x=[duration_ms],
-                    y=[task_label],
-                    base=[start_str],
-                    orientation='h',
-                    marker_color=color,
-                    hovertemplate=f"<b>{t.get('title')}</b><br>Proje: {p_name}<br>Durum: {t.get('status')}<br>Bitiş: {end_str}<extra></extra>",
-                    showlegend=False
-                ))
-                
-            fig_task_gantt.update_yaxes(autorange="reversed")
-            fig_task_gantt.update_layout(
-                xaxis_type='date',
-                paper_bgcolor='rgba(0,0,0,0)',
-                plot_bgcolor='rgba(0,0,0,0)',
-                font_color='white',
-                height=min(600, 300 + (len(visible_tasks) * 22)),
-                margin=dict(l=220, r=20, t=30, b=20),
-                xaxis=dict(showgrid=True, gridcolor='rgba(255,255,255,0.06)', zeroline=False),
-                yaxis=dict(showgrid=False)
-            )
-            st.plotly_chart(fig_task_gantt, use_container_width=True)
-            
-            # Statü lejantı
-            st.markdown(clean_html("""
-            <div style="display: flex; gap: 20px; justify-content: center; font-size: 12px; margin-top: 10px;">
-                <div><span style="color: #10b981; font-weight: bold;">●</span> Done (Tamamlandı)</div>
-                <div><span style="color: #f59e0b; font-weight: bold;">●</span> In Progress (Devam Ediyor)</div>
-                <div><span style="color: #3b82f6; font-weight: bold;">●</span> To Do (Yapılacak)</div>
-                <div><span style="color: #8b5cf6; font-weight: bold;">●</span> Testing (Test Aşamasında)</div>
-            </div>
-            """), unsafe_allow_html=True)
         else:
-            st.info("Çizelgelenecek aktif bir görev bulunamadı.")
+            # Aylık veya Günlük Görünüm
+            if gantt_tasks:
+                fig_task_gantt = go.Figure()
+                
+                # Görevleri bitiş tarihlerine göre sıralayalım
+                sorted_tasks = sorted(gantt_tasks, key=lambda x: x.get("date", ""))
+                
+                # Statüye göre stabil renkler
+                status_colors = {
+                    "Done": "#10b981",       # Emerald
+                    "In Progress": "#f59e0b", # Amber
+                    "To Do": "#3b82f6",       # Blue
+                    "Testing": "#8b5cf6"      # Purple
+                }
+                
+                for t_idx, t in enumerate(sorted_tasks):
+                    p_name = proj_id_to_name.get(t["project_id"], "Bilinmeyen Proje")
+                    assignee_name = t.get("assignee", "Atanmadı")
+                    
+                    # Görevin bitiş tarihi task['date']'dir. Başlangıç tarihini 4 gün öncesi varsayıyoruz
+                    end_str = t.get("date", datetime.now().strftime("%Y-%m-%d"))
+                    try:
+                        e_dt = datetime.strptime(end_str, "%Y-%m-%d")
+                    except ValueError:
+                        e_dt = datetime.now()
+                        end_str = e_dt.strftime("%Y-%m-%d")
+                        
+                    s_dt = e_dt - timedelta(days=4)
+                    start_str = s_dt.strftime("%Y-%m-%d")
+                    
+                    duration_ms = 4 * 86400 * 1000 # 4 gün milisaniye
+                    
+                    color = status_colors.get(t.get("status", "To Do"), "#6b7280")
+                    
+                    # Dynamic label showing who is doing the work!
+                    task_label = f"{t.get('title')} | 👤 {assignee_name}"
+                    
+                    task_desc = t.get('description') or "Detaylı açıklama belirtilmemiş."
+                    task_priority = t.get('priority', 'Medium')
+                    task_effort = t.get('effort') or "Belirtilmedi"
+                    
+                    fig_task_gantt.add_trace(go.Bar(
+                        name=t.get("status", "To Do"),
+                        x=[duration_ms],
+                        y=[task_label],
+                        base=[start_str],
+                        orientation='h',
+                        marker_color=color,
+                        hovertemplate=(
+                            f"<b>{t.get('title')}</b><br>"
+                            f"Proje: {p_name}<br>"
+                            f"Atanan: {assignee_name}<br>"
+                            f"Durum: {t.get('status')}<br>"
+                            f"Öncelik: {task_priority}<br>"
+                            f"Efor Seviyesi: {task_effort} Puan<br>"
+                            f"Hedef Tarih: {end_str}<br>"
+                            f"Açıklama: {task_desc}<extra></extra>"
+                        ),
+                        showlegend=False
+                    ))
+                    
+                fig_task_gantt.update_yaxes(autorange="reversed")
+                
+                # Format X-axis according to monthly or daily scale
+                x_axis_config = dict(showgrid=True, gridcolor='rgba(255,255,255,0.06)', zeroline=False)
+                if time_scale == "Aylık (Yol Haritası)":
+                    x_axis_config["dtick"] = "M1"
+                    x_axis_config["tickformat"] = "%B %Y"
+                else:
+                    x_axis_config["tickformat"] = "%d %b"
+                    
+                fig_task_gantt.update_layout(
+                    xaxis_type='date',
+                    paper_bgcolor='rgba(0,0,0,0)',
+                    plot_bgcolor='rgba(0,0,0,0)',
+                    font_color='white',
+                    height=min(600, 300 + (len(gantt_tasks) * 22)),
+                    margin=dict(l=250, r=20, t=30, b=20),
+                    xaxis=x_axis_config,
+                    yaxis=dict(showgrid=False)
+                )
+                st.plotly_chart(fig_task_gantt, use_container_width=True)
+                
+                # Statü lejantı
+                st.markdown(clean_html("""
+                <div style="display: flex; gap: 20px; justify-content: center; font-size: 12px; margin-top: 10px;">
+                    <div><span style="color: #10b981; font-weight: bold;">●</span> Done (Tamamlandı)</div>
+                    <div><span style="color: #f59e0b; font-weight: bold;">●</span> In Progress (Devam Ediyor)</div>
+                    <div><span style="color: #3b82f6; font-weight: bold;">●</span> To Do (Yapılacak)</div>
+                    <div><span style="color: #8b5cf6; font-weight: bold;">●</span> Testing (Test Aşamasında)</div>
+                </div>
+                """), unsafe_allow_html=True)
+            else:
+                st.info("Çizelgelenecek aktif bir görev bulunamadı.")
 
         st.markdown("<hr style='border-color: rgba(255,255,255,0.05); margin: 30px 0;'>", unsafe_allow_html=True)
 
@@ -224,9 +373,10 @@ def show_timeline(data):
             else:
                 with st.expander(f"🚀 {proj_name}", expanded=False):
                     for ms in milestones:
-                        done_icon = "✅" if ms.get('done', False) else "⏳"
-                        done_color = "#22c55e" if ms.get('done', False) else "#6b7280"
-                        done_text = "Tamamlandı" if ms.get('done', False) else "Bekliyor"
+                        ms_is_done = ms.get('done', False) or ms.get('status') == 'Completed'
+                        done_icon = "✅" if ms_is_done else "⏳"
+                        done_color = "#22c55e" if ms_is_done else "#6b7280"
+                        done_text = "Tamamlandı" if ms_is_done else "Bekliyor"
 
                         st.markdown(clean_html(f"""
                         <div style="
@@ -240,7 +390,7 @@ def show_timeline(data):
                             justify-content: space-between;
                             align-items: center;
                         ">
-                            <div style="font-weight: 500; color: {'white' if ms.get('done', False) else '#9ca3af'}; font-size: 14px;">
+                            <div style="font-weight: 500; color: {'white' if ms_is_done else '#9ca3af'}; font-size: 14px;">
                                 {done_icon} {ms['name']}
                             </div>
                             <div style="font-size: 11px; color: {done_color}; font-weight: 600;">
@@ -329,7 +479,7 @@ def show_timeline(data):
                 st.plotly_chart(fig_team_donut, use_container_width=True)
             else:
                 st.info("Ekip dağılımı için görev bulunamadı.")
-
+ 
         st.markdown("<hr style='border-color: rgba(255,255,255,0.05); margin: 30px 0;'>", unsafe_allow_html=True)
         
         st.markdown('### 📊 Proje Bazlı Görev Statü Dağılımı (Stacked)')

@@ -9,11 +9,14 @@ def clean_html(html_str):
 
 def show_kanban(data):
     st.markdown('<div class="section-title">📋 Kanban Board</div>', unsafe_allow_html=True)
+    active_owner = data.get("active_owner", "Deniz Deviren")
+    active_projects = [p for p in data.get("projects", []) if p.get("owner_name", "Deniz Deviren") == active_owner]
+    active_project_ids = {p["id"] for p in active_projects}
     
     # -------------------------------------------------------------
     # SECURE VAULT DECRYPTION IN KANBAN
     # -------------------------------------------------------------
-    locked_secrets = [p for p in data.get("projects", []) if p.get("is_secret", False) and p["id"] not in st.session_state.get("unlocked_secrets", {})]
+    locked_secrets = [p for p in active_projects if p.get("is_secret", False) and p["id"] not in st.session_state.get("unlocked_secrets", {})]
     
     if locked_secrets:
         with st.expander("🔑 Kanban Tahtasında Gizli Projeleri Göster (Şifre Çöz)", expanded=False):
@@ -42,51 +45,54 @@ def show_kanban(data):
                     st.error("❌ Eşleşen şifre bulunamadı!")
         st.markdown("<div style='height: 15px;'></div>", unsafe_allow_html=True)
         
-    project_names = ["Tüm Projeler"] + [p['name'] for p in data.get("projects", [])]
+    project_names = ["Tüm Projeler"] + [p['name'] for p in active_projects]
     selected_project = st.selectbox("Proje Filtresi", project_names)
     
     st.markdown("---")
     
     # Yeni Görev Ekle Formu
     st.markdown("### ➕ Yeni Görev Ekle")
-    with st.form("new_task_form"):
-        col1, col2, col_assignee = st.columns([2, 2, 1])
-        t_title = col1.text_input("Görev Başlığı", placeholder="Örn: Veritabanı optimizasyonu")
-        t_proj = col2.selectbox("İlgili Proje", [p['name'] for p in data.get("projects", [])])
-        
-        team_options = [data.get('owner', {}).get('name', 'Kendim')] + [m['name'] for m in data.get('team', [])]
-        t_assignee = col_assignee.selectbox("Atanan Kişi", team_options)
-        
-        col3, col4 = st.columns(2)
-        t_date = col3.date_input("Bitiş Tarihi (Deadline)")
-        t_prio = col4.selectbox("Öncelik", ["High", "Medium", "Low", "Critical"])
-        
-        if st.form_submit_button("Görevi Ekle (To Do)"):
-            if t_title:
-                proj_id = next((p['id'] for p in data["projects"] if p['name'] == t_proj), None)
-                new_task = {
-                    "id": f"T-{str(uuid.uuid4())[:6].upper()}",
-                    "project_id": proj_id,
-                    "title": t_title,
-                    "status": "To Do",
-                    "priority": t_prio,
-                    "date": t_date.strftime("%Y-%m-%d"),
-                    "assignee": t_assignee
-                }
-                data["tasks"].append(new_task)
-                
-                # Proje istatistiğini güncelle
-                for p in data["projects"]:
-                    if p["id"] == proj_id:
-                        p["tasks_total"] += 1
-                        break
-                        
-                save_data(data)
-                st.success("Görev başarıyla eklendi!")
-                st.rerun()
-            else:
-                st.error("Görev başlığı boş olamaz.")
-
+    if not active_projects:
+        st.info("💡 Görev eklemek için öncelikle '📁 Projeler' sayfasından bu profil için bir proje eklemelisiniz.")
+    else:
+        with st.form("new_task_form"):
+            col1, col2, col_assignee = st.columns([2, 2, 1])
+            t_title = col1.text_input("Görev Başlığı", placeholder="Örn: Veritabanı optimizasyonu")
+            t_proj = col2.selectbox("İlgili Proje", [p['name'] for p in active_projects])
+            
+            team_options = [active_owner] + [m['name'] for m in data.get('team', [])]
+            t_assignee = col_assignee.selectbox("Atanan Kişi", team_options)
+            
+            col3, col4 = st.columns(2)
+            t_date = col3.date_input("Bitiş Tarihi (Deadline)")
+            t_prio = col4.selectbox("Öncelik", ["High", "Medium", "Low", "Critical"])
+            
+            if st.form_submit_button("Görevi Ekle (To Do)"):
+                if t_title:
+                    proj_id = next((p['id'] for p in active_projects if p['name'] == t_proj), None)
+                    new_task = {
+                        "id": f"T-{str(uuid.uuid4())[:6].upper()}",
+                        "project_id": proj_id,
+                        "title": t_title,
+                        "status": "To Do",
+                        "priority": t_prio,
+                        "date": t_date.strftime("%Y-%m-%d"),
+                        "assignee": t_assignee
+                    }
+                    data["tasks"].append(new_task)
+                    
+                    # Proje istatistiğini güncelle
+                    for p in data["projects"]:
+                        if p["id"] == proj_id:
+                            p["tasks_total"] += 1
+                            break
+                            
+                    save_data(data)
+                    st.success("Görev başarıyla eklendi!")
+                    st.rerun()
+                else:
+                    st.error("Görev başlığı boş olamaz.")
+    
     st.markdown("---")
     
     # Kanban Sütunları
@@ -97,7 +103,7 @@ def show_kanban(data):
         "In Progress": (col2, "⚙️", "#3b82f6"),
         "Done": (col3, "✅", "#22c55e")
     }
-
+    
     for status, (col, icon, color) in status_columns.items():
         with col:
             st.markdown(clean_html(f"""
@@ -106,9 +112,9 @@ def show_kanban(data):
             </div>
             """), unsafe_allow_html=True)
             
-            for task in data.get("tasks", []):
+            for task in [t for t in data.get("tasks", []) if t.get("project_id") in active_project_ids]:
                 if task['status'] == status:
-                    proj = next((p for p in data.get("projects", []) if p['id'] == task['project_id']), None)
+                    proj = next((p for p in active_projects if p['id'] == task['project_id']), None)
                     if selected_project != "Tüm Projeler" and (proj is None or proj['name'] != selected_project):
                         continue
                         

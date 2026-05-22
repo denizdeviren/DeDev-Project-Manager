@@ -9,11 +9,14 @@ def show_techstack(data):
     st.markdown('<div class="section-title">💻 Teknoloji Stack Haritası</div>', unsafe_allow_html=True)
     st.markdown('<div class="section-subtitle">Tüm genel ve şifresi çözülmüş gizli projelerde kullanılan diller, frameworkler ve kütüphaneler</div>', unsafe_allow_html=True)
 
+    active_owner = data.get("active_owner", "Deniz Deviren")
+    projects = [p for p in data.get("projects", []) if p.get("owner_name", "Deniz Deviren") == active_owner]
+
     # 1. Dynamic Technology Counter and Decryption
     unlocked_secrets = st.session_state.get("unlocked_secrets", {})
     all_tech = {}
 
-    for proj in data.get('projects', []):
+    for proj in projects:
         is_sec = proj.get('is_secret', False)
         proj_id = proj['id']
         
@@ -135,7 +138,7 @@ def show_techstack(data):
         "react": "JavaScript"
     }
 
-    for proj in data.get('projects', []):
+    for proj in projects:
         is_sec = proj.get('is_secret', False)
         loc = proj.get('lines_of_code', 0)
         proj_name = f"{proj['name']} 🔒" if is_sec else proj['name']

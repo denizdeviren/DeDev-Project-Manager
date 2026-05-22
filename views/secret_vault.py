@@ -11,11 +11,12 @@ def show_secret_vault(data):
     st.markdown('<div class="section-title">🔒 Şifreli Gizli Kasa</div>', unsafe_allow_html=True)
     st.markdown('<div class="section-subtitle">SHA-256 ve XOR Algoritmaları ile Güvenli Kriptolanmış Ticari ve Özel Projeler</div>', unsafe_allow_html=True)
 
+    active_owner = data.get("active_owner", "Deniz Deviren")
     # 1. Session State Initialization for Unlock Keys
     if "unlocked_secrets" not in st.session_state:
         st.session_state.unlocked_secrets = {}
 
-    secret_projects = [p for p in data.get("projects", []) if p.get("is_secret", False)]
+    secret_projects = [p for p in data.get("projects", []) if p.get("owner_name", "Deniz Deviren") == active_owner and p.get("is_secret", False)]
     total_secrets = len(secret_projects)
     
     # 2. Premium Vault Summary Cards
@@ -122,7 +123,7 @@ def show_secret_vault(data):
                 
                 milestones = proj.get("milestones", [])
                 milestones_total = len(milestones)
-                milestones_done = sum(1 for m in milestones if m.get("done", False))
+                milestones_done = sum(1 for m in milestones if m.get("done", False) or m.get("status") == "Completed")
                 
                 live_url_val = proj.get("live_url", "")
                 repo_url_val = proj.get("repo_url", "")
@@ -261,9 +262,11 @@ def show_secret_vault(data):
                     with st.expander(f"🚩 Yol Haritası & Kilometre Taşları ({milestones_done}/{milestones_total})"):
                         for idx, ms in enumerate(milestones):
                             ms_key = f"ms_check_secret_{proj_id}_{idx}"
-                            checked = st.checkbox(f"{ms['name']} ({ms.get('date', '')})", value=ms['done'], key=ms_key)
-                            if checked != ms['done']:
+                            ms_is_done = ms.get('done', False) or ms.get('status') == 'Completed'
+                            checked = st.checkbox(f"{ms['name']} ({ms.get('date', '')})", value=ms_is_done, key=ms_key)
+                            if checked != ms_is_done:
                                 ms['done'] = checked
+                                ms['status'] = 'Completed' if checked else 'Pending'
                                 save_data(data)
                                 st.rerun()
 
@@ -291,7 +294,7 @@ def show_secret_vault(data):
                         new_tech_str = st.text_input("Teknolojiler (Şifresiz girin, virgülle ayırın)", value=", ".join(decrypted_tech))
                         
                         # Team Assignment Multi-Select
-                        team_list = [data.get('owner', {}).get('name', 'Deniz Deviren')] + [m['name'] for m in data.get('team', [])]
+                        team_list = [active_owner] + [m['name'] for m in data.get('team', [])]
                         current_team = proj.get("team", [])
                         new_team = st.multiselect("Sorumlu Geliştiriciler / Ekip", team_list, default=[t for t in current_team if t in team_list])
 
@@ -344,7 +347,7 @@ def show_secret_vault(data):
                         st.markdown("###### Mevcut Kilometre Taşları (Silmek için butona tıklayın)")
                         for ms_idx, ms in enumerate(proj["milestones"]):
                             col_ms1, col_ms2 = st.columns([4, 1])
-                            col_ms1.write(f"🚩 {ms['name']} ({ms.get('date', '')}) - {'✅ Tamamlandı' if ms['done'] else '⏳ Bekliyor'}")
+                            col_ms1.write(f"🚩 {ms['name']} ({ms.get('date', '')}) - {'✅ Tamamlandı' if ms.get('done', False) or ms.get('status') == 'Completed' else '⏳ Bekliyor'}")
                             if col_ms2.button("🗑️ Sil", key=f"del_ms_secret_{proj_id}_{ms_idx}"):
                                 proj["milestones"].pop(ms_idx)
                                 save_data(data)
@@ -390,7 +393,7 @@ def show_secret_vault(data):
         p_priority = col_np4.selectbox("Öncelik Derecesi", ["Low", "Medium", "High", "Critical"])
         
         # Team Assignment
-        team_list = [data.get('owner', {}).get('name', 'Deniz Deviren')] + [m['name'] for m in data.get('team', [])]
+        team_list = [active_owner] + [m['name'] for m in data.get('team', [])]
         p_team = st.multiselect("Ekip Arkadaşları atayın (Örn: M. Furkan Işık)", team_list)
 
         col_np5, col_np6 = st.columns(2)
@@ -449,7 +452,8 @@ def show_secret_vault(data):
                         "tasks_total": 0,
                         "tasks_completed": 0,
                         "milestones": final_milestones,
-                        "is_secret": True
+                        "is_secret": True,
+                        "owner_name": active_owner
                     }
                     
                     data["projects"].append(new_proj)

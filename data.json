@@ -8,15 +8,207 @@
     "bio": "Tek kişilik ekip. Yapay zeka, web, mobil ve oyun geliştirme projeleri."
   },
   "notes": [],
-  "time_logs": [],
-  "finances": [],
+  "time_logs": [
+    {
+      "date": "2026-05-22",
+      "project_id": "PRJ-001",
+      "task": "Otomatik Kayıt: 'Kaggle'dan veri seti bulma' tamamlandı",
+      "duration": 60
+    },
+    {
+      "date": "2026-05-22",
+      "project_id": "PRJ-001",
+      "task": "Otomatik Kayıt: 'Veri temizleme & ön işleme' tamamlandı",
+      "duration": 60
+    },
+    {
+      "date": "2026-05-22",
+      "project_id": "PRJ-001",
+      "task": "Otomatik Kayıt: 'EDA - Keşifsel veri analizi' tamamlandı",
+      "duration": 60
+    },
+    {
+      "date": "2026-05-22",
+      "project_id": "PRJ-001",
+      "task": "Otomatik Kayıt: 'Random Forest model eğitimi' tamamlandı",
+      "duration": 60
+    },
+    {
+      "date": "2026-05-22",
+      "project_id": "PRJ-001",
+      "task": "Otomatik Kayıt: 'Model değerlendirme & tuning' tamamlandı",
+      "duration": 60
+    },
+    {
+      "date": "2026-05-22",
+      "project_id": "PRJ-001",
+      "task": "Otomatik Kayıt: 'Streamlit arayüz tasarımı' tamamlandı",
+      "duration": 60
+    },
+    {
+      "date": "2026-05-22",
+      "project_id": "PRJ-001",
+      "task": "Otomatik Kayıt: 'Streamlit Cloud deployment' tamamlandı",
+      "duration": 60
+    },
+    {
+      "date": "2026-05-22",
+      "project_id": "PRJ-002",
+      "task": "Otomatik Kayıt: 'Flutter proje yapılandırma' tamamlandı",
+      "duration": 60
+    },
+    {
+      "date": "2026-05-22",
+      "project_id": "PRJ-002",
+      "task": "Otomatik Kayıt: 'Firebase Auth entegrasyonu' tamamlandı",
+      "duration": 60
+    },
+    {
+      "date": "2026-05-22",
+      "project_id": "PRJ-002",
+      "task": "Otomatik Kayıt: 'OpenAI API bağlantısı' tamamlandı",
+      "duration": 60
+    },
+    {
+      "date": "2026-05-22",
+      "project_id": "PRJ-002",
+      "task": "Otomatik Kayıt: 'PDF upload & parse' tamamlandı",
+      "duration": 60
+    },
+    {
+      "date": "2026-05-22",
+      "project_id": "PRJ-002",
+      "task": "Otomatik Kayıt: 'Özetleme algoritması' tamamlandı",
+      "duration": 60
+    },
+    {
+      "date": "2026-05-22",
+      "project_id": "PRJ-002",
+      "task": "Otomatik Kayıt: 'UI polish & animasyonlar' tamamlandı",
+      "duration": 60
+    },
+    {
+      "date": "2026-05-22",
+      "project_id": "PRJ-002",
+      "task": "Otomatik Kayıt: 'App Store & Play Store yayını' tamamlandı",
+      "duration": 60
+    },
+    {
+      "date": "2026-05-22",
+      "project_id": "PRJ-003",
+      "task": "Otomatik Kayıt: 'Oyun tasarım dokümanı (GDD)' tamamlandı",
+      "duration": 60
+    },
+    {
+      "date": "2026-05-22",
+      "project_id": "PRJ-003",
+      "task": "Otomatik Kayıt: 'UE5 proje kurulumu' tamamlandı",
+      "duration": 60
+    },
+    {
+      "date": "2026-05-22",
+      "project_id": "PRJ-003",
+      "task": "Otomatik Kayıt: 'İlk harita blokout' tamamlandı",
+      "duration": 60
+    },
+    {
+      "date": "2026-05-22",
+      "project_id": "PRJ-003",
+      "task": "Otomatik Kayıt: 'Karakter hareket sistemi' tamamlandı",
+      "duration": 60
+    },
+    {
+      "date": "2026-05-22",
+      "project_id": "PRJ-004",
+      "task": "Otomatik Kayıt: 'Streamlit mimari planlama' tamamlandı",
+      "duration": 60
+    },
+    {
+      "date": "2026-05-22",
+      "project_id": "PRJ-004",
+      "task": "Otomatik Kayıt: 'JSON veri yapısı tasarımı' tamamlandı",
+      "duration": 60
+    },
+    {
+      "date": "2026-05-22",
+      "project_id": "PRJ-004",
+      "task": "Otomatik Kayıt: 'Dashboard ekranı' tamamlandı",
+      "duration": 60
+    },
+    {
+      "date": "2026-05-22",
+      "project_id": "PRJ-004",
+      "task": "Otomatik Kayıt: 'Kanban board komponenti' tamamlandı",
+      "duration": 60
+    },
+    {
+      "date": "2026-05-22",
+      "project_id": "PRJ-004",
+      "task": "Otomatik Kayıt: 'Gantt chart timeline' tamamlandı",
+      "duration": 60
+    },
+    {
+      "date": "2026-05-22",
+      "project_id": "PRJ-004",
+      "task": "Otomatik Kayıt: 'Tech stack görselleştirme' tamamlandı",
+      "duration": 60
+    },
+    {
+      "date": "2026-05-22",
+      "project_id": "PRJ-SPARKZ",
+      "task": "Otomatik Kayıt: 'Kod Kalitesi: 70+ uyarının temizlenmesi (Refactoring)' tamamlandı",
+      "duration": 60
+    },
+    {
+      "date": "2026-05-22",
+      "project_id": "PROJ-SIM-1",
+      "task_title": "State Management kurulumu (Provider)",
+      "duration": 2.5,
+      "effort_level": "Yüksek",
+      "description": "Provider mimarisi kuruldu ve entegre edildi."
+    },
+    {
+      "date": "2026-05-22",
+      "project_id": "PROJ-SIM-1",
+      "task_title": "UI/UX Tasarımları",
+      "duration": 1.5,
+      "effort_level": "Orta",
+      "description": "Arayüz revizyonları yapıldı."
+    },
+    {
+      "date": "2026-05-22",
+      "project_id": "PROJ-SIM-1",
+      "task": "Otomatik Kayıt: 'Giriş ekranı ve login tasarımı' tamamlandı",
+      "duration": 60
+    }
+  ],
+  "finances": [
+    {
+      "id": "FIN-SIM-1",
+      "project_id": "PROJ-SIM-1",
+      "type": "Gelir",
+      "category": "Yazılım Satış",
+      "amount": 25000.0,
+      "date": "2026-05-02",
+      "description": "Proje avansı alındı."
+    },
+    {
+      "id": "FIN-SIM-2",
+      "project_id": "PROJ-SIM-1",
+      "type": "Gider",
+      "category": "Sunucu / Altyapı",
+      "amount": 350.0,
+      "date": "2026-05-18",
+      "description": "Firebase Blaze plan ödemesi."
+    }
+  ],
   "deployments": [
     {
       "id": "DEP-001",
       "project": "PRJ-001",
       "platform": "Streamlit Cloud",
       "status": "Success",
-      "last_deploy": "2024-03-20 10:30",
+      "last_deploy": "2026-03-20 10:30",
       "url": "https://washington-emlak-ai.streamlit.app/"
     },
     {
@@ -24,7 +216,7 @@
       "project": "PRJ-004",
       "platform": "Vercel",
       "status": "Success",
-      "last_deploy": "2025-05-18 15:45",
+      "last_deploy": "2026-05-18 15:45",
       "url": "localhost"
     }
   ],
@@ -37,8 +229,8 @@
       "status": "Production",
       "progress": 100,
       "priority": "High",
-      "start_date": "2024-01-15",
-      "end_date": "2024-03-20",
+      "start_date": "2026-01-15",
+      "end_date": "2026-03-20",
       "live_url": "https://washington-emlak-ai.streamlit.app/",
       "repo_url": "https://github.com/denizdeviren/washington-emlak-ai",
       "tech_stack": [
@@ -56,22 +248,22 @@
       "milestones": [
         {
           "name": "Veri Seti Araştırma",
-          "date": "2024-01-20",
+          "date": "2026-01-20",
           "done": true
         },
         {
           "name": "Model Eğitimi",
-          "date": "2024-02-10",
+          "date": "2026-02-10",
           "done": true
         },
         {
           "name": "Streamlit UI",
-          "date": "2024-03-01",
+          "date": "2026-03-01",
           "done": true
         },
         {
           "name": "Deployment",
-          "date": "2024-03-20",
+          "date": "2026-03-20",
           "done": true
         }
       ]
@@ -84,8 +276,8 @@
       "status": "Production",
       "progress": 100,
       "priority": "High",
-      "start_date": "2024-04-01",
-      "end_date": "2024-07-15",
+      "start_date": "2026-04-01",
+      "end_date": "2026-07-15",
       "live_url": "",
       "repo_url": "https://gitlab.com/dedev/ComTermsDeDeAI",
       "tech_stack": [
@@ -103,22 +295,22 @@
       "milestones": [
         {
           "name": "UI/UX Tasarım",
-          "date": "2024-04-15",
+          "date": "2026-04-15",
           "done": true
         },
         {
           "name": "Backend Entegrasyon",
-          "date": "2024-05-20",
+          "date": "2026-05-20",
           "done": true
         },
         {
           "name": "AI Modülü",
-          "date": "2024-06-10",
+          "date": "2026-06-10",
           "done": true
         },
         {
           "name": "Store Yayını",
-          "date": "2024-07-15",
+          "date": "2026-07-15",
           "done": true
         }
       ]
@@ -131,8 +323,8 @@
       "status": "In Progress",
       "progress": 35,
       "priority": "Critical",
-      "start_date": "2025-01-10",
-      "end_date": "2025-12-31",
+      "start_date": "2026-01-10",
+      "end_date": "2026-12-31",
       "live_url": "",
       "repo_url": "",
       "tech_stack": [
@@ -149,32 +341,32 @@
       "milestones": [
         {
           "name": "Konsept & GDD",
-          "date": "2025-02-01",
+          "date": "2026-02-01",
           "done": true
         },
         {
           "name": "Level Design Alpha",
-          "date": "2025-04-15",
+          "date": "2026-04-15",
           "done": true
         },
         {
           "name": "Karakter Mekaniği",
-          "date": "2025-06-01",
+          "date": "2026-06-01",
           "done": false
         },
         {
           "name": "Multiplayer Backend",
-          "date": "2025-08-01",
+          "date": "2026-08-01",
           "done": false
         },
         {
           "name": "Beta Test",
-          "date": "2025-10-01",
+          "date": "2026-10-01",
           "done": false
         },
         {
           "name": "Early Access",
-          "date": "2025-12-01",
+          "date": "2026-12-01",
           "done": false
         }
       ]
@@ -187,8 +379,8 @@
       "status": "In Progress",
       "progress": 80,
       "priority": "Medium",
-      "start_date": "2025-05-01",
-      "end_date": "2025-05-25",
+      "start_date": "2026-05-01",
+      "end_date": "2026-05-25",
       "live_url": "",
       "repo_url": "",
       "tech_stack": [
@@ -205,22 +397,22 @@
       "milestones": [
         {
           "name": "Mimari Tasarım",
-          "date": "2025-05-05",
+          "date": "2026-05-05",
           "done": true
         },
         {
           "name": "Dashboard Modülü",
-          "date": "2025-05-12",
+          "date": "2026-05-12",
           "done": true
         },
         {
           "name": "Kanban & Timeline",
-          "date": "2025-05-18",
+          "date": "2026-05-18",
           "done": true
         },
         {
           "name": "Deployment",
-          "date": "2025-05-25",
+          "date": "2026-05-25",
           "done": false
         }
       ]
@@ -291,6 +483,38 @@
         "Deniz Deviren",
         "M. Furkan Işık"
       ]
+    },
+    {
+      "id": "PROJ-SIM-1",
+      "name": "DeDev Mobil Cüzdan",
+      "category": "Mobil Uygulama",
+      "status": "In Progress",
+      "priority": "High",
+      "start_date": "2026-05-01",
+      "end_date": "2026-07-15",
+      "budget": 15000.0,
+      "lines_of_code": 12500,
+      "description": "Ekip içi ödemeleri ve cüzdan hareketlerini izleyen mobil uygulama geliştirme süreci.",
+      "tech_stack": [
+        "Dart",
+        "Flutter",
+        "Firebase"
+      ],
+      "owner_name": "Furkan",
+      "milestones": [
+        {
+          "id": "MS-SIM-1",
+          "name": "UI/UX Tasarımları",
+          "date": "2026-05-15",
+          "status": "Completed"
+        },
+        {
+          "id": "MS-SIM-2",
+          "name": "Firebase Entegrasyonu",
+          "date": "2026-06-10",
+          "status": "Pending"
+        }
+      ]
     }
   ],
   "tasks": [
@@ -300,7 +524,8 @@
       "title": "Kaggle'dan veri seti bulma",
       "status": "Done",
       "priority": "High",
-      "date": "2024-01-18"
+      "date": "2026-01-18",
+      "time_logged": true
     },
     {
       "id": "T-002",
@@ -308,7 +533,8 @@
       "title": "Veri temizleme & ön işleme",
       "status": "Done",
       "priority": "High",
-      "date": "2024-01-25"
+      "date": "2026-01-25",
+      "time_logged": true
     },
     {
       "id": "T-003",
@@ -316,7 +542,8 @@
       "title": "EDA - Keşifsel veri analizi",
       "status": "Done",
       "priority": "Medium",
-      "date": "2024-02-01"
+      "date": "2026-02-01",
+      "time_logged": true
     },
     {
       "id": "T-004",
@@ -324,7 +551,8 @@
       "title": "Random Forest model eğitimi",
       "status": "Done",
       "priority": "High",
-      "date": "2024-02-15"
+      "date": "2026-02-15",
+      "time_logged": true
     },
     {
       "id": "T-005",
@@ -332,7 +560,8 @@
       "title": "Model değerlendirme & tuning",
       "status": "Done",
       "priority": "High",
-      "date": "2024-02-25"
+      "date": "2026-02-25",
+      "time_logged": true
     },
     {
       "id": "T-006",
@@ -340,7 +569,8 @@
       "title": "Streamlit arayüz tasarımı",
       "status": "Done",
       "priority": "Medium",
-      "date": "2024-03-05"
+      "date": "2026-03-05",
+      "time_logged": true
     },
     {
       "id": "T-007",
@@ -348,7 +578,8 @@
       "title": "Streamlit Cloud deployment",
       "status": "Done",
       "priority": "High",
-      "date": "2024-03-20"
+      "date": "2026-03-20",
+      "time_logged": true
     },
     {
       "id": "T-008",
@@ -356,7 +587,8 @@
       "title": "Flutter proje yapılandırma",
       "status": "Done",
       "priority": "High",
-      "date": "2024-04-05"
+      "date": "2026-04-05",
+      "time_logged": true
     },
     {
       "id": "T-009",
@@ -364,7 +596,8 @@
       "title": "Firebase Auth entegrasyonu",
       "status": "Done",
       "priority": "High",
-      "date": "2024-04-20"
+      "date": "2026-04-20",
+      "time_logged": true
     },
     {
       "id": "T-010",
@@ -372,7 +605,9 @@
       "title": "OpenAI API bağlantısı",
       "status": "Done",
       "priority": "Critical",
-      "date": "2024-05-10"
+      "date": "2026-05-10",
+      "assignee": "Deniz Deviren",
+      "time_logged": true
     },
     {
       "id": "T-011",
@@ -380,7 +615,8 @@
       "title": "PDF upload & parse",
       "status": "Done",
       "priority": "High",
-      "date": "2024-05-25"
+      "date": "2026-05-25",
+      "time_logged": true
     },
     {
       "id": "T-012",
@@ -388,7 +624,8 @@
       "title": "Özetleme algoritması",
       "status": "Done",
       "priority": "High",
-      "date": "2024-06-15"
+      "date": "2026-06-15",
+      "time_logged": true
     },
     {
       "id": "T-013",
@@ -396,7 +633,8 @@
       "title": "UI polish & animasyonlar",
       "status": "Done",
       "priority": "Medium",
-      "date": "2024-07-01"
+      "date": "2026-07-01",
+      "time_logged": true
     },
     {
       "id": "T-014",
@@ -404,7 +642,8 @@
       "title": "App Store & Play Store yayını",
       "status": "Done",
       "priority": "High",
-      "date": "2024-07-20"
+      "date": "2026-07-20",
+      "time_logged": true
     },
     {
       "id": "T-015",
@@ -412,7 +651,9 @@
       "title": "Oyun tasarım dokümanı (GDD)",
       "status": "Done",
       "priority": "Critical",
-      "date": "2025-01-20"
+      "date": "2026-01-20",
+      "assignee": "Deniz Deviren",
+      "time_logged": true
     },
     {
       "id": "T-016",
@@ -420,7 +661,8 @@
       "title": "UE5 proje kurulumu",
       "status": "Done",
       "priority": "High",
-      "date": "2025-02-05"
+      "date": "2026-02-05",
+      "time_logged": true
     },
     {
       "id": "T-017",
@@ -428,7 +670,8 @@
       "title": "İlk harita blokout",
       "status": "Done",
       "priority": "High",
-      "date": "2025-03-01"
+      "date": "2026-03-01",
+      "time_logged": true
     },
     {
       "id": "T-018",
@@ -436,7 +679,8 @@
       "title": "Karakter hareket sistemi",
       "status": "Done",
       "priority": "High",
-      "date": "2025-03-20"
+      "date": "2026-03-20",
+      "time_logged": true
     },
     {
       "id": "T-019",
@@ -444,7 +688,8 @@
       "title": "Silah mekaniği & recoil",
       "status": "In Progress",
       "priority": "Critical",
-      "date": "2025-04-15"
+      "date": "2026-04-15",
+      "assignee": "Deniz Deviren"
     },
     {
       "id": "T-020",
@@ -452,7 +697,7 @@
       "title": "AI Enemy bot davranışları",
       "status": "In Progress",
       "priority": "High",
-      "date": "2025-05-01"
+      "date": "2026-05-01"
     },
     {
       "id": "T-021",
@@ -460,7 +705,8 @@
       "title": "Multiplayer networking (UE5)",
       "status": "To Do",
       "priority": "Critical",
-      "date": "2025-06-01"
+      "date": "2026-06-01",
+      "assignee": "Deniz Deviren"
     },
     {
       "id": "T-022",
@@ -468,7 +714,7 @@
       "title": "Ses efektleri & müzik",
       "status": "To Do",
       "priority": "Medium",
-      "date": "2025-07-01"
+      "date": "2026-07-01"
     },
     {
       "id": "T-023",
@@ -476,7 +722,7 @@
       "title": "UI/HUD tasarımı",
       "status": "To Do",
       "priority": "Medium",
-      "date": "2025-07-15"
+      "date": "2026-07-15"
     },
     {
       "id": "T-024",
@@ -484,7 +730,7 @@
       "title": "Optimizasyon & lighting",
       "status": "To Do",
       "priority": "High",
-      "date": "2025-09-01"
+      "date": "2026-09-01"
     },
     {
       "id": "T-025",
@@ -492,7 +738,7 @@
       "title": "Closed Beta test",
       "status": "To Do",
       "priority": "High",
-      "date": "2025-10-15"
+      "date": "2026-10-15"
     },
     {
       "id": "T-026",
@@ -500,7 +746,8 @@
       "title": "Streamlit mimari planlama",
       "status": "Done",
       "priority": "High",
-      "date": "2025-05-03"
+      "date": "2026-05-03",
+      "time_logged": true
     },
     {
       "id": "T-027",
@@ -508,7 +755,8 @@
       "title": "JSON veri yapısı tasarımı",
       "status": "Done",
       "priority": "High",
-      "date": "2025-05-06"
+      "date": "2026-05-06",
+      "time_logged": true
     },
     {
       "id": "T-028",
@@ -516,7 +764,8 @@
       "title": "Dashboard ekranı",
       "status": "Done",
       "priority": "High",
-      "date": "2025-05-10"
+      "date": "2026-05-10",
+      "time_logged": true
     },
     {
       "id": "T-029",
@@ -524,7 +773,8 @@
       "title": "Kanban board komponenti",
       "status": "Done",
       "priority": "Medium",
-      "date": "2025-05-14"
+      "date": "2026-05-14",
+      "time_logged": true
     },
     {
       "id": "T-030",
@@ -532,7 +782,8 @@
       "title": "Gantt chart timeline",
       "status": "Done",
       "priority": "Medium",
-      "date": "2025-05-17"
+      "date": "2026-05-17",
+      "time_logged": true
     },
     {
       "id": "T-031",
@@ -540,7 +791,8 @@
       "title": "Tech stack görselleştirme",
       "status": "Done",
       "priority": "Low",
-      "date": "2025-05-19"
+      "date": "2026-05-19",
+      "time_logged": true
     },
     {
       "id": "T-032",
@@ -548,7 +800,7 @@
       "title": "Streamlit Cloud deploy",
       "status": "In Progress",
       "priority": "High",
-      "date": "2025-05-22"
+      "date": "2026-05-22"
     },
     {
       "id": "T-SPK-001",
@@ -557,7 +809,8 @@
       "status": "Done",
       "priority": "High",
       "date": "2026-05-20",
-      "assignee": "M. Furkan Işık"
+      "assignee": "M. Furkan Işık",
+      "time_logged": true
     },
     {
       "id": "T-SPK-002",
@@ -639,69 +892,345 @@
       "priority": "High",
       "date": "2026-11-30",
       "assignee": "M. Furkan Işık"
+    },
+    {
+      "id": "TASK-SIM-1",
+      "title": "Giriş ekranı ve login tasarımı",
+      "status": "Done",
+      "priority": "Medium",
+      "date": "2026-05-12",
+      "project_id": "PROJ-SIM-1",
+      "assignee": "Furkan",
+      "effort": 3,
+      "time_logged": true
+    },
+    {
+      "id": "TASK-SIM-2",
+      "title": "State Management kurulumu (Provider)",
+      "status": "In Progress",
+      "priority": "High",
+      "date": "2026-05-24",
+      "project_id": "PROJ-SIM-1",
+      "assignee": "Furkan",
+      "effort": 5
+    },
+    {
+      "id": "TASK-SIM-3",
+      "title": "API bağlantıları ve servis katmanı",
+      "status": "To Do",
+      "priority": "High",
+      "date": "2026-06-05",
+      "project_id": "PROJ-SIM-1",
+      "assignee": "Ahmet Yılmaz",
+      "effort": 8
     }
   ],
   "activities": [
     {
-      "date": "2025-05-20",
+      "date": "2026-05-20",
       "time": "13:54",
       "action": "🔥 Yeni proje eklendi: DeDev Project Manager",
       "project": "PRJ-004"
     },
     {
-      "date": "2025-05-19",
+      "date": "2026-05-19",
       "time": "22:15",
       "action": "✅ Görev tamamlandı: Tech stack görselleştirme",
       "project": "PRJ-004"
     },
     {
-      "date": "2025-05-18",
+      "date": "2026-05-18",
       "time": "18:30",
       "action": "✅ Görev tamamlandı: Gantt chart timeline",
       "project": "PRJ-004"
     },
     {
-      "date": "2025-05-15",
+      "date": "2026-05-15",
       "time": "14:20",
       "action": "🎮 FPS oyununda silah mekaniği geliştiriliyor",
       "project": "PRJ-003"
     },
     {
-      "date": "2025-05-10",
+      "date": "2026-05-10",
       "time": "09:45",
       "action": "📱 ComTermsDeDeAI - Store başvurusu yapıldı",
       "project": "PRJ-002"
     },
     {
-      "date": "2025-04-01",
+      "date": "2026-04-01",
       "time": "11:00",
       "action": "🎯 FPS Oyun projesi başlatıldı",
       "project": "PRJ-003"
     },
     {
-      "date": "2024-07-15",
+      "date": "2026-07-15",
       "time": "16:30",
       "action": "📱 ComTermsDeDeAI tamamlandı",
       "project": "PRJ-002"
     },
     {
-      "date": "2024-03-20",
+      "date": "2026-03-20",
       "time": "10:00",
       "action": "🌐 Washington Emlak AI yayına alındı",
       "project": "PRJ-001"
     },
     {
-      "date": "2024-01-15",
+      "date": "2026-01-15",
       "time": "08:00",
       "action": "🏠 Washington Emlak AI projesi başlatıldı",
       "project": "PRJ-001"
+    },
+    {
+      "date": "2026-05-22 22:35",
+      "text": "⚡ [Kritik Görev Otomasyonu] 'OpenAI API bağlantısı' görevi kritik olduğu için Atanmamış yerine otomatik olarak Deniz Deviren'e atandı.",
+      "type": "automation"
+    },
+    {
+      "date": "2026-05-22 22:35",
+      "text": "⚡ [Kritik Görev Otomasyonu] 'Oyun tasarım dokümanı (GDD)' görevi kritik olduğu için Atanmamış yerine otomatik olarak Deniz Deviren'e atandı.",
+      "type": "automation"
+    },
+    {
+      "date": "2026-05-22 22:35",
+      "text": "⚡ [Kritik Görev Otomasyonu] 'Silah mekaniği & recoil' görevi kritik olduğu için Atanmamış yerine otomatik olarak Deniz Deviren'e atandı.",
+      "type": "automation"
+    },
+    {
+      "date": "2026-05-22 22:35",
+      "text": "⚡ [Kritik Görev Otomasyonu] 'Multiplayer networking (UE5)' görevi kritik olduğu için Atanmamış yerine otomatik olarak Deniz Deviren'e atandı.",
+      "type": "automation"
+    },
+    {
+      "date": "2026-05-22 22:35",
+      "text": "⚡ [Zaman Kayıt Otomasyonu] 'Kaggle'dan veri seti bulma' görevi tamamlandığı için Zaman Takibi'ne otomatik 1 saatlik çalışma kaydı eklendi.",
+      "type": "automation"
+    },
+    {
+      "date": "2026-05-22 22:35",
+      "text": "⚡ [Zaman Kayıt Otomasyonu] 'Veri temizleme & ön işleme' görevi tamamlandığı için Zaman Takibi'ne otomatik 1 saatlik çalışma kaydı eklendi.",
+      "type": "automation"
+    },
+    {
+      "date": "2026-05-22 22:35",
+      "text": "⚡ [Zaman Kayıt Otomasyonu] 'EDA - Keşifsel veri analizi' görevi tamamlandığı için Zaman Takibi'ne otomatik 1 saatlik çalışma kaydı eklendi.",
+      "type": "automation"
+    },
+    {
+      "date": "2026-05-22 22:35",
+      "text": "⚡ [Zaman Kayıt Otomasyonu] 'Random Forest model eğitimi' görevi tamamlandığı için Zaman Takibi'ne otomatik 1 saatlik çalışma kaydı eklendi.",
+      "type": "automation"
+    },
+    {
+      "date": "2026-05-22 22:35",
+      "text": "⚡ [Zaman Kayıt Otomasyonu] 'Model değerlendirme & tuning' görevi tamamlandığı için Zaman Takibi'ne otomatik 1 saatlik çalışma kaydı eklendi.",
+      "type": "automation"
+    },
+    {
+      "date": "2026-05-22 22:35",
+      "text": "⚡ [Zaman Kayıt Otomasyonu] 'Streamlit arayüz tasarımı' görevi tamamlandığı için Zaman Takibi'ne otomatik 1 saatlik çalışma kaydı eklendi.",
+      "type": "automation"
+    },
+    {
+      "date": "2026-05-22 22:35",
+      "text": "⚡ [Zaman Kayıt Otomasyonu] 'Streamlit Cloud deployment' görevi tamamlandığı için Zaman Takibi'ne otomatik 1 saatlik çalışma kaydı eklendi.",
+      "type": "automation"
+    },
+    {
+      "date": "2026-05-22 22:35",
+      "text": "⚡ [Zaman Kayıt Otomasyonu] 'Flutter proje yapılandırma' görevi tamamlandığı için Zaman Takibi'ne otomatik 1 saatlik çalışma kaydı eklendi.",
+      "type": "automation"
+    },
+    {
+      "date": "2026-05-22 22:35",
+      "text": "⚡ [Zaman Kayıt Otomasyonu] 'Firebase Auth entegrasyonu' görevi tamamlandığı için Zaman Takibi'ne otomatik 1 saatlik çalışma kaydı eklendi.",
+      "type": "automation"
+    },
+    {
+      "date": "2026-05-22 22:35",
+      "text": "⚡ [Zaman Kayıt Otomasyonu] 'OpenAI API bağlantısı' görevi tamamlandığı için Zaman Takibi'ne otomatik 1 saatlik çalışma kaydı eklendi.",
+      "type": "automation"
+    },
+    {
+      "date": "2026-05-22 22:35",
+      "text": "⚡ [Zaman Kayıt Otomasyonu] 'PDF upload & parse' görevi tamamlandığı için Zaman Takibi'ne otomatik 1 saatlik çalışma kaydı eklendi.",
+      "type": "automation"
+    },
+    {
+      "date": "2026-05-22 22:35",
+      "text": "⚡ [Zaman Kayıt Otomasyonu] 'Özetleme algoritması' görevi tamamlandığı için Zaman Takibi'ne otomatik 1 saatlik çalışma kaydı eklendi.",
+      "type": "automation"
+    },
+    {
+      "date": "2026-05-22 22:35",
+      "text": "⚡ [Zaman Kayıt Otomasyonu] 'UI polish & animasyonlar' görevi tamamlandığı için Zaman Takibi'ne otomatik 1 saatlik çalışma kaydı eklendi.",
+      "type": "automation"
+    },
+    {
+      "date": "2026-05-22 22:35",
+      "text": "⚡ [Zaman Kayıt Otomasyonu] 'App Store & Play Store yayını' görevi tamamlandığı için Zaman Takibi'ne otomatik 1 saatlik çalışma kaydı eklendi.",
+      "type": "automation"
+    },
+    {
+      "date": "2026-05-22 22:35",
+      "text": "⚡ [Zaman Kayıt Otomasyonu] 'Oyun tasarım dokümanı (GDD)' görevi tamamlandığı için Zaman Takibi'ne otomatik 1 saatlik çalışma kaydı eklendi.",
+      "type": "automation"
+    },
+    {
+      "date": "2026-05-22 22:35",
+      "text": "⚡ [Zaman Kayıt Otomasyonu] 'UE5 proje kurulumu' görevi tamamlandığı için Zaman Takibi'ne otomatik 1 saatlik çalışma kaydı eklendi.",
+      "type": "automation"
+    },
+    {
+      "date": "2026-05-22 22:35",
+      "text": "⚡ [Zaman Kayıt Otomasyonu] 'İlk harita blokout' görevi tamamlandığı için Zaman Takibi'ne otomatik 1 saatlik çalışma kaydı eklendi.",
+      "type": "automation"
+    },
+    {
+      "date": "2026-05-22 22:35",
+      "text": "⚡ [Zaman Kayıt Otomasyonu] 'Karakter hareket sistemi' görevi tamamlandığı için Zaman Takibi'ne otomatik 1 saatlik çalışma kaydı eklendi.",
+      "type": "automation"
+    },
+    {
+      "date": "2026-05-22 22:35",
+      "text": "⚡ [Zaman Kayıt Otomasyonu] 'Streamlit mimari planlama' görevi tamamlandığı için Zaman Takibi'ne otomatik 1 saatlik çalışma kaydı eklendi.",
+      "type": "automation"
+    },
+    {
+      "date": "2026-05-22 22:35",
+      "text": "⚡ [Zaman Kayıt Otomasyonu] 'JSON veri yapısı tasarımı' görevi tamamlandığı için Zaman Takibi'ne otomatik 1 saatlik çalışma kaydı eklendi.",
+      "type": "automation"
+    },
+    {
+      "date": "2026-05-22 22:35",
+      "text": "⚡ [Zaman Kayıt Otomasyonu] 'Dashboard ekranı' görevi tamamlandığı için Zaman Takibi'ne otomatik 1 saatlik çalışma kaydı eklendi.",
+      "type": "automation"
+    },
+    {
+      "date": "2026-05-22 22:35",
+      "text": "⚡ [Zaman Kayıt Otomasyonu] 'Kanban board komponenti' görevi tamamlandığı için Zaman Takibi'ne otomatik 1 saatlik çalışma kaydı eklendi.",
+      "type": "automation"
+    },
+    {
+      "date": "2026-05-22 22:35",
+      "text": "⚡ [Zaman Kayıt Otomasyonu] 'Gantt chart timeline' görevi tamamlandığı için Zaman Takibi'ne otomatik 1 saatlik çalışma kaydı eklendi.",
+      "type": "automation"
+    },
+    {
+      "date": "2026-05-22 22:35",
+      "text": "⚡ [Zaman Kayıt Otomasyonu] 'Tech stack görselleştirme' görevi tamamlandığı için Zaman Takibi'ne otomatik 1 saatlik çalışma kaydı eklendi.",
+      "type": "automation"
+    },
+    {
+      "date": "2026-05-22 22:35",
+      "text": "⚡ [Zaman Kayıt Otomasyonu] 'Kod Kalitesi: 70+ uyarının temizlenmesi (Refactoring)' görevi tamamlandığı için Zaman Takibi'ne otomatik 1 saatlik çalışma kaydı eklendi.",
+      "type": "automation"
+    },
+    {
+      "date": "2026-05-22 22:47",
+      "text": "⚡ [Zaman Kayıt Otomasyonu] 'Giriş ekranı ve login tasarımı' görevi tamamlandığı için Zaman Takibi'ne otomatik 1 saatlik çalışma kaydı eklendi.",
+      "type": "automation"
     }
   ],
   "team": [
     {
       "id": "USR-FURKAN",
       "name": "M. Furkan Işık",
-      "role": "Co-Founder / Developer"
+      "role": "Co-Founder / Developer",
+      "department": "Yazılım Geliştirme"
+    },
+    {
+      "name": "Ahmet Yılmaz",
+      "role": "Mobil Geliştirici",
+      "department": "Yazılım Geliştirme",
+      "email": "ahmet@dedev.com"
+    },
+    {
+      "name": "Elif Demir",
+      "role": "UI/UX Tasarımcı",
+      "department": "Tasarım & UI/UX",
+      "email": "elif@dedev.com"
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Deniz Deviren",
+      "role": "Solo Full-Stack Developer & AI Engineer",
+      "company": "DeDev",
+      "location": "Remote / Global",
+      "since": "2023",
+      "bio": "Tek kişilik ekip. Yapay zeka, web, mobil ve oyun geliştirme projeleri.",
+      "username": "1denizdeviren",
+      "password_hash": "6a13b67f7ff4538333b55e6800d33ced0b897f9a75612319c3631b9e8ab67b13",
+      "password_salt": "019769293f90510166382122020ef513"
+    },
+    {
+      "username": "furkan",
+      "name": "Furkan",
+      "role": "Co-Founder & Product Manager",
+      "company": "DeDev",
+      "location": "Remote / Global",
+      "since": "2024",
+      "bio": "Furkan, DeDev ortağı ve ürün yöneticisi.",
+      "password_hash": "e90a7836b4aac93e331b0416f994eba94e92eec17790d5f3004843c1f473e4c2",
+      "password_salt": "0459dabe80d2e59637c3ae3d2e25ed22"
+    }
+  ],
+  "active_owner": "Furkan",
+  "departments": [
+    {
+      "id": "DEP-YAZILIM",
+      "name": "Yazılım Geliştirme",
+      "description": "Web, mobil ve backend geliştirme süreçleri.",
+      "color": "#3b82f6",
+      "icon": "💻"
+    },
+    {
+      "id": "DEP-AI",
+      "name": "Yapay Zeka & Veri Bilimi",
+      "description": "Makine öğrenimi modelleri, LLM entegrasyonları.",
+      "color": "#8b5cf6",
+      "icon": "🧠"
+    },
+    {
+      "id": "DEP-TASARIM",
+      "name": "Tasarım & UI/UX",
+      "description": "Arayüz tasarımı, grafikler ve marka kimliği.",
+      "color": "#ec4899",
+      "icon": "🎨"
+    },
+    {
+      "id": "DEP-PAZARLAMA",
+      "name": "Pazarlama & Satış",
+      "description": "Müşteri ilişkileri ve ürün tanıtımları.",
+      "color": "#f59e0b",
+      "icon": "📈"
+    },
+    {
+      "id": "DEP-YONETIM",
+      "name": "Yönetim",
+      "description": "Stratejik yönetim ve karar alma süreçleri.",
+      "color": "#ef4444",
+      "icon": "👑"
+    }
+  ],
+  "automations": [
+    {
+      "id": "auto_crit",
+      "name": "🚨 Kritik Görevleri Ata",
+      "description": "Kritik öncelikli (Critical) bir görev oluşturulduğunda veya güncellendiğinde otomatik olarak Deniz Deviren'e ata.",
+      "enabled": true
+    },
+    {
+      "id": "auto_time",
+      "name": "⏱️ Tamamlanınca Zaman Kaydet",
+      "description": "Bir görev 'Done' (Tamamlandı) durumuna çekildiğinde otomatik olarak Zaman Takibi sayfasına 60 dakikalık (1 saat) çalışma kaydet.",
+      "enabled": true
+    },
+    {
+      "id": "auto_milestone",
+      "name": "🎯 Son Kilometre Taşını Tamamla",
+      "description": "Bir projeye ait tüm görevler 'Done' (Tamamlandı) olduğunda, projenin en son kilometre taşını otomatik olarak 'Tamamlandı' olarak işaretle.",
+      "enabled": true
     }
   ]
 }

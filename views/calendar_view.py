@@ -9,9 +9,11 @@ def show_calendar(data):
     st.markdown('<div class="section-subtitle">Görevlerinizin teslim tarihlerini (deadline) aylık takvim üzerinde izleyin</div>', unsafe_allow_html=True)
 
     # 1. Gather all tasks and filter secret ones if locked
+    active_owner = data.get("active_owner", "Deniz Deviren")
     unlocked_secrets = st.session_state.get("unlocked_secrets", {})
-    all_projects = data.get("projects", [])
-    all_tasks = data.get("tasks", [])
+    all_projects = [p for p in data.get("projects", []) if p.get("owner_name", "Deniz Deviren") == active_owner]
+    active_project_ids = {p["id"] for p in all_projects}
+    all_tasks = [t for t in data.get("tasks", []) if t.get("project_id") in active_project_ids]
 
     filtered_tasks = []
     for t in all_tasks:

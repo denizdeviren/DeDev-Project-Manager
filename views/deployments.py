@@ -5,10 +5,16 @@ def show_deployments(data):
     st.markdown('<div class="section-title">🔄 CI/CD & Sunucular</div>', unsafe_allow_html=True)
     st.markdown('<div class="section-subtitle">Canlı sistemler, otomatik dağıtımlar ve sunucu durumları</div>', unsafe_allow_html=True)
     
-    if "deployments" in data and data["deployments"]:
+    active_owner = data.get("active_owner", "Deniz Deviren")
+    projects = [p for p in data.get("projects", []) if p.get("owner_name", "Deniz Deviren") == active_owner]
+    project_ids = {p["id"] for p in projects}
+    
+    filtered_deps = [d for d in data.get("deployments", []) if d.get("project") in project_ids]
+    
+    if filtered_deps:
         cols = st.columns(2)
-        for i, dep in enumerate(data["deployments"]):
-            proj_name = next((p['name'] for p in data.get("projects", []) if p['id'] == dep['project']), dep['project'])
+        for i, dep in enumerate(filtered_deps):
+            proj_name = next((p['name'] for p in projects if p['id'] == dep['project']), dep['project'])
             with cols[i % 2]:
                 st.markdown(textwrap.dedent(f"""
                 <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px; margin-bottom: 16px;">

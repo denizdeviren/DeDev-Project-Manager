@@ -4,11 +4,14 @@ import plotly.graph_objects as go
 def show_reports(data):
     st.markdown('<div class="section-title">📈 Performans Raporları</div>', unsafe_allow_html=True)
     st.markdown('<div class="section-subtitle">Developer üretkenlik metrikleri, proje bazlı ilerlemeler ve analitikler</div>', unsafe_allow_html=True)
+    active_owner = data.get("active_owner", "Deniz Deviren")
+    active_projects = [p for p in data.get("projects", []) if p.get("owner_name", "Deniz Deviren") == active_owner]
+    active_project_ids = {p["id"] for p in active_projects}
 
     # -------------------------------------------------------------
     # SECURE VAULT DECRYPTION IN REPORTS
     # -------------------------------------------------------------
-    locked_secrets = [p for p in data.get("projects", []) if p.get("is_secret", False) and p["id"] not in st.session_state.get("unlocked_secrets", {})]
+    locked_secrets = [p for p in active_projects if p.get("is_secret", False) and p["id"] not in st.session_state.get("unlocked_secrets", {})]
     
     if locked_secrets:
         with st.expander("🔑 Raporlara Gizli Kasa Projelerini Dahil Et (Şifre Çöz)", expanded=False):
@@ -26,6 +29,8 @@ def show_reports(data):
                 for proj in locked_secrets:
                     dec_res = decrypt_text(proj.get('description', ''), rep_pwd)
                     if dec_res != "ERROR_WRONG_PASSWORD" and dec_res:
+                        if "unlocked_secrets" not in st.session_state:
+                            st.session_state.unlocked_secrets = {}
                         st.session_state.unlocked_secrets[proj["id"]] = rep_pwd
                         unlocked_count += 1
                 if unlocked_count > 0:
@@ -40,8 +45,7 @@ def show_reports(data):
     with col1:
         st.markdown('<div class="section-title" style="font-size: 18px;">🔥 Proje İlerleme Durumu</div>', unsafe_allow_html=True)
         
-        projects = data.get("projects", [])
-        if projects:
+        if active_projects:
             proj_names = []
             proj_progress = []
             marker_colors = []
@@ -52,7 +56,7 @@ def show_reports(data):
                 "Planning": "#f59e0b"
             }
             
-            for p in projects:
+            for p in active_projects:
                 is_sec = p.get("is_secret", False)
                 is_unlocked = p["id"] in st.session_state.get("unlocked_secrets", {})
                 
@@ -95,7 +99,7 @@ def show_reports(data):
         # We only count tasks if their project is NOT secret OR is unlocked
         unlocked_secrets = st.session_state.get("unlocked_secrets", {})
         valid_project_ids = []
-        for p in data.get("projects", []):
+        for p in active_projects:
             is_sec = p.get("is_secret", False)
             if not is_sec or p["id"] in unlocked_secrets:
                 valid_project_ids.append(p["id"])
@@ -181,10 +185,11 @@ def show_reports(data):
 
     st.markdown("<div style='height: 40px;'></div>", unsafe_allow_html=True)
 
-    st.markdown('<div class="section-title" style="font-size: 18px;">🦅 Solo Developer Üretkenlik Metrikleri</div>', unsafe_allow_html=True)
+    owner = next((acc for acc in data.get("accounts", []) if acc["name"] == active_owner), data.get("owner", {}))
+    st.markdown(f'<div class="section-title" style="font-size: 18px;">🦅 {owner.get("name", "Geliştirici")} Üretkenlik Metrikleri</div>', unsafe_allow_html=True)
 
     metrics_col = st.columns(4)
-    active_count = len([p for p in data.get('projects', []) if p.get('status') == 'In Progress'])
+    active_count = len([p for p in active_projects if p.get('status') == 'In Progress'])
     
     solo_metrics = [
         ("⏱️", "Ort. Günlük Çalışma", "7.2 saat", "#667eea"),

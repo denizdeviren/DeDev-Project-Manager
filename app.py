@@ -26,6 +26,11 @@ from views.notes import show_notes
 from views.team_view import show_team
 from views.time_tracking import show_time_tracking
 from views.finance_view import show_finance
+from views.admin_view import show_admin
+from views.archive_view import show_archive
+from views.portfolio_rating import show_portfolio_rating
+
+
 
 # Global CSS
 st.markdown("""
@@ -158,6 +163,128 @@ st.markdown("""
 data = load_data()
 
 # ==========================================
+# GÜVENLİ GİRİŞ KONTROLÜ & EKRANI
+# ==========================================
+if "logged_in_user" not in st.session_state:
+    st.session_state["logged_in_user"] = None
+
+if st.session_state["logged_in_user"] is None:
+    st.markdown("""
+    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 85vh; padding: 20px;">
+        <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 24px; padding: 40px; max-width: 480px; width: 100%; backdrop-filter: blur(15px); box-shadow: 0 20px 50px rgba(0,0,0,0.3); text-align: center;">
+            <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); width: 70px; height: 70px; border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: bold; color: white; margin: 0 auto 20px auto; box-shadow: 0 8px 25px rgba(102,126,234,0.4);">
+                🚀
+            </div>
+            <h1 style="font-size: 28px; font-weight: 800; color: white; margin-bottom: 5px; background: -webkit-linear-gradient(45deg, #a5b4fc, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">DeDev Command Center</h1>
+            <p style="font-size: 13px; color: #9ca3af; margin-bottom: 25px;">Giriş yapın veya yeni bir simülasyon hesabı oluşturun</p>
+    """, unsafe_allow_html=True)
+    
+    tab_login, tab_register = st.tabs(["🔑 Giriş Yap", "📝 Kayıt Ol"])
+    
+    with tab_login:
+        with st.form("login_form"):
+            username = st.text_input("👤 Kullanıcı Adı", placeholder="Kullanıcı adınızı girin", key="login_username")
+            password = st.text_input("🔑 Şifre", placeholder="Şifrenizi girin", type="password", key="login_password")
+            
+            login_btn = st.form_submit_button("Sisteme Giriş Yap", use_container_width=True)
+            
+            if login_btn:
+                if not username or not password:
+                    st.error("Lütfen kullanıcı adı ve şifrenizi girin.")
+                else:
+                    matched_acc = None
+                    for acc in data.get("accounts", []):
+                        if acc.get("username") == username:
+                            if "password_hash" in acc and "password_salt" in acc:
+                                from utils.encryption import hash_password
+                                h_val, _ = hash_password(password, acc["password_salt"])
+                                if h_val == acc["password_hash"]:
+                                    matched_acc = acc
+                                    break
+                            elif acc.get("password") == password:
+                                from utils.encryption import hash_password
+                                h_val, s_val = hash_password(password)
+                                acc["password_hash"] = h_val
+                                acc["password_salt"] = s_val
+                                del acc["password"]
+                                save_data(data)
+                                matched_acc = acc
+                                break
+                    
+                    if matched_acc:
+                        st.session_state["logged_in_user"] = matched_acc["username"]
+                        data["active_owner"] = matched_acc["name"]
+                        save_data(data)
+                        st.toast(f"Hoş geldiniz, {matched_acc['name']}! 👋")
+                        st.rerun()
+                    else:
+                        st.error("Geçersiz kullanıcı adı veya şifre!")
+                        
+    with tab_register:
+        with st.form("register_form"):
+            r_name = st.text_input("👤 Ad Soyad", placeholder="Örn: Simge Yılmaz", key="reg_name")
+            r_role = st.text_input("💼 Rol / Ünvan", placeholder="Örn: Yazılım Geliştirici", key="reg_role")
+            r_username = st.text_input("🆔 Kullanıcı Adı", placeholder="Giriş yapmak için kullanılacak", key="reg_username")
+            r_password = st.text_input("🔒 Şifre", placeholder="Şifrenizi belirleyin", type="password", key="reg_password")
+            r_company = st.text_input("🏢 Şirket", placeholder="Örn: DeDev", key="reg_company")
+            r_location = st.text_input("📍 Lokasyon", placeholder="Örn: İstanbul / Türkiye", key="reg_location")
+            r_bio = st.text_area("📝 Kısa Biyografi", placeholder="Uzmanlık alanlarınız...", max_chars=300, key="reg_bio")
+            
+            register_btn = st.form_submit_button("Kayıt Ol ve Giriş Yap", use_container_width=True)
+            
+            if register_btn:
+                if not r_name or not r_username or not r_password:
+                    st.error("Lütfen Ad Soyad, Kullanıcı Adı ve Şifre alanlarını doldurun.")
+                else:
+                    # Check duplication
+                    name_exists = any(acc.get("name", "").lower() == r_name.lower() for acc in data.get("accounts", []))
+                    username_exists = any(acc.get("username", "").lower() == r_username.lower() for acc in data.get("accounts", []))
+                    
+                    if name_exists or username_exists:
+                        st.error("❌ Bu isimle veya kullanıcı adıyla kayıtlı bir profil zaten mevcut!")
+                    else:
+                        from utils.encryption import hash_password
+                        h_val, s_val = hash_password(r_password)
+                        new_acc = {
+                            "username": r_username,
+                            "password_hash": h_val,
+                            "password_salt": s_val,
+                            "name": r_name,
+                            "role": r_role if r_role else "Proje Sorumlusu",
+                            "company": r_company if r_company else "DeDev",
+                            "location": r_location if r_location else "Remote",
+                            "since": "2026",
+                            "bio": r_bio if r_bio else "Yeni simülasyon kullanıcısı."
+                        }
+                        data.setdefault("accounts", []).append(new_acc)
+                        # Immediately log in the newly registered user for a seamless premium experience!
+                        st.session_state["logged_in_user"] = r_username
+                        data["active_owner"] = r_name
+                        save_data(data)
+                        st.toast(f"Tebrikler! Hesabınız başarıyla oluşturuldu ve giriş yapıldı. 👋")
+                        st.rerun()
+                        
+    st.markdown("<div style='height: 20px;'></div>", unsafe_allow_html=True)
+    with st.expander("🔑 Simülasyon Giriş Bilgileri"):
+        st.markdown("""
+        <div style="font-family: 'Inter', sans-serif; font-size: 13px; text-align: left; line-height: 1.6; color: #d1d5db;">
+            Bu simülasyon için aşağıdaki hesabı kullanabilirsiniz:
+            <hr style="border-color: rgba(255,255,255,0.08); margin: 8px 0;">
+            <b>👤 Ortak Hesabı (Furkan):</b><br>
+            • Kullanıcı Adı: <code style="color: #10b981; font-weight: bold;">furkan</code><br>
+            • Şifre: <code style="color: #10b981; font-weight: bold;">123456</code><br>
+            <hr style="border-color: rgba(255,255,255,0.08); margin: 8px 0;">
+            <i>Not: Yeni eklenen her profil, kayıt sırasında belirlenen bilgilerle giriş yapabilir.</i>
+        </div>
+        """, unsafe_allow_html=True)
+        
+    st.markdown("""
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+    st.stop()
+
+# ==========================================
 # SIDEBAR NAVIGATION
 # ==========================================
 with st.sidebar:
@@ -174,6 +301,8 @@ with st.sidebar:
         [
             "🏠 Dashboard", 
             "📁 Projeler", 
+            "📚 Arşiv ve Belgeler",
+            "📊 DeDev Findeks Skoru",
             "🔒 Gizli Kasa",
             "📋 Kanban Board", 
             "📅 Takvim Görünümü",
@@ -183,7 +312,8 @@ with st.sidebar:
             "📈 Raporlar", 
             "📝 Hızlı Notlar",
             "⏱️ Zaman Takibi",
-            "💰 Bütçe & Giderler"
+            "💰 Bütçe & Giderler",
+            "⚙️ Admin Paneli"
         ],
         label_visibility="collapsed"
     )
@@ -229,7 +359,8 @@ with st.sidebar:
     st.markdown("### 👨‍💻 Geliştirici")
 
     
-    owner = data.get("owner", {})
+    active_owner_name = data.get("active_owner", "Deniz Deviren")
+    owner = next((acc for acc in data.get("accounts", []) if acc["name"] == active_owner_name), data.get("owner", {}))
     st.markdown(f"""
     <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.03);">
         <div style="font-weight: 700; color: white;">{owner.get('name', 'Bilinmiyor')}</div>
@@ -254,6 +385,12 @@ with st.sidebar:
         </div>
     </div>
     """, unsafe_allow_html=True)
+    
+    st.markdown("<div style='height: 15px;'></div>", unsafe_allow_html=True)
+    if st.button("🔒 Oturumu Kapat", use_container_width=True, type="secondary"):
+        st.session_state["logged_in_user"] = None
+        st.toast("Oturum güvenli bir şekilde kapatıldı.", icon="🔒")
+        st.rerun()
 
 # ==========================================
 # ANA AKIŞ (ROUTING)
@@ -313,6 +450,10 @@ if page == "🏠 Dashboard":
     show_dashboard(data)
 elif page == "📁 Projeler":
     show_projects(data)
+elif page == "📚 Arşiv ve Belgeler":
+    show_archive(data)
+elif page == "📊 DeDev Findeks Skoru":
+    show_portfolio_rating(data)
 elif page == "🔒 Gizli Kasa":
     show_secret_vault(data)
 elif page == "📋 Kanban Board":
@@ -333,6 +474,8 @@ elif page == "⏱️ Zaman Takibi":
     show_time_tracking(data)
 elif page == "💰 Bütçe & Giderler":
     show_finance(data)
+elif page == "⚙️ Admin Paneli":
+    show_admin(data)
 
 # Footer
 st.markdown("""

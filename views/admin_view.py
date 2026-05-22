@@ -1,0 +1,297 @@
+import streamlit as st
+import plotly.graph_objects as go
+from utils.data_handler import save_data
+
+def clean_html(html_str):
+    return "\n".join([line.strip() for line in html_str.split("\n")])
+
+def show_admin(data):
+    st.markdown('<div class="section-title">⚙️ Yönetim & Admin Paneli</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-subtitle">Çoklu hesap profilleri ekleme, silme, yönetme ve çapraz analiz merkezi</div>', unsafe_allow_html=True)
+    
+    if "accounts" not in data:
+        data["accounts"] = [data.get("owner", {
+            "name": "Deniz Deviren",
+            "role": "Solo Full-Stack Developer & AI Engineer",
+            "company": "DeDev",
+            "location": "Remote / Global",
+            "since": "2023",
+            "bio": "Tek kişilik ekip. Yapay zeka, web, mobil ve oyun geliştirme projeleri."
+        })]
+    if "active_owner" not in data:
+        data["active_owner"] = data["accounts"][0]["name"]
+        
+    active_owner_name = data.get("active_owner", "Deniz Deviren")
+    
+    # -------------------------------------------------------------
+    # STREAMLIT TABS
+    # -------------------------------------------------------------
+    tab_profiles, tab_new_profile, tab_cross_stats = st.tabs([
+        "👥 Profil Yönetimi & Geçiş", 
+        "➕ Yeni Profil (Hesap) Ekle", 
+        "📊 Hesaplar Arası Analiz"
+    ])
+    
+    # =============================================================
+    # SEKME 1: PROFİL YÖNETİMİ & AKTİF HESAP GEÇİŞİ
+    # =============================================================
+    with tab_profiles:
+        st.markdown("### 🔄 Aktif Hesap Değiştirici")
+        st.markdown("""
+        <div style="font-size: 13px; color: #9ca3af; margin-bottom: 15px;">
+            Aşağıdaki menüden aktif çalışma alanını (profil hesabını) değiştirebilirsiniz. Değişiklik yaptığınızda tüm projeler, Kanban tahtaları ve bütçeler seçilen hesaba göre filtrelenecektir.
+        </div>
+        """, unsafe_allow_html=True)
+        
+        account_names = [acc["name"] for acc in data["accounts"]]
+        
+        # Determine active index
+        try:
+            active_idx = account_names.index(active_owner_name)
+        except ValueError:
+            active_idx = 0
+            
+        selected_acc_name = st.selectbox(
+            "Aktif Çalışma Alanı (Hesap Profil):",
+            account_names,
+            index=active_idx,
+            key="active_owner_select"
+        )
+        
+        if selected_acc_name != active_owner_name:
+            data["active_owner"] = selected_acc_name
+            # Update root owner details to match selected profile so that legacy parts are kept in sync
+            selected_acc = next((acc for acc in data["accounts"] if acc["name"] == selected_acc_name), None)
+            if selected_acc:
+                data["owner"] = selected_acc
+            save_data(data)
+            st.toast(f"⚡ Çalışma alanı '{selected_acc_name}' olarak değiştirildi!", icon="⚡")
+            st.rerun()
+            
+        st.markdown("---")
+        st.markdown("### 🏢 Kayıtlı Profiller")
+        
+        # Grid of accounts
+        cols = st.columns(3)
+        for idx, acc in enumerate(data["accounts"]):
+            col_idx = idx % 3
+            with cols[col_idx]:
+                is_active = acc["name"] == active_owner_name
+                border_color = "rgba(102, 126, 234, 0.6)" if is_active else "rgba(255,255,255,0.05)"
+                active_badge = '<span style="background: #10b981; color: white; padding: 2px 8px; border-radius: 12px; font-size: 10px; font-weight: bold; float: right;">AKTİF HESAP</span>' if is_active else ''
+                
+                credentials_html = ""
+                if acc.get("username") == "1denizdeviren":
+                    credentials_html = """
+                    <div style="background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.15); padding: 8px; border-radius: 8px; margin-top: 10px; font-family: monospace; font-size: 11px; color: #10b981; font-weight: 500; text-align: center;">
+                        🔒 Güvenli Yönetici Hesabı
+                    </div>
+                    """
+                elif acc.get("username") == "furkan":
+                    credentials_html = """
+                    <div style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); padding: 8px; border-radius: 8px; margin-top: 10px; font-family: monospace; font-size: 11px; color: #a5b4fc;">
+                        👤 K. Adı: furkan<br>🔑 Şifre: 123456 (Simülasyon)
+                    </div>
+                    """
+                else:
+                    credentials_html = f"""
+                    <div style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); padding: 8px; border-radius: 8px; margin-top: 10px; font-family: monospace; font-size: 11px; color: #a5b4fc;">
+                        👤 K. Adı: {acc.get('username', 'yok')}<br>🔑 Şifre: •••••••• (Kriptografik Güvenli)
+                    </div>
+                    """
+                
+                st.markdown(clean_html(f"""
+                <div style="background: rgba(255,255,255,0.03); padding: 20px; border-radius: 16px; border: 1px solid {border_color}; margin-bottom: 15px; position: relative;">
+                    {active_badge}
+                    <div style="background: linear-gradient(135deg, #667eea, #764ba2); width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: bold; color: white; margin-bottom: 12px; box-shadow: 0 4px 10px rgba(102,126,234,0.3);">
+                        {acc['name'][0].upper()}
+                    </div>
+                    <div style="font-weight: 700; color: white; font-size: 16px;">{acc['name']}</div>
+                    <div style="color: #667eea; font-size: 12px; font-weight: 600; margin-top: 3px;">{acc.get('role', 'Proje Sorumlusu')}</div>
+                    
+                    {credentials_html}
+                    
+                    <div style="color: #9ca3af; font-size: 11px; margin-top: 10px; line-height: 1.4; min-height: 45px;">{acc.get('bio', 'Açıklama girilmemiş.')}</div>
+                    
+                    <div style="border-top: 1px solid rgba(255,255,255,0.08); margin-top: 12px; padding-top: 8px; font-size: 11px; color: #6b7280; display: flex; justify-content: space-between;">
+                        <span>🏢 {acc.get('company', 'DeDev')}</span>
+                        <span>📍 {acc.get('location', 'Remote')}</span>
+                    </div>
+                </div>
+                """), unsafe_allow_html=True)
+                
+                # Delete account button (cannot delete if active or if it's the only account)
+                if not is_active and len(data["accounts"]) > 1:
+                    if st.button(f"🗑️ Hesabı Sil", key=f"del_acc_{acc['name']}", type="secondary", use_container_width=True):
+                        # Reassign projects of deleted owner to the active owner
+                        for p in data.get("projects", []):
+                            if p.get("owner_name") == acc["name"]:
+                                p["owner_name"] = active_owner_name
+                        data["accounts"] = [a for a in data["accounts"] if a["name"] != acc["name"]]
+                        save_data(data)
+                        st.warning(f"'{acc['name']}' hesabı silindi ve projeleri aktif hesaba devredildi.")
+                        st.rerun()
+                        
+    # =============================================================
+    # SEKME 2: YENİ PROFİL (HESAP) EKLE
+    # =============================================================
+    with tab_new_profile:
+        st.markdown("### ➕ Yeni Hesap / Profil Oluştur")
+        st.markdown("""
+        <div style="font-size: 13px; color: #9ca3af; margin-bottom: 20px;">
+            Sisteme yeni bir ortak veya farklı bir bağımsız proje sahibi profili ekleyin. Her yeni profil kendine özel proje alanına ve iş paneline sahip olacaktır.
+        </div>
+        """, unsafe_allow_html=True)
+        
+        with st.form("new_account_form"):
+            col1, col2 = st.columns(2)
+            n_name = col1.text_input("Ad Soyad", placeholder="Örn: Ahmet Yılmaz")
+            n_role = col2.text_input("Rol / Ünvan", placeholder="Örn: Kıdemli Ürün Yöneticisi")
+            
+            col_u, col_p = st.columns(2)
+            n_username = col_u.text_input("Kullanıcı Adı", placeholder="Giriş için kullanılacak")
+            n_password = col_p.text_input("Şifre / Parola", placeholder="Giriş şifresi", type="password")
+            
+            col3, col4 = st.columns(2)
+            n_comp = col3.text_input("Şirket / Organizasyon", placeholder="Örn: DeDev Soft")
+            n_loc = col4.text_input("Lokasyon", placeholder="Örn: İstanbul / Türkiye")
+            
+            n_since = st.text_input("Başlangıç Yılı", value="2026")
+            n_bio = st.text_area("Kısa Biyografi / Açıklama", placeholder="Profilin uzmanlık alanları ve sorumlulukları...", max_chars=300)
+            
+            if st.form_submit_button("Yeni Profil Oluştur"):
+                if n_name and n_username and n_password:
+                    # Check duplication
+                    if any(a["name"].lower() == n_name.lower() or a.get("username", "").lower() == n_username.lower() for a in data["accounts"]):
+                        st.error("❌ Bu isimle veya kullanıcı adıyla kayıtlı bir profil zaten mevcut!")
+                    else:
+                        from utils.encryption import hash_password
+                        h_val, s_val = hash_password(n_password)
+                        new_acc = {
+                            "username": n_username,
+                            "password_hash": h_val,
+                            "password_salt": s_val,
+                            "name": n_name,
+                            "role": n_role if n_role else "Proje Sorumlusu",
+                            "company": n_comp if n_comp else "DeDev",
+                            "location": n_loc if n_loc else "Remote",
+                            "since": n_since if n_since else "2026",
+                            "bio": n_bio if n_bio else "Yeni ekip üyesi ve proje yöneticisi."
+                        }
+                        data["accounts"].append(new_acc)
+                        save_data(data)
+                        st.success(f"🎉 Yeni profil '{n_name}' başarıyla oluşturuldu!")
+                        st.rerun()
+                else:
+                    st.error("❌ Ad Soyad alanı boş bırakılamaz.")
+                    
+    # =============================================================
+    # SEKME 3: HESAPLAR ARASI ANALİZ
+    # =============================================================
+    with tab_cross_stats:
+        st.markdown("### 📊 Hesap Profilleri Karşılaştırma Analitiği")
+        
+        # Calculate stats for each account
+        acc_stats = []
+        for acc in data["accounts"]:
+            name = acc["name"]
+            proj_count = sum(1 for p in data.get("projects", []) if p.get("owner_name", "Deniz Deviren") == name)
+            
+            # Tasks count
+            proj_ids = {p["id"] for p in data.get("projects", []) if p.get("owner_name", "Deniz Deviren") == name}
+            task_count = sum(1 for t in data.get("tasks", []) if t.get("project_id") in proj_ids)
+            
+            # Completed tasks count
+            task_done = sum(1 for t in data.get("tasks", []) if t.get("project_id") in proj_ids and t.get("status") == "Done")
+            
+            # Budget
+            fin_sum = sum(float(f.get("amount", 0)) for f in data.get("finances", []) if f.get("project_id") in proj_ids)
+            
+            acc_stats.append({
+                "name": name,
+                "projects": proj_count,
+                "tasks": task_count,
+                "done": task_done,
+                "budget": fin_sum
+            })
+            
+        col_m1, col_m2, col_m3 = st.columns(3)
+        col_m1.metric("Toplam Kayıtlı Hesap", len(data["accounts"]))
+        col_m2.metric("Toplam Sistem Projesi", len(data.get("projects", [])))
+        col_m3.metric("Toplam Sistem Görevi", len(data.get("tasks", [])))
+        
+        st.markdown("---")
+        
+        # Render Comparison Chart
+        if acc_stats:
+            fig_compare = go.Figure()
+            
+            names = [s["name"] for s in acc_stats]
+            projs = [s["projects"] for s in acc_stats]
+            tsks = [s["tasks"] for s in acc_stats]
+            
+            fig_compare.add_trace(go.Bar(
+                name="Toplam Proje",
+                x=names,
+                y=projs,
+                marker_color="#667eea",
+                hovertemplate="Hesap: %{x}<br>Proje Sayısı: %{y}<extra></extra>"
+            ))
+            
+            fig_compare.add_trace(go.Bar(
+                name="Toplam Görev",
+                x=names,
+                y=tsks,
+                marker_color="#10b981",
+                hovertemplate="Hesap: %{x}<br>Görev Sayısı: %{y}<extra></extra>"
+            ))
+            
+            fig_compare.update_layout(
+                barmode='group',
+                paper_bgcolor='rgba(0,0,0,0)',
+                plot_bgcolor='rgba(0,0,0,0)',
+                font_color='white',
+                height=300,
+                margin=dict(l=40, r=20, t=20, b=40),
+                xaxis=dict(showgrid=False, title="Hesap Profilleri"),
+                yaxis=dict(showgrid=True, gridcolor='rgba(255,255,255,0.06)', title="Adet"),
+                legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
+            )
+            
+            st.plotly_chart(fig_compare, use_container_width=True)
+            
+            # Show summary table
+            st.markdown("#### 📝 Detaylı Hesap Tablosu")
+            
+            # Custom styled table
+            table_rows = ""
+            for s in acc_stats:
+                table_rows += f"""
+                <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                    <td style="padding: 10px; font-weight: bold; color: white;">{s['name']}</td>
+                    <td style="padding: 10px; text-align: center; color: #a5b4fc;">{s['projects']}</td>
+                    <td style="padding: 10px; text-align: center; color: #e0e7ff;">{s['tasks']}</td>
+                    <td style="padding: 10px; text-align: center; color: #6ee7b7;">{s['done']}</td>
+                    <td style="padding: 10px; text-align: right; color: #fcd34d; font-weight: 600;">${s['budget']:.2f}</td>
+                </tr>
+                """
+                
+            st.markdown(clean_html(f"""
+            <table style="width: 100%; border-collapse: collapse; margin-top: 10px; background: rgba(255,255,255,0.01); border-radius: 8px; overflow: hidden; border: 1px solid rgba(255,255,255,0.05);">
+                <thead>
+                    <tr style="background: rgba(102, 126, 234, 0.1); border-bottom: 1px solid rgba(255,255,255,0.1); color: #c7d2fe;">
+                        <th style="padding: 12px; text-align: left;">Hesap / Yönetici</th>
+                        <th style="padding: 12px; text-align: center;">Proje</th>
+                        <th style="padding: 12px; text-align: center;">Görev</th>
+                        <th style="padding: 12px; text-align: center;">Tamamlanan</th>
+                        <th style="padding: 12px; text-align: right;">Bütçe Harcaması</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {table_rows}
+                </tbody>
+            </table>
+            """), unsafe_allow_html=True)
+            
+        else:
+            st.info("Kıyaslanacak hesap verisi bulunamadı.")

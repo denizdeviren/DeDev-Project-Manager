@@ -23,3 +23,15 @@ def decrypt_text(encrypted_text, password):
         return decrypted.decode('utf-8')
     except Exception:
         return "ERROR_WRONG_PASSWORD"
+
+def generate_salt():
+    import os
+    return os.urandom(16).hex()
+
+def hash_password(password, salt=None):
+    if salt is None:
+        salt = generate_salt()
+    pwd_bytes = password.encode('utf-8')
+    salt_bytes = bytes.fromhex(salt)
+    key = hashlib.pbkdf2_hmac('sha256', pwd_bytes, salt_bytes, 100000)
+    return key.hex(), salt

@@ -6,6 +6,8 @@ def show_notes(data):
     st.markdown('<div class="section-title">📝 Hızlı Notlar</div>', unsafe_allow_html=True)
     st.markdown('<div class="section-subtitle">Geliştirme notları, fikirler ve toplantı özetleri</div>', unsafe_allow_html=True)
 
+    active_owner = data.get("active_owner", "Deniz Deviren")
+
     with st.form("new_note_form"):
         new_note_title = st.text_input("Not Başlığı", placeholder="Örn: AI model güncellemesi")
         new_note_content = st.text_area("İçerik (Markdown destekler)", height=150)
@@ -16,7 +18,8 @@ def show_notes(data):
                 data["notes"].append({
                     "date": datetime.now().strftime("%Y-%m-%d %H:%M"),
                     "title": new_note_title,
-                    "content": new_note_content
+                    "content": new_note_content,
+                    "owner_name": active_owner
                 })
                 save_data(data)
                 st.success("Not kaydedildi!")
@@ -24,8 +27,11 @@ def show_notes(data):
 
     st.markdown("---")
     st.markdown('### 📌 Kaydedilen Notlar')
-    if "notes" in data and data["notes"]:
-        for note in reversed(data["notes"]):
+    
+    filtered_notes = [note for note in data.get("notes", []) if note.get("owner_name", "Deniz Deviren") == active_owner]
+    
+    if filtered_notes:
+        for note in reversed(filtered_notes):
             with st.expander(f"{note['title']} ({note['date']})"):
                 st.markdown(note['content'])
                 if st.button("Sil", key=f"del_{note['title']}_{note['date']}"):

@@ -8,13 +8,14 @@ def clean_html(html_str):
     return "\n".join([line.strip() for line in html_str.split("\n")])
 
 def show_projects(data):
+    active_owner = data.get("active_owner", "Deniz Deviren")
     st.markdown('<div class="section-title">📁 Projeler Command Center</div>', unsafe_allow_html=True)
     st.markdown('<div class="section-subtitle">Tüm genel projelerin, kilometre taşlarının, kod metriklerinin ve ekip atamalarının tek bir merkezden takibi.</div>', unsafe_allow_html=True)
     
     # -------------------------------------------------------------
     # 1. PREMIUM EXECUTIVE METRIC CARDS
     # -------------------------------------------------------------
-    public_projects = [p for p in data.get("projects", []) if not p.get("is_secret", False)]
+    public_projects = [p for p in data.get("projects", []) if p.get("owner_name", "Deniz Deviren") == active_owner and not p.get("is_secret", False)]
     total_pub = len(public_projects)
     avg_progress = int(sum(p.get("progress", 0) for p in public_projects) / total_pub) if total_pub else 0
     total_loc = sum(p.get("lines_of_code", 0) for p in public_projects)
@@ -57,6 +58,8 @@ def show_projects(data):
     # Filter public projects
     filtered_projects = []
     for proj in data.get("projects", []):
+        if proj.get("owner_name", "Deniz Deviren") != active_owner:
+            continue
         if proj.get("is_secret", False):
             continue
         
@@ -110,7 +113,7 @@ def show_projects(data):
             
             milestones = proj.get("milestones", [])
             milestones_total = len(milestones)
-            milestones_done = sum(1 for m in milestones if m.get("done", False))
+            milestones_done = sum(1 for m in milestones if m.get("done", False) or m.get("status") == "Completed")
             
             live_url_val = proj.get("live_url", "")
             repo_url_val = proj.get("repo_url", "")
@@ -215,9 +218,11 @@ def show_projects(data):
                 with st.expander(f"🚩 Yol Haritası & Kilometre Taşları ({milestones_done}/{milestones_total})"):
                     for idx, ms in enumerate(milestones):
                         ms_key = f"ms_check_{proj_id}_{idx}"
-                        checked = st.checkbox(f"{ms['name']} ({ms.get('date', '')})", value=ms['done'], key=ms_key)
-                        if checked != ms['done']:
+                        ms_is_done = ms.get('done', False) or ms.get('status') == 'Completed'
+                        checked = st.checkbox(f"{ms['name']} ({ms.get('date', '')})", value=ms_is_done, key=ms_key)
+                        if checked != ms_is_done:
                             ms['done'] = checked
+                            ms['status'] = 'Completed' if checked else 'Pending'
                             save_data(data)
                             st.rerun()
                             
@@ -317,7 +322,7 @@ def show_projects(data):
                     st.markdown("###### Mevcut Kilometre Taşları (Silmek için butona tıklayın)")
                     for ms_idx, ms in enumerate(proj["milestones"]):
                         col_ms1, col_ms2 = st.columns([4, 1])
-                        col_ms1.write(f"🚩 {ms['name']} ({ms.get('date', '')}) - {'✅ Tamamlandı' if ms['done'] else '⏳ Bekliyor'}")
+                        col_ms1.write(f"🚩 {ms['name']} ({ms.get('date', '')}) - {'✅ Tamamlandı' if ms.get('done', False) or ms.get('status') == 'Completed' else '⏳ Bekliyor'}")
                         if col_ms2.button("🗑️ Sil", key=f"del_ms_{proj_id}_{ms_idx}"):
                             proj["milestones"].pop(ms_idx)
                             save_data(data)
@@ -449,7 +454,8 @@ def show_projects(data):
                     "tasks_total": 0,
                     "tasks_completed": 0,
                     "milestones": final_milestones,
-                    "is_secret": False
+                    "is_secret": False,
+                    "owner_name": active_owner
                 }
                 data["projects"].append(new_proj)
                 

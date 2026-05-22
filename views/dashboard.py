@@ -5,27 +5,32 @@ from datetime import datetime
 def clean_html(html_str):
     return "\n".join([line.strip() for line in html_str.split("\n")])
 
+from utils.data_handler import get_filtered_elements
+
 def show_dashboard(data):
     st.markdown('<div class="section-title">📊 Komuta Merkezi (Dashboard)</div>', unsafe_allow_html=True)
     st.markdown('<div class="section-subtitle">Tüm projelere ve metriklerine kuşbakışı genel bakış</div>', unsafe_allow_html=True)
+    
+    # Filter data for active owner
+    active_owner, projects, tasks, time_logs, finances, activities, deployments = get_filtered_elements(data)
     
     # Initialize session state for secret vault
     unlocked_secrets = st.session_state.get("unlocked_secrets", {})
     
     # Üst Metrikler
-    public_projects = [p for p in data.get("projects", []) if not p.get("is_secret", False)]
-    secret_projects = [p for p in data.get("projects", []) if p.get("is_secret", False)]
+    public_projects = [p for p in projects if not p.get("is_secret", False)]
+    secret_projects = [p for p in projects if p.get("is_secret", False)]
     
     total_pub = len(public_projects)
     total_sec = len(secret_projects)
     
-    active_projects = sum(1 for p in data.get("projects", []) if p.get('status') == 'In Progress')
-    completed_projects = sum(1 for p in data.get("projects", []) if p.get('status') in ['Production', 'Done'])
+    active_projects = sum(1 for p in projects if p.get('status') == 'In Progress')
+    completed_projects = sum(1 for p in projects if p.get('status') in ['Production', 'Done'])
     
     # Hide tasks of locked secret projects from public task completion count
     visible_tasks = []
-    for t in data.get("tasks", []):
-        proj_ref = next((p for p in data.get("projects", []) if p["id"] == t.get("project_id")), None)
+    for t in tasks:
+        proj_ref = next((p for p in projects if p["id"] == t.get("project_id")), None)
         if proj_ref and proj_ref.get("is_secret", False):
             if proj_ref["id"] not in unlocked_secrets:
                 continue
@@ -59,7 +64,7 @@ def show_dashboard(data):
     with col1:
         st.markdown('<div class="section-title" style="font-size: 18px;">🔥 Aktif Geliştirme Durumu</div>', unsafe_allow_html=True)
         # Sadece "In Progress" olanları göster
-        active_list = [p for p in data.get("projects", []) if p.get('status') == 'In Progress']
+        active_list = [p for p in projects if p.get('status') == 'In Progress']
         if active_list:
             for proj in active_list:
                 progress = proj.get('progress', 0)
@@ -93,9 +98,9 @@ def show_dashboard(data):
         st.markdown('<div class="section-title" style="font-size: 18px;">⚡ Son Aktiviteler</div>', unsafe_allow_html=True)
         st.markdown('<div style="background: rgba(255,255,255,0.02); border-radius: 12px; padding: 15px;">', unsafe_allow_html=True)
         
-        recent_activities = data.get("activities", [])[:5]
+        recent_activities = activities[:5]
         for act in recent_activities:
-            proj_ref = next((p for p in data.get('projects', []) if p['id'] == act.get('project')), None)
+            proj_ref = next((p for p in projects if p['id'] == act.get('project')), None)
             
             if proj_ref:
                 is_sec = proj_ref.get("is_secret", False)
