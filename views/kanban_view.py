@@ -137,6 +137,19 @@ def show_kanban(data):
                     assignee_name = "Şifreli" if is_locked else task.get("assignee", "Atanmadı")
                     assignee_initial = "?" if is_locked else (assignee_name[0].upper() if assignee_name and assignee_name != "Atanmadı" else "?")
                     
+                    if is_locked:
+                        assignee_label = "🔒 Sorumlu: Şifreli"
+                    elif status == "Done":
+                        assignee_label = f"✅ Tamamlayan: <b>{assignee_name}</b>"
+                    else:
+                        assignee_label = f"👤 Sorumlu: <b>{assignee_name}</b>"
+                        
+                    assignee_html = f"""
+                    <div style="margin-top: 10px; padding: 6px 10px; border-radius: 8px; background: rgba(102, 126, 234, 0.05); border: 1px solid rgba(255, 255, 255, 0.08); font-size: 11px; color: #a5b4fc; display: flex; align-items: center; gap: 6px;">
+                        <span>{assignee_label}</span>
+                    </div>
+                    """
+                    
                     # 1. Dependency checking
                     dep_warning_html = ""
                     dep_id = task.get("depends_on")
@@ -176,6 +189,7 @@ def show_kanban(data):
                             <span style="color: #9ca3af; background: rgba(255,255,255,0.05); padding: 4px 8px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1);">{proj_name}</span>
                             <span style="color: {prio_color}; font-weight: 700; background: {prio_color}15; padding: 4px 8px; border-radius: 6px; border: 1px solid {prio_color}40;">{task['priority']}</span>
                         </div>
+                        {assignee_html}
                         {subtasks_html}
                     </div>
                     """), unsafe_allow_html=True)

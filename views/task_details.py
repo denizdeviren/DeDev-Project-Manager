@@ -10,6 +10,27 @@ def render_task_details(task, data):
     Renders an interactive, premium details panel for a task (Sub-tasks, Comments, and Dependencies).
     Mutates data and calls save_data when updates occur.
     """
+    # Smooth scroll anchor to bring details to user view immediately
+    st.markdown('<div id="task-details-section"></div>', unsafe_allow_html=True)
+    import streamlit.components.v1 as components
+    components.html(
+        """
+        <script>
+            try {
+                var doc = window.parent.document;
+                var el = doc.getElementById("task-details-section");
+                if (el) {
+                    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            } catch (e) {
+                console.error("Scroll error:", e);
+            }
+        </script>
+        """,
+        height=0,
+        width=0
+    )
+
     st.markdown(f"""
     <div style="background: rgba(102, 126, 234, 0.05); border: 1px solid rgba(102, 126, 234, 0.2); border-radius: 12px; padding: 20px; margin-bottom: 20px;">
         <h4 style="margin: 0; color: white;">🔍 Görev Detayları: {task.get('title')}</h4>
