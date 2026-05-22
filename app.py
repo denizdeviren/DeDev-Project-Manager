@@ -273,14 +273,16 @@ if st.session_state["logged_in_user"] is None:
                         st.rerun()
                         
     st.markdown("<div style='height: 20px;'></div>", unsafe_allow_html=True)
-    with st.expander("🔑 Örnek Simülasyon Giriş Bilgileri"):
+    with st.expander("🏢 Kurumsal Demo Hesabı — Canlı Deneyim"):
         st.markdown("""
-        <div style="font-family: 'Inter', sans-serif; font-size: 13px; text-align: left; line-height: 1.6; color: #d1d5db;">
-            Sistemi test etmek amacıyla aşağıdaki örnek simülasyon hesabını kullanabilirsiniz:
-            <hr style="border-color: rgba(255,255,255,0.08); margin: 8px 0;">
-            <b>👤 Örnek Simülasyon Hesabı:</b><br>
-            • Kullanıcı Adı: <code style="color: #10b981; font-weight: bold;">demo_erpsim</code><br>
-            • Şifre: <code style="color: #10b981; font-weight: bold;">demo123</code><br>
+        <div style="font-family: 'Inter', sans-serif; font-size: 13px; text-align: left; line-height: 1.8; color: #d1d5db;">
+            Sistemi canlı olarak keşfetmek için hazır bir kurumsal çalışma alanına giriş yapabilirsiniz.
+            <hr style="border-color: rgba(255,255,255,0.08); margin: 10px 0;">
+            <b style="color: #a5b4fc;">🏢 Aura Yazılım Teknolojileri</b><br>
+            <span style="color: #9ca3af;">Yetkili:</span> <b style="color: white;">Murat Yıldırım</b> — CEO &amp; Software Architect<br>
+            <hr style="border-color: rgba(255,255,255,0.08); margin: 10px 0;">
+            <span style="color: #9ca3af;">Kullanıcı Adı:</span> <code style="color: #10b981; font-weight: bold;">demo_erpsim</code><br>
+            <span style="color: #9ca3af;">Şifre:</span> <code style="color: #10b981; font-weight: bold;">demo123</code>
         </div>
         """, unsafe_allow_html=True)
         

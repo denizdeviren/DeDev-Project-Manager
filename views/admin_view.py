@@ -44,9 +44,10 @@ def show_admin(data):
     # -------------------------------------------------------------
     # STREAMLIT TABS
     # -------------------------------------------------------------
-    tab_profiles, tab_new_profile, tab_cross_stats = st.tabs([
+    tab_profiles, tab_new_profile, tab_team_login, tab_cross_stats = st.tabs([
         "👥 Profil Yönetimi & Geçiş", 
-        "➕ Yeni Profil (Hesap) Ekle", 
+        "➕ Yeni Profil (Hesap) Ekle",
+        "🔐 Ekip Giriş Yönetimi",
         "📊 Hesaplar Arası Analiz"
     ])
     
@@ -266,8 +267,162 @@ def show_admin(data):
                     st.error("❌ Ad Soyad alanı boş bırakılamaz.")
                     
     # =============================================================
-    # SEKME 3: HESAPLAR ARASI ANALİZ
+    # SEKME 3: EKİP GİRİŞ YÖNETİMİ
     # =============================================================
+    with tab_team_login:
+        st.markdown("### 🔐 Ekip Üyesi Giriş Bilgileri Yönetimi")
+        st.markdown("""
+        <div style="font-size: 13px; color: #9ca3af; margin-bottom: 20px;">
+            Ekip üyelerinize kullanıcı adı ve şifre atayın. Bu bilgilerle aynı sisteme giriş yapabilirler.
+            Üyelerin görebileceği içerik, yetki ayarlarına göre otomatik filtrelenir.
+        </div>
+        """, unsafe_allow_html=True)
+
+        team_members = data.get("team", [])
+        if not team_members:
+            st.info("Henüz ekip üyesi eklenmemiş. Önce Ekip Yönetimi sayfasından üye ekleyin.")
+        else:
+            for member in team_members:
+                member_name = member.get("name", "")
+                member_id   = member.get("id", "")
+                # Find if this member already has a login account in current data
+                existing_acc = next(
+                    (a for a in data.get("accounts", []) if a.get("name") == member_name),
+                    None
+                )
+                has_login = existing_acc is not None
+
+                badge_color = "#10b981" if has_login else "#f59e0b"
+                badge_text  = "✅ Giriş Tanımlı" if has_login else "⚠️ Giriş Yok"
+                current_uname = existing_acc.get("username", "") if existing_acc else ""
+                current_email = member.get("email", "")
+
+                with st.expander(f"{'🟢' if has_login else '🟡'} {member_name} — {member.get('role','')}", expanded=False):
+                    col_info, col_form = st.columns([1, 2])
+                    with col_info:
+                        st.markdown(f"""
+                        <div style="background: rgba(255,255,255,0.03); padding: 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.06);">
+                            <div style="font-weight: 700; color: white; font-size: 15px;">{member_name}</div>
+                            <div style="color: #667eea; font-size: 12px; margin: 4px 0;">{member.get('role','')}</div>
+                            <div style="color: #9ca3af; font-size: 11px;">🏢 {member.get('department','')}</div>
+                            <div style="margin-top: 10px; padding: 6px 10px; border-radius: 8px;
+                                        background: {'rgba(16,185,129,0.1)' if has_login else 'rgba(245,158,11,0.1)'};
+                                        border: 1px solid {'rgba(16,185,129,0.3)' if has_login else 'rgba(245,158,11,0.3)'};
+                                        font-size: 11px; font-weight: 600;
+                                        color: {'#10b981' if has_login else '#f59e0b'};">
+                                {badge_text}
+                            </div>
+                            {"<div style='margin-top:8px; font-size:11px; color:#a5b4fc;'>👤 " + current_uname + "</div>" if has_login else ""}
+                        </div>
+                        """, unsafe_allow_html=True)
+
+                    with col_form:
+                        with st.form(f"team_login_form_{member_id}"):
+                            st.markdown("##### ✏️ Giriş Bilgileri Düzenle")
+                            new_uname = st.text_input(
+                                "Kullanıcı Adı",
+                                value=current_uname,
+                                placeholder="örn: furkanisik",
+                                key=f"uname_{member_id}"
+                            )
+                            new_email = st.text_input(
+                                "E-posta",
+                                value=current_email,
+                                placeholder="ornek@sirket.com",
+                                key=f"email_{member_id}"
+                            )
+                            new_pwd = st.text_input(
+                                "Yeni Şifre",
+                                type="password",
+                                placeholder="Boş bırakırsanız şifre değişmez",
+                                key=f"pwd_{member_id}"
+                            )
+                            new_pwd2 = st.text_input(
+                                "Şifre Tekrar",
+                                type="password",
+                                placeholder="Şifreyi tekrar girin",
+                                key=f"pwd2_{member_id}"
+                            )
+
+                            # Role/permission selector for this member
+                            current_rt = existing_acc.get("role_type", "member") if existing_acc else "member"
+                            rt_choice = st.selectbox(
+                                "Yetki Türü",
+                                ["Ekip Üyesi (Sınırlı)", "Yönetici (Admin)"],
+                                index=0 if current_rt == "member" else 1,
+                                key=f"rt_{member_id}"
+                            )
+                            if rt_choice == "Ekip Üyesi (Sınırlı)":
+                                inv_keys = {v: k for k, v in PAGE_KEYS.items()}
+                                cur_perms = existing_acc.get("permissions", ["dashboard", "projects", "kanban", "timeline", "calendar", "time_tracking"]) if existing_acc else ["dashboard", "projects", "kanban", "timeline", "calendar", "time_tracking"]
+                                pre_sel = [inv_keys[p] for p in cur_perms if p in inv_keys]
+                                sel_perms = st.multiselect(
+                                    "Yetkili Sayfalar",
+                                    list(PAGE_KEYS.keys()),
+                                    default=pre_sel,
+                                    key=f"perms_{member_id}"
+                                )
+
+                            save_btn = st.form_submit_button("💾 Kaydet", use_container_width=True)
+                            if save_btn:
+                                if not new_uname:
+                                    st.error("Kullanıcı adı boş olamaz.")
+                                elif new_pwd and new_pwd != new_pwd2:
+                                    st.error("Şifreler eşleşmiyor!")
+                                else:
+                                    # Check username conflict with other accounts
+                                    conflict = next(
+                                        (a for a in data.get("accounts", [])
+                                         if a.get("username") == new_uname and a.get("name") != member_name),
+                                        None
+                                    )
+                                    if conflict:
+                                        st.error(f"'{new_uname}' kullanıcı adı zaten kullanımda.")
+                                    else:
+                                        from utils.encryption import hash_password
+                                        role_type_str = "admin" if rt_choice == "Yönetici (Admin)" else "member"
+                                        perm_keys = list(PAGE_KEYS.values()) if role_type_str == "admin" else [PAGE_KEYS[p] for p in sel_perms]
+
+                                        if existing_acc:
+                                            # Update existing account
+                                            existing_acc["username"]  = new_uname
+                                            existing_acc["name"]      = member_name
+                                            existing_acc["role_type"] = role_type_str
+                                            existing_acc["permissions"] = perm_keys
+                                            if new_pwd:
+                                                h, s = hash_password(new_pwd)
+                                                existing_acc["password_hash"] = h
+                                                existing_acc["password_salt"] = s
+                                        else:
+                                            # Create new login account for this team member
+                                            pwd_to_use = new_pwd if new_pwd else "dedev2026"
+                                            h, s = hash_password(pwd_to_use)
+                                            new_acc_entry = {
+                                                "username":      new_uname,
+                                                "password_hash": h,
+                                                "password_salt": s,
+                                                "name":          member_name,
+                                                "role":          member.get("role", "Ekip Üyesi"),
+                                                "company":       data.get("accounts", [{}])[0].get("company", "DeDev"),
+                                                "location":      "Remote",
+                                                "since":         "2026",
+                                                "bio":           f"{member_name}, ekip üyesi.",
+                                                "role_type":     role_type_str,
+                                                "permissions":   perm_keys,
+                                            }
+                                            data.setdefault("accounts", []).append(new_acc_entry)
+
+                                        # Also update email on the team member record
+                                        member["email"] = new_email
+
+                                        save_data(data)
+                                        st.success(f"✅ {member_name} giriş bilgileri kaydedildi! Kullanıcı adı: **{new_uname}**")
+                                        st.rerun()
+
+    # =============================================================
+    # SEKME 4: HESAPLAR ARASI ANALİZ
+    # =============================================================
+
     with tab_cross_stats:
         st.markdown("### 📊 Hesap Profilleri Karşılaştırma Analitiği")
         
