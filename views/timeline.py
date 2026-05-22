@@ -258,7 +258,12 @@ def show_timeline(data):
                 
                 for t_idx, t in enumerate(sorted_tasks):
                     p_name = proj_id_to_name.get(t["project_id"], "Bilinmeyen Proje")
-                    assignee_name = t.get("assignee", "Atanmadı")
+                    asg = t.get("assignee", "").strip()
+                    if not asg or asg in ["Atanmadı", "Atanmamış", "Atanmış Değil"]:
+                        proj = next((p for p in projects if p["id"] == t.get("project_id")), None)
+                        assignee_name = proj.get("owner_name") if proj else "Atanmamış"
+                    else:
+                        assignee_name = asg
                     
                     # Görevin bitiş tarihi task['date']'dir. Başlangıç tarihini 4 gün öncesi varsayıyoruz
                     end_str = t.get("date", datetime.now().strftime("%Y-%m-%d"))
@@ -448,9 +453,21 @@ def show_timeline(data):
         with col_prog_right:
             st.markdown('### 👥 Ekip Görev Dağılımı')
             if visible_tasks:
+                # Resolve assignee with project owner fallback to prevent "Atanmamış" (unassigned) slice clutter
+                resolved_visible_tasks = []
+                for t in visible_tasks:
+                    t_copy = dict(t)
+                    asg = t_copy.get("assignee", "").strip()
+                    if not asg or asg == "Atanmamış":
+                        proj = next((p for p in projects if p["id"] == t_copy.get("project_id")), None)
+                        t_copy["assignee"] = proj.get("owner_name") if proj else "Atanmamış"
+                    else:
+                        t_copy["assignee"] = asg
+                    resolved_visible_tasks.append(t_copy)
+                
                 # Görevlileri (assignee) çıkarıp sayalım
                 assignee_counts = {}
-                for t in visible_tasks:
+                for t in resolved_visible_tasks:
                     asg = t.get("assignee", "Atanmamış").strip()
                     if not asg:
                         asg = "Atanmamış"

@@ -11,7 +11,7 @@ st.set_page_config(
 )
 
 # Utils ve Veri Yönetimi
-from utils.data_handler import load_data, save_data
+from utils.data_handler import load_data, save_data, get_all_accounts
 
 # Sayfa (View) Importları
 from views.dashboard import show_dashboard
@@ -193,7 +193,8 @@ if st.session_state["logged_in_user"] is None:
                     st.error("Lütfen kullanıcı adı ve şifrenizi girin.")
                 else:
                     matched_acc = None
-                    for acc in data.get("accounts", []):
+                    all_accounts = get_all_accounts()
+                    for acc in all_accounts:
                         if acc.get("username") == username:
                             if "password_hash" in acc and "password_salt" in acc:
                                 from utils.encryption import hash_password
@@ -213,6 +214,8 @@ if st.session_state["logged_in_user"] is None:
                     
                     if matched_acc:
                         st.session_state["logged_in_user"] = matched_acc["username"]
+                        # Reload data dynamically from the isolated database
+                        data = load_data()
                         data["active_owner"] = matched_acc["name"]
                         save_data(data)
                         st.toast(f"Hoş geldiniz, {matched_acc['name']}! 👋")
@@ -236,9 +239,10 @@ if st.session_state["logged_in_user"] is None:
                 if not r_name or not r_username or not r_password:
                     st.error("Lütfen Ad Soyad, Kullanıcı Adı ve Şifre alanlarını doldurun.")
                 else:
-                    # Check duplication
-                    name_exists = any(acc.get("name", "").lower() == r_name.lower() for acc in data.get("accounts", []))
-                    username_exists = any(acc.get("username", "").lower() == r_username.lower() for acc in data.get("accounts", []))
+                    # Check duplication against all database accounts
+                    all_accounts = get_all_accounts()
+                    name_exists = any(acc.get("name", "").lower() == r_name.lower() for acc in all_accounts)
+                    username_exists = any(acc.get("username", "").lower() == r_username.lower() for acc in all_accounts)
                     
                     if name_exists or username_exists:
                         st.error("❌ Bu isimle veya kullanıcı adıyla kayıtlı bir profil zaten mevcut!")
@@ -261,6 +265,8 @@ if st.session_state["logged_in_user"] is None:
                         data.setdefault("accounts", []).append(new_acc)
                         # Immediately log in the newly registered user for a seamless premium experience!
                         st.session_state["logged_in_user"] = r_username
+                        # Reload data dynamically from the isolated database
+                        data = load_data()
                         data["active_owner"] = r_name
                         save_data(data)
                         st.toast(f"Tebrikler! Hesabınız başarıyla oluşturuldu ve giriş yapıldı. 👋")

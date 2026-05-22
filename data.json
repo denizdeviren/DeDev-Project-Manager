@@ -158,50 +158,9 @@
       "project_id": "PRJ-SPARKZ",
       "task": "Otomatik Kayıt: 'Kod Kalitesi: 70+ uyarının temizlenmesi (Refactoring)' tamamlandı",
       "duration": 60
-    },
-    {
-      "date": "2026-05-22",
-      "project_id": "PROJ-SIM-1",
-      "task_title": "State Management kurulumu (Provider)",
-      "duration": 2.5,
-      "effort_level": "Yüksek",
-      "description": "Provider mimarisi kuruldu ve entegre edildi."
-    },
-    {
-      "date": "2026-05-22",
-      "project_id": "PROJ-SIM-1",
-      "task_title": "UI/UX Tasarımları",
-      "duration": 1.5,
-      "effort_level": "Orta",
-      "description": "Arayüz revizyonları yapıldı."
-    },
-    {
-      "date": "2026-05-22",
-      "project_id": "PROJ-SIM-1",
-      "task": "Otomatik Kayıt: 'Giriş ekranı ve login tasarımı' tamamlandı",
-      "duration": 60
     }
   ],
-  "finances": [
-    {
-      "id": "FIN-SIM-1",
-      "project_id": "PROJ-SIM-1",
-      "type": "Gelir",
-      "category": "Yazılım Satış",
-      "amount": 25000.0,
-      "date": "2026-05-02",
-      "description": "Proje avansı alındı."
-    },
-    {
-      "id": "FIN-SIM-2",
-      "project_id": "PROJ-SIM-1",
-      "type": "Gider",
-      "category": "Sunucu / Altyapı",
-      "amount": 350.0,
-      "date": "2026-05-18",
-      "description": "Firebase Blaze plan ödemesi."
-    }
-  ],
+  "finances": [],
   "deployments": [
     {
       "id": "DEP-001",
@@ -482,38 +441,6 @@
       "team": [
         "Deniz Deviren",
         "M. Furkan Işık"
-      ]
-    },
-    {
-      "id": "PROJ-SIM-1",
-      "name": "DeDev Mobil Cüzdan",
-      "category": "Mobil Uygulama",
-      "status": "In Progress",
-      "priority": "High",
-      "start_date": "2026-05-01",
-      "end_date": "2026-07-15",
-      "budget": 15000.0,
-      "lines_of_code": 12500,
-      "description": "Ekip içi ödemeleri ve cüzdan hareketlerini izleyen mobil uygulama geliştirme süreci.",
-      "tech_stack": [
-        "Dart",
-        "Flutter",
-        "Firebase"
-      ],
-      "owner_name": "Furkan",
-      "milestones": [
-        {
-          "id": "MS-SIM-1",
-          "name": "UI/UX Tasarımları",
-          "date": "2026-05-15",
-          "status": "Completed"
-        },
-        {
-          "id": "MS-SIM-2",
-          "name": "Firebase Entegrasyonu",
-          "date": "2026-06-10",
-          "status": "Pending"
-        }
       ]
     }
   ],
@@ -892,37 +819,6 @@
       "priority": "High",
       "date": "2026-11-30",
       "assignee": "M. Furkan Işık"
-    },
-    {
-      "id": "TASK-SIM-1",
-      "title": "Giriş ekranı ve login tasarımı",
-      "status": "Done",
-      "priority": "Medium",
-      "date": "2026-05-12",
-      "project_id": "PROJ-SIM-1",
-      "assignee": "Furkan",
-      "effort": 3,
-      "time_logged": true
-    },
-    {
-      "id": "TASK-SIM-2",
-      "title": "State Management kurulumu (Provider)",
-      "status": "In Progress",
-      "priority": "High",
-      "date": "2026-05-24",
-      "project_id": "PROJ-SIM-1",
-      "assignee": "Furkan",
-      "effort": 5
-    },
-    {
-      "id": "TASK-SIM-3",
-      "title": "API bağlantıları ve servis katmanı",
-      "status": "To Do",
-      "priority": "High",
-      "date": "2026-06-05",
-      "project_id": "PROJ-SIM-1",
-      "assignee": "Ahmet Yılmaz",
-      "effort": 8
     }
   ],
   "activities": [
@@ -1232,5 +1128,7 @@
       "description": "Bir projeye ait tüm görevler 'Done' (Tamamlandı) olduğunda, projenin en son kilometre taşını otomatik olarak 'Tamamlandı' olarak işaretle.",
       "enabled": true
     }
-  ]
+  ],
+  "bank_accounts": [],
+  "accounting_ledger": []
 }

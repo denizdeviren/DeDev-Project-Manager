@@ -107,8 +107,20 @@ def show_reports(data):
         tasks = data.get("tasks", [])
         filtered_tasks = [t for t in tasks if t.get("project_id") in valid_project_ids]
         
-        developer_workload = {}
+        # Resolve assignee with project owner fallback to prevent "Atanmamış" (unassigned) slice clutter
+        resolved_tasks = []
         for t in filtered_tasks:
+            t_copy = dict(t)
+            asg = t_copy.get("assignee", "").strip()
+            if not asg or asg == "Atanmamış":
+                proj = next((p for p in active_projects if p["id"] == t_copy.get("project_id")), None)
+                t_copy["assignee"] = proj.get("owner_name") if proj else "Atanmamış"
+            else:
+                t_copy["assignee"] = asg
+            resolved_tasks.append(t_copy)
+        
+        developer_workload = {}
+        for t in resolved_tasks:
             assignee = t.get("assignee", "Atanmamış")
             if assignee:
                 developer_workload[assignee] = developer_workload.get(assignee, 0) + 1
@@ -142,8 +154,8 @@ def show_reports(data):
     st.markdown('<div class="section-title" style="font-size: 18px;">📊 Ekip Görev Tamamlama ve Durum Analizi</div>', unsafe_allow_html=True)
     st.markdown('<div class="section-subtitle">Ekip üyelerinin aktif ve tamamlanan görev durumlarının birikmeli dağılımı</div>', unsafe_allow_html=True)
     
-    if filtered_tasks:
-        assignees = list(set([t.get("assignee", "Atanmamış") for t in filtered_tasks]))
+    if resolved_tasks:
+        assignees = list(set([t.get("assignee", "Atanmamış") for t in resolved_tasks]))
         status_types = ["To Do", "In Progress", "Done"]
         status_colors = {
             "To Do": "#4b5563",
@@ -155,7 +167,7 @@ def show_reports(data):
         for status in status_types:
             counts = []
             for assignee in assignees:
-                c = sum(1 for t in filtered_tasks if t.get("assignee", "Atanmamış") == assignee and t.get("status") == status)
+                c = sum(1 for t in resolved_tasks if t.get("assignee", "Atanmamış") == assignee and t.get("status") == status)
                 counts.append(c)
             
             fig_tasks_status.add_trace(go.Bar(
