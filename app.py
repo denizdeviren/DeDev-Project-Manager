@@ -267,16 +267,16 @@ if st.session_state["logged_in_user"] is None:
                         st.rerun()
                         
     st.markdown("<div style='height: 20px;'></div>", unsafe_allow_html=True)
-    with st.expander("🔑 Simülasyon Giriş Bilgileri"):
+    with st.expander("🔑 Örnek Simülasyon Giriş Bilgileri"):
         st.markdown("""
         <div style="font-family: 'Inter', sans-serif; font-size: 13px; text-align: left; line-height: 1.6; color: #d1d5db;">
-            Bu simülasyon için aşağıdaki hesabı kullanabilirsiniz:
+            Sistemi test etmek amacıyla aşağıdaki örnek simülasyon hesabını kullanabilirsiniz:
             <hr style="border-color: rgba(255,255,255,0.08); margin: 8px 0;">
-            <b>👤 Ortak Hesabı (Furkan):</b><br>
-            • Kullanıcı Adı: <code style="color: #10b981; font-weight: bold;">furkan</code><br>
-            • Şifre: <code style="color: #10b981; font-weight: bold;">123456</code><br>
+            <b>👤 Örnek Simülasyon Hesabı:</b><br>
+            • Kullanıcı Adı: <code style="color: #10b981; font-weight: bold;">demo_erpsim</code><br>
+            • Şifre: <code style="color: #10b981; font-weight: bold;">demo123</code><br>
             <hr style="border-color: rgba(255,255,255,0.08); margin: 8px 0;">
-            <i>Not: Yeni eklenen her profil, kayıt sırasında belirlenen bilgilerle giriş yapabilir.</i>
+            <i>Not: Gerçek kullanıcılarımız (Deniz Deviren ve M. Furkan Işık) kendi şahsi kullanıcı adı ve şifreleriyle sisteme giriş yapabilirler.</i>
         </div>
         """, unsafe_allow_html=True)
         

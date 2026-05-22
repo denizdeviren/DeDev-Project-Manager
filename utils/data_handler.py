@@ -76,16 +76,16 @@ def init_defaults(data):
             "bio": "Tek kişilik ekip. Yapay zeka, web, mobil ve oyun geliştirme projeleri."
         })
 
-    # Find or update Furkan's account
-    furkan_acc = next((acc for acc in data["accounts"] if acc.get("username") == "furkan" or acc.get("name") == "Furkan"), None)
+    # Find or update Furkan's account (M. Furkan Işık - Real Partner Account)
+    furkan_acc = next((acc for acc in data["accounts"] if acc.get("username") == "furkan" or acc.get("name") in ["Furkan", "M. Furkan Işık"]), None)
     if furkan_acc:
         furkan_acc["username"] = "furkan"
-        furkan_acc["name"] = "Furkan"
-        furkan_acc.setdefault("role", "Co-Founder & Product Manager")
-        furkan_acc.setdefault("company", "DeDev")
-        furkan_acc.setdefault("location", "Remote / Global")
-        furkan_acc.setdefault("since", "2024")
-        furkan_acc.setdefault("bio", "Furkan, DeDev ortağı ve ürün yöneticisi.")
+        furkan_acc["name"] = "M. Furkan Işık"
+        furkan_acc["role"] = "Co-Founder & Developer"
+        furkan_acc["company"] = "DeDev"
+        furkan_acc["location"] = "Remote / Global"
+        furkan_acc["since"] = "2024"
+        furkan_acc["bio"] = "M. Furkan Işık, DeDev ortağı ve yazılım geliştiricisi."
         if "password_hash" not in furkan_acc:
             h_val, s_val = hash_password("123456")
             furkan_acc["password_hash"] = h_val
@@ -98,12 +98,42 @@ def init_defaults(data):
             "username": "furkan",
             "password_hash": h_val,
             "password_salt": s_val,
-            "name": "Furkan",
-            "role": "Co-Founder & Product Manager",
+            "name": "M. Furkan Işık",
+            "role": "Co-Founder & Developer",
             "company": "DeDev",
             "location": "Remote / Global",
             "since": "2024",
-            "bio": "Furkan, DeDev ortağı ve ürün yöneticisi."
+            "bio": "M. Furkan Işık, DeDev ortağı ve yazılım geliştiricisi."
+        })
+
+    # Find or update Example Simulation account (Demo Simulation Account)
+    sim_acc = next((acc for acc in data["accounts"] if acc.get("username") == "demo_erpsim" or acc.get("name") == "Örnek Simülasyon"), None)
+    if sim_acc:
+        sim_acc["username"] = "demo_erpsim"
+        sim_acc["name"] = "Örnek Simülasyon"
+        sim_acc["role"] = "Test / Simülasyon Hesabı"
+        sim_acc["company"] = "DeDev Demo"
+        sim_acc["location"] = "Cloud"
+        sim_acc["since"] = "2026"
+        sim_acc["bio"] = "Sistemi test etmek için örnek veri ve sınırlı yetkilerle donatılmış simülasyon profili."
+        sim_acc["role_type"] = "member"
+        if "password_hash" not in sim_acc:
+            h_val, s_val = hash_password("demo123")
+            sim_acc["password_hash"] = h_val
+            sim_acc["password_salt"] = s_val
+    else:
+        h_val, s_val = hash_password("demo123")
+        data["accounts"].append({
+            "username": "demo_erpsim",
+            "password_hash": h_val,
+            "password_salt": s_val,
+            "name": "Örnek Simülasyon",
+            "role": "Test / Simülasyon Hesabı",
+            "company": "DeDev Demo",
+            "location": "Cloud",
+            "since": "2026",
+            "bio": "Sistemi test etmek için örnek veri ve sınırlı yetkilerle donatılmış simülasyon profili.",
+            "role_type": "member"
         })
         
     # Auto-migrate any other legacy accounts loaded from database
@@ -127,10 +157,20 @@ def init_defaults(data):
             {"id": "DEP-YONETIM", "name": "Yönetim", "description": "Stratejik yönetim ve karar alma süreçleri.", "color": "#ef4444", "icon": "👑"}
         ]
         
-    # Set default department for existing team members if not present
+    # Set default department and unique ID for existing team members if not present
+    import uuid
     for member in data.setdefault("team", []):
         if "department" not in member:
             member["department"] = "Yazılım Geliştirme"
+        if "id" not in member:
+            if member.get("name") == "Ahmet Yılmaz":
+                member["id"] = "USR-AHMET"
+            elif member.get("name") == "Elif Demir":
+                member["id"] = "USR-ELIF"
+            elif member.get("name") == "M. Furkan Işık":
+                member["id"] = "USR-FURKAN"
+            else:
+                member["id"] = f"USR-{str(uuid.uuid4())[:6].upper()}"
             
     # Check if Furkan has any projects. If not, add mock projects and tasks for simulation
     furkan_projects = [p for p in data.setdefault("projects", []) if p.get("owner_name") == "Furkan"]
@@ -238,9 +278,9 @@ def init_defaults(data):
         # Create mock team members if not already there
         data.setdefault("team", [])
         if not any(t["name"] == "Ahmet Yılmaz" for t in data["team"]):
-            data["team"].append({"name": "Ahmet Yılmaz", "role": "Mobil Geliştirici", "department": "Yazılım Geliştirme", "email": "ahmet@dedev.com"})
+            data["team"].append({"id": "USR-AHMET", "name": "Ahmet Yılmaz", "role": "Mobil Geliştirici", "department": "Yazılım Geliştirme", "email": "ahmet@dedev.com"})
         if not any(t["name"] == "Elif Demir" for t in data["team"]):
-            data["team"].append({"name": "Elif Demir", "role": "UI/UX Tasarımcı", "department": "Tasarım & UI/UX", "email": "elif@dedev.com"})
+            data["team"].append({"id": "USR-ELIF", "name": "Elif Demir", "role": "UI/UX Tasarımcı", "department": "Tasarım & UI/UX", "email": "elif@dedev.com"})
 
     # Initialize Bank Accounts & Accounting Ledger
     if "bank_accounts" not in data or not data["bank_accounts"]:

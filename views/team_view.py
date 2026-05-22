@@ -116,10 +116,11 @@ def show_team(data):
                         """), unsafe_allow_html=True)
                         
                         # Delete button
-                        if st.button("🗑️ Ekipten Çıkar", key=f"del_worker_{member['id']}", type="secondary", use_container_width=True):
-                            data["team"] = [m for m in data["team"] if m["id"] != member["id"]]
+                        m_id = member.get("id", member.get("name", "unknown"))
+                        if st.button("🗑️ Ekipten Çıkar", key=f"del_worker_{m_id}", type="secondary", use_container_width=True):
+                            data["team"] = [m for m in data["team"] if m.get("id") != member.get("id") or m.get("name") != member.get("name")]
                             save_data(data)
-                            st.warning(f"'{member['name']}' ekibinizden çıkarıldı!")
+                            st.warning(f"'{member.get('name')}' ekibinizden çıkarıldı!")
                             st.rerun()
             else:
                 st.info("Bu filtreye uygun ekip üyesi bulunamadı.")
