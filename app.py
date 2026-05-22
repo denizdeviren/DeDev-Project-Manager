@@ -254,7 +254,9 @@ if st.session_state["logged_in_user"] is None:
                             "company": r_company if r_company else "DeDev",
                             "location": r_location if r_location else "Remote",
                             "since": "2026",
-                            "bio": r_bio if r_bio else "Yeni simülasyon kullanıcısı."
+                            "bio": r_bio if r_bio else "Yeni simülasyon kullanıcısı.",
+                            "role_type": "member",
+                            "permissions": ["dashboard", "projects", "kanban", "timeline", "calendar", "time_tracking"]
                         }
                         data.setdefault("accounts", []).append(new_acc)
                         # Immediately log in the newly registered user for a seamless premium experience!
@@ -296,64 +298,85 @@ with st.sidebar:
     """, unsafe_allow_html=True)
     
     st.markdown("### 🧭 Navigasyon")
+    
+    # Permission system mapping
+    PAGE_KEYS = {
+        "🏠 Dashboard": "dashboard",
+        "📁 Projeler": "projects",
+        "📚 Arşiv ve Belgeler": "archive",
+        "📊 DeDev Findeks Skoru": "portfolio_rating",
+        "🔒 Gizli Kasa": "secret_vault",
+        "📋 Kanban Board": "kanban",
+        "📅 Takvim Görünümü": "calendar",
+        "📊 Şemalar ve Gantt": "timeline",
+        "💻 Tech Stack": "techstack",
+        "👥 Ekip Yönetimi": "team",
+        "📈 Raporlar": "reports",
+        "📝 Hızlı Notlar": "notes",
+        "⏱️ Zaman Takibi": "time_tracking",
+        "💰 Bütçe & Giderler": "finance",
+        "⚙️ Admin Paneli": "admin"
+    }
+    
+    all_pages = list(PAGE_KEYS.keys())
+    current_user = st.session_state.get("logged_in_user")
+    current_acc = next((acc for acc in data.get("accounts", []) if acc.get("username") == current_user), None)
+    
+    is_admin_user = True
+    if current_acc:
+        is_admin_user = (current_acc.get("username") in ["1denizdeviren", "furkan"]) or (current_acc.get("role_type", "admin") == "admin")
+        
+    if current_acc and current_acc.get("username") not in ["1denizdeviren", "furkan"] and current_acc.get("role_type", "admin") == "member":
+        allowed_keys = current_acc.get("permissions", ["dashboard", "projects", "kanban", "timeline", "calendar", "time_tracking"])
+        available_pages = [p for p in all_pages if PAGE_KEYS.get(p) in allowed_keys]
+        if not available_pages:
+            available_pages = ["🏠 Dashboard"]
+    else:
+        available_pages = all_pages
+        
     page = st.radio(
         "",
-        [
-            "🏠 Dashboard", 
-            "📁 Projeler", 
-            "📚 Arşiv ve Belgeler",
-            "📊 DeDev Findeks Skoru",
-            "🔒 Gizli Kasa",
-            "📋 Kanban Board", 
-            "📅 Takvim Görünümü",
-            "📊 Şemalar ve Gantt", 
-            "💻 Tech Stack", 
-            "👥 Ekip Yönetimi",
-            "📈 Raporlar", 
-            "📝 Hızlı Notlar",
-            "⏱️ Zaman Takibi",
-            "💰 Bütçe & Giderler",
-            "⚙️ Admin Paneli"
-        ],
+        available_pages,
         label_visibility="collapsed"
     )
     
-    st.markdown("<div style='height: 20px;'></div>", unsafe_allow_html=True)
-    st.markdown("### ☁️ Bulut Yedekleme")
-    from utils.gsheets_handler import is_gsheets_configured, push_to_sheets, pull_from_sheets
-    if is_gsheets_configured():
-        st.markdown("""
-        <div style="background: rgba(16, 185, 129, 0.05); padding: 10px; border-radius: 8px; border: 1px solid rgba(16, 185, 129, 0.15); margin-bottom: 10px;">
-            <div style="font-size: 11px; color: #10b981; font-weight: bold; text-align: center;">☁️ GOOGLE SHEETS AKTİF</div>
-        </div>
-        """, unsafe_allow_html=True)
-        
-        col_sync1, col_sync2 = st.columns(2)
-        with col_sync1:
-            if st.button("📤 Yedekle", use_container_width=True, help="Mevcut yerel verileri anında Google Sheets'e yedekler."):
-                success, msg = push_to_sheets(data)
-                if success:
-                    st.toast("Veriler buluta başarıyla yedeklendi!", icon="☁️")
-                else:
-                    st.error("Yedekleme Hatası")
-                    st.toast(msg, icon="❌")
-        with col_sync2:
-            if st.button("📥 Geri Yükle", use_container_width=True, help="Google Sheets'teki son yedek veriyi çekerek yerel verilerin üzerine yazar."):
-                cloud_data, msg = pull_from_sheets()
-                if cloud_data:
-                    from utils.data_handler import save_data
-                    save_data(cloud_data)
-                    st.toast("Veriler buluttan geri yüklendi!", icon="✅")
-                    st.rerun()
-                else:
-                    st.error("Geri Yükleme Hatası")
-                    st.toast(msg, icon="❌")
-    else:
-        st.markdown("""
-        <div style="background: rgba(239, 68, 68, 0.05); padding: 10px; border-radius: 8px; border: 1px solid rgba(239, 68, 68, 0.15); margin-bottom: 10px;">
-            <div style="font-size: 11px; color: #ef4444; font-weight: bold; text-align: center;">⚠️ BAĞLANTI BULUNAMADI</div>
-        </div>
-        """, unsafe_allow_html=True)
+    if is_admin_user:
+        st.markdown("<div style='height: 20px;'></div>", unsafe_allow_html=True)
+        st.markdown("### ☁️ Bulut Yedekleme")
+        from utils.gsheets_handler import is_gsheets_configured, push_to_sheets, pull_from_sheets
+        if is_gsheets_configured():
+            st.markdown("""
+            <div style="background: rgba(16, 185, 129, 0.05); padding: 10px; border-radius: 8px; border: 1px solid rgba(16, 185, 129, 0.15); margin-bottom: 10px;">
+                <div style="font-size: 11px; color: #10b981; font-weight: bold; text-align: center;">☁️ GOOGLE SHEETS AKTİF</div>
+            </div>
+            """, unsafe_allow_html=True)
+            
+            col_sync1, col_sync2 = st.columns(2)
+            with col_sync1:
+                if st.button("📤 Yedekle", use_container_width=True, help="Mevcut yerel verileri anında Google Sheets'e yedekler."):
+                    success, msg = push_to_sheets(data)
+                    if success:
+                        st.toast("Veriler buluta başarıyla yedeklendi!", icon="☁️")
+                    else:
+                        st.error("Yedekleme Hatası")
+                        st.toast(msg, icon="❌")
+            with col_sync2:
+                if st.button("📥 Geri Yükle", use_container_width=True, help="Google Sheets'teki son yedek veriyi çekerek yerel verilerin üzerine yazar."):
+                    cloud_data, msg = pull_from_sheets()
+                    if cloud_data:
+                        from utils.data_handler import save_data
+                        save_data(cloud_data)
+                        st.toast("Veriler buluttan geri yüklendi!", icon="✅")
+                        st.rerun()
+                    else:
+                        st.error("Geri Yükleme Hatası")
+                        st.toast(msg, icon="❌")
+        else:
+            st.markdown("""
+            <div style="background: rgba(239, 68, 68, 0.05); padding: 10px; border-radius: 8px; border: 1px solid rgba(239, 68, 68, 0.15); margin-bottom: 10px;">
+                <div style="font-size: 11px; color: #ef4444; font-weight: bold; text-align: center;">⚠️ BAĞLANTI BULUNAMADI</div>
+            </div>
+            """, unsafe_allow_html=True)
         
     st.markdown("<div style='height: 30px;'></div>", unsafe_allow_html=True)
     st.markdown("### 👨‍💻 Geliştirici")

@@ -2,6 +2,24 @@ import streamlit as st
 import plotly.graph_objects as go
 from utils.data_handler import save_data
 
+PAGE_KEYS = {
+    "🏠 Dashboard": "dashboard",
+    "📁 Projeler": "projects",
+    "📚 Arşiv ve Belgeler": "archive",
+    "📊 DeDev Findeks Skoru": "portfolio_rating",
+    "🔒 Gizli Kasa": "secret_vault",
+    "📋 Kanban Board": "kanban",
+    "📅 Takvim Görünümü": "calendar",
+    "📊 Şemalar ve Gantt": "timeline",
+    "💻 Tech Stack": "techstack",
+    "👥 Ekip Yönetimi": "team",
+    "📈 Raporlar": "reports",
+    "📝 Hızlı Notlar": "notes",
+    "⏱️ Zaman Takibi": "time_tracking",
+    "💰 Bütçe & Giderler": "finance",
+    "⚙️ Admin Paneli": "admin"
+}
+
 def clean_html(html_str):
     return "\n".join([line.strip() for line in html_str.split("\n")])
 
@@ -120,6 +138,45 @@ def show_admin(data):
                 </div>
                 """), unsafe_allow_html=True)
                 
+                # Admin role and permission editor
+                if acc.get("username") not in ["1denizdeviren", "furkan"]:
+                    with st.expander("⚙️ Yetki ve Rol Düzenle"):
+                        current_role_type = acc.get("role_type", "admin")
+                        role_type_opts = ["Yönetici (Admin)", "Ekip Üyesi (Sınırlı)"]
+                        default_role_idx = 0 if current_role_type == "admin" else 1
+                        
+                        edit_role_type = st.selectbox(
+                            "Hesap Yetki Türü:",
+                            role_type_opts,
+                            index=default_role_idx,
+                            key=f"edit_role_{acc['username']}"
+                        )
+                        
+                        edit_perms = []
+                        if edit_role_type == "Ekip Üyesi (Sınırlı)":
+                            inverse_page_keys = {v: k for k, v in PAGE_KEYS.items()}
+                            current_perms = acc.get("permissions", ["dashboard", "projects", "kanban", "timeline", "calendar", "time_tracking"])
+                            pre_selected = [inverse_page_keys[p] for p in current_perms if p in inverse_page_keys]
+                            
+                            edit_perms = st.multiselect(
+                                "Yetkili Sayfalar:",
+                                list(PAGE_KEYS.keys()),
+                                default=pre_selected,
+                                key=f"edit_perms_{acc['username']}"
+                            )
+                        
+                        if st.button("💾 Yetkileri Kaydet", key=f"save_perms_{acc['username']}", use_container_width=True):
+                            new_rt = "admin" if edit_role_type == "Yönetici (Admin)" else "member"
+                            acc["role_type"] = new_rt
+                            if new_rt == "member":
+                                acc["permissions"] = [PAGE_KEYS[p] for p in edit_perms]
+                            else:
+                                acc["permissions"] = list(PAGE_KEYS.values())
+                            
+                            save_data(data)
+                            st.toast(f"🔑 '{acc['name']}' yetkileri başarıyla güncellendi!", icon="✅")
+                            st.rerun()
+                
                 # Delete account button (cannot delete if active or if it's the only account)
                 if not is_active and len(data["accounts"]) > 1:
                     if st.button(f"🗑️ Hesabı Sil", key=f"del_acc_{acc['name']}", type="secondary", use_container_width=True):
@@ -159,6 +216,14 @@ def show_admin(data):
             n_since = st.text_input("Başlangıç Yılı", value="2026")
             n_bio = st.text_area("Kısa Biyografi / Açıklama", placeholder="Profilin uzmanlık alanları ve sorumlulukları...", max_chars=300)
             
+            st.markdown("##### 🔑 Rol ve Yetkilendirme Kontrolü")
+            n_role_type = st.selectbox("Hesap Yetki Türü", ["Ekip Üyesi (Sınırlı)", "Yönetici (Admin)"])
+            n_permissions = st.multiselect(
+                "Yetkili Modüller (Yalnızca Sınırlı Ekip Üyeleri İçin):",
+                list(PAGE_KEYS.keys()),
+                default=["🏠 Dashboard", "📁 Projeler", "📋 Kanban Board", "📊 Şemalar ve Gantt", "📅 Takvim Görünümü", "⏱️ Zaman Takibi"]
+            )
+            
             if st.form_submit_button("Yeni Profil Oluştur"):
                 if n_name and n_username and n_password:
                     # Check duplication
@@ -167,6 +232,10 @@ def show_admin(data):
                     else:
                         from utils.encryption import hash_password
                         h_val, s_val = hash_password(n_password)
+                        
+                        role_type_str = "admin" if n_role_type == "Yönetici (Admin)" else "member"
+                        permission_keys = [PAGE_KEYS[p] for p in n_permissions] if role_type_str == "member" else list(PAGE_KEYS.values())
+                        
                         new_acc = {
                             "username": n_username,
                             "password_hash": h_val,
@@ -176,7 +245,9 @@ def show_admin(data):
                             "company": n_comp if n_comp else "DeDev",
                             "location": n_loc if n_loc else "Remote",
                             "since": n_since if n_since else "2026",
-                            "bio": n_bio if n_bio else "Yeni ekip üyesi ve proje yöneticisi."
+                            "bio": n_bio if n_bio else "Yeni ekip üyesi.",
+                            "role_type": role_type_str,
+                            "permissions": permission_keys
                         }
                         data["accounts"].append(new_acc)
                         save_data(data)
