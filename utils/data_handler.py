@@ -242,6 +242,91 @@ def init_defaults(data):
         if not any(t["name"] == "Elif Demir" for t in data["team"]):
             data["team"].append({"name": "Elif Demir", "role": "UI/UX Tasarımcı", "department": "Tasarım & UI/UX", "email": "elif@dedev.com"})
 
+    # Initialize Bank Accounts & Accounting Ledger
+    if "bank_accounts" not in data or not data["bank_accounts"]:
+        data["bank_accounts"] = [
+            {"id": "ACC-01", "name": "Nakit Kasa", "balance": 10000.0, "currency": "TRY"},
+            {"id": "ACC-02", "name": "Garanti Bankası (TRY)", "balance": 50000.0, "currency": "TRY"},
+            {"id": "ACC-03", "name": "Vakıfbank (EUR)", "balance": 5000.0, "currency": "EUR"},
+            {"id": "ACC-04", "name": "QNB Finansbank (USD)", "balance": 8000.0, "currency": "USD"}
+        ]
+        
+    if "accounting_ledger" not in data or not data["accounting_ledger"]:
+        data["accounting_ledger"] = [
+            {
+                "id": "TX-INIT-01",
+                "date": "2026-01-01",
+                "voucher_no": "FIŞ-20260101-001",
+                "description": "Kuruluş Sermayesi Aktarımı",
+                "debit_account": "Garanti Bankası (TRY)",
+                "credit_account": "Özkaynaklar / Sermaye",
+                "amount": 50000.0,
+                "tax_rate": 0,
+                "tax_amount": 0.0,
+                "grand_total": 50000.0,
+                "type": "Açılış",
+                "project_id": None,
+                "created_by": "1denizdeviren",
+                "is_correction": False,
+                "corrected_tx_id": None,
+                "is_corrected": False
+            },
+            {
+                "id": "TX-INIT-02",
+                "date": "2026-01-02",
+                "voucher_no": "FIŞ-20260102-001",
+                "description": "Nakit Kasa Sermaye Açılışı",
+                "debit_account": "Nakit Kasa",
+                "credit_account": "Özkaynaklar / Sermaye",
+                "amount": 10000.0,
+                "tax_rate": 0,
+                "tax_amount": 0.0,
+                "grand_total": 10000.0,
+                "type": "Açılış",
+                "project_id": None,
+                "created_by": "1denizdeviren",
+                "is_correction": False,
+                "corrected_tx_id": None,
+                "is_corrected": False
+            },
+            {
+                "id": "TX-INIT-03",
+                "date": "2026-01-03",
+                "voucher_no": "FIŞ-20260103-001",
+                "description": "EUR Kasa Açılışı",
+                "debit_account": "Vakıfbank (EUR)",
+                "credit_account": "Özkaynaklar / Sermaye",
+                "amount": 5000.0,
+                "tax_rate": 0,
+                "tax_amount": 0.0,
+                "grand_total": 5000.0,
+                "type": "Açılış",
+                "project_id": None,
+                "created_by": "1denizdeviren",
+                "is_correction": False,
+                "corrected_tx_id": None,
+                "is_corrected": False
+            },
+            {
+                "id": "TX-INIT-04",
+                "date": "2026-01-04",
+                "voucher_no": "FIŞ-20260104-001",
+                "description": "USD Kasa Açılışı",
+                "debit_account": "QNB Finansbank (USD)",
+                "credit_account": "Özkaynaklar / Sermaye",
+                "amount": 8000.0,
+                "tax_rate": 0,
+                "tax_amount": 0.0,
+                "grand_total": 8000.0,
+                "type": "Açılış",
+                "project_id": None,
+                "created_by": "1denizdeviren",
+                "is_correction": False,
+                "corrected_tx_id": None,
+                "is_corrected": False
+            }
+        ]
+
     return data
 
 def get_filtered_elements(data):

@@ -110,6 +110,8 @@ def push_to_sheets(data):
         # 2. Update Human-Readable Sheets (Best-effort, don't crash if they fail)
         update_readable_projects(sh, data.get("projects", []))
         update_readable_tasks(sh, data.get("tasks", []))
+        update_readable_ledger(sh, data.get("accounting_ledger", []))
+        update_readable_bank_accounts(sh, data.get("bank_accounts", []))
         
         return True, "Successfully synchronized with Google Sheets."
     except Exception as e:
@@ -198,3 +200,58 @@ def update_readable_tasks(sh, tasks):
     except Exception as e:
         # Silently log errors for secondary views
         print(f"Error updating readable tasks sheet: {e}")
+
+def update_readable_ledger(sh, ledger):
+    """Updates a user-friendly 'Muhasebe_Defteri' worksheet with general ledger details."""
+    try:
+        ws = get_worksheet(sh, "Muhasebe_Defteri", default_cols=12, default_rows=len(ledger) + 10)
+        ws.clear()
+        
+        headers = [
+            "İşlem ID", "Tarih", "Fiş No", "Açıklama", 
+            "Borçlu Hesap (Debit)", "Alacaklı Hesap (Credit)", 
+            "Net Tutar", "KDV Oranı (%)", "KDV Tutarı", "Genel Toplam", 
+            "Tür", "Kayıt Yapan"
+        ]
+        
+        rows = [headers]
+        for tx in ledger:
+            rows.append([
+                tx.get("id", ""),
+                tx.get("date", ""),
+                tx.get("voucher_no", ""),
+                tx.get("description", ""),
+                tx.get("debit_account", ""),
+                tx.get("credit_account", ""),
+                float(tx.get("amount", 0.0)),
+                int(tx.get("tax_rate", 0)),
+                float(tx.get("tax_amount", 0.0)),
+                float(tx.get("grand_total", 0.0)),
+                tx.get("type", ""),
+                tx.get("created_by", "")
+            ])
+            
+        ws.update(range_name=f'A1:{chr(64 + len(headers))}{len(rows)}', values=rows)
+    except Exception as e:
+        print(f"Error updating readable ledger sheet: {e}")
+
+def update_readable_bank_accounts(sh, bank_accounts):
+    """Updates a user-friendly 'Hesap_Bakiyeleri' worksheet with bank details."""
+    try:
+        ws = get_worksheet(sh, "Hesap_Bakiyeleri", default_cols=4, default_rows=len(bank_accounts) + 10)
+        ws.clear()
+        
+        headers = ["Hesap ID", "Hesap Adı", "Mevcut Bakiye", "Para Birimi"]
+        
+        rows = [headers]
+        for acc in bank_accounts:
+            rows.append([
+                acc.get("id", ""),
+                acc.get("name", ""),
+                float(acc.get("balance", 0.0)),
+                acc.get("currency", "TRY")
+            ])
+            
+        ws.update(range_name=f'A1:{chr(64 + len(headers))}{len(rows)}', values=rows)
+    except Exception as e:
+        print(f"Error updating readable bank accounts sheet: {e}")

@@ -53,9 +53,11 @@ Hassas ticari projelerinizi veya gizli fikirlerinizi üçüncü gözlerden tamam
 * Geliştirme süreçlerinde hangi projeye ne kadar süre harcandığını takip etmenizi sağlayan entegre kronometre altyapısı.
 * Proje bazlı toplam çalışılan saat analizleri ve tarih aralıklarına göre filtrelenebilir zaman kayıt tablosu.
 
-### 💰 6. Finans Yönetimi (Finances)
-* Proje bütçelerini, harcanan miktarları ve saatlik geliştirici ücretlerini yöneten finansal takip paneli.
-* Bütçe aşımı durumunda kırmızıya dönen akıllı bütçe tüketim göstergeleri.
+### 💰 6. Finans & Çift Taraflı Muhasebe Süiti (Double-Entry Ledger & Finances)
+* **Kasa & Banka Hesapları:** Nakit Kasa ve banka hesap bakiyelerini (Garanti, Vakıfbank, QNB) gerçek zamanlı takip eder, hesaplar arası para transferi (Virman) ve tahsilat/ödeme işlemlerini bakiye kontrolleriyle yönetir.
+* **Değiştirilemez Defter-i Kebir (Immutable Ledger):** Muhasebe kayıtları silinemez veya değiştirilemez. Hatalı işlemler için otomatik ters kayıt üreten "Düzeltme Fişi" mekanizması ile tam denetlenebilirlik sağlanır.
+* **Gerçek Zamanlı Mali Raporlar:** Çift taraflı muhasebe ilkelerine uygun olarak anlık dengelenen **Mizan (Trial Balance)**, **Gelir Tablosu (Income Statement)** ve **Bilanço (Balance Sheet)** mali raporlarını otomatik üretir.
+* **Kurumsal Excel & Bulut Yedekleme:** Defteri ve mali raporları kurumsal renk temalı, biçimlendirilmiş çok sekmeli Excel (`.xlsx`) olarak indirir ve anlık Google Sheets'e yedekler.
 
 ### 👥 7. Ekip ve Rol Yönetimi (Team Panel)
 * Projede yer alan yazılımcıların, tasarımcıların ve yöneticilerin iletişim bilgilerini, uzmanlık alanlarını ve rollerini yöneten modül.
