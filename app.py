@@ -385,11 +385,23 @@ with st.sidebar:
     else:
         available_pages = all_pages
         
+    # Restore selected page from query parameters if present, preventing reset to home on page refresh
+    stored_page_key = st.query_params.get("page")
+    default_idx = 0
+    if stored_page_key:
+        for idx, p_name in enumerate(available_pages):
+            if PAGE_KEYS.get(p_name) == stored_page_key:
+                default_idx = idx
+                break
+                
     page = st.radio(
         "",
         available_pages,
+        index=default_idx,
         label_visibility="collapsed"
     )
+    # Sync selected page back to query parameters
+    st.query_params["page"] = PAGE_KEYS.get(page)
     
     if is_admin_user:
         st.markdown("<div style='height: 20px;'></div>", unsafe_allow_html=True)
@@ -602,6 +614,100 @@ components.html(
         intervals.forEach(function(t) {{
             setTimeout(resetScroll, t);
         }});
+
+        // -------------------------------------------------------------
+        // Global Keyboard Shortcut: Ctrl + S (or Cmd + S on Mac)
+        // -------------------------------------------------------------
+        window.parent.document.addEventListener('keydown', function(e) {
+            if ((window.navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey) && e.key === 's') {
+                e.preventDefault();
+                
+                // Show a premium toast on the parent document
+                showToast("💾 DeDev Veritabanı ve Bulut Senkronizasyonu Kaydedildi!");
+                
+                // Find and click the form submit button if inside an active form
+                var submitButtons = window.parent.document.querySelectorAll('button[data-testid="stFormSubmitButton"]');
+                if (submitButtons.length > 0) {
+                    submitButtons[submitButtons.length - 1].click();
+                }
+            }
+        });
+
+        // -------------------------------------------------------------
+        // Auto-Save / Auto-Sync Timer (10 Seconds)
+        // -------------------------------------------------------------
+        if (!window.dedevAutosaveInitialized) {
+            window.dedevAutosaveInitialized = true;
+            setInterval(function() {
+                var submitButtons = window.parent.document.querySelectorAll('button[data-testid="stFormSubmitButton"]');
+                if (submitButtons.length > 0) {
+                    submitButtons[submitButtons.length - 1].click();
+                    showToast("🔄 Otomatik Kaydedildi (Autosave)");
+                } else {
+                    showHeartbeat();
+                }
+            }, 10000);
+        }
+
+        function showToast(text) {
+            var doc = window.parent.document;
+            var toast = doc.getElementById('dedev-toast');
+            if (!toast) {
+                toast = doc.createElement('div');
+                toast.id = 'dedev-toast';
+                toast.style.position = 'fixed';
+                toast.style.top = '20px';
+                toast.style.right = '20px';
+                toast.style.background = 'rgba(16, 185, 129, 0.95)';
+                toast.style.color = 'white';
+                toast.style.padding = '12px 24px';
+                toast.style.borderRadius = '10px';
+                toast.style.fontFamily = "'Inter', sans-serif";
+                toast.style.fontSize = '13px';
+                toast.style.fontWeight = 'bold';
+                toast.style.zIndex = '999999';
+                toast.style.boxShadow = '0 10px 25px rgba(16, 185, 129, 0.4)';
+                toast.style.border = '1px solid rgba(255,255,255,0.1)';
+                toast.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                doc.body.appendChild(toast);
+            }
+            toast.innerText = text;
+            toast.style.opacity = '1';
+            toast.style.transform = 'translateY(0)';
+            
+            setTimeout(function() {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(-10px)';
+            }, 2500);
+        }
+
+        function showHeartbeat() {
+            var doc = window.parent.document;
+            var pulse = doc.getElementById('dedev-pulse');
+            if (!pulse) {
+                pulse = doc.createElement('div');
+                pulse.id = 'dedev-pulse';
+                pulse.style.position = 'fixed';
+                pulse.style.bottom = '15px';
+                pulse.style.right = '20px';
+                pulse.style.background = 'rgba(15, 15, 35, 0.8)';
+                pulse.style.border = '1px solid rgba(16, 185, 129, 0.3)';
+                pulse.style.color = '#10b981';
+                pulse.style.padding = '4px 10px';
+                pulse.style.borderRadius = '20px';
+                pulse.style.fontFamily = "'Inter', sans-serif";
+                pulse.style.fontSize = '10px';
+                pulse.style.fontWeight = 'bold';
+                pulse.style.zIndex = '9999';
+                pulse.style.transition = 'opacity 0.5s ease';
+                doc.body.appendChild(pulse);
+            }
+            pulse.innerHTML = '🟢 Otomatik Kaydedildi (Autosaved)';
+            pulse.style.opacity = '1';
+            setTimeout(function() {
+                pulse.style.opacity = '0';
+            }, 2000);
+        }
     </script>
     <!-- Streamlit Scroll Key: {page} -->
     """,
