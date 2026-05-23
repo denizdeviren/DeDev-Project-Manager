@@ -175,20 +175,383 @@ if "logged_in_user" not in st.session_state:
 data = load_data()
 
 if st.session_state["logged_in_user"] is None:
+    # Inject JavaScript to tag parent document body as active for isolated scoping
     st.markdown("""
-    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 85vh; padding: 20px;">
-        <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 24px; padding: 40px; max-width: 480px; width: 100%; backdrop-filter: blur(15px); box-shadow: 0 20px 50px rgba(0,0,0,0.3); text-align: center;">
-            <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); width: 70px; height: 70px; border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: bold; color: white; margin: 0 auto 20px auto; box-shadow: 0 8px 25px rgba(102,126,234,0.4);">
-                🚀
-            </div>
-            <h1 style="font-size: 28px; font-weight: 800; color: white; margin-bottom: 5px; background: -webkit-linear-gradient(45deg, #a5b4fc, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">DeDev Command Center</h1>
-            <p style="font-size: 13px; color: #9ca3af; margin-bottom: 25px;">Giriş yapın veya yeni bir simülasyon hesabı oluşturun</p>
+    <script>
+        try {
+            window.parent.document.body.classList.add('login-page-active');
+        } catch (e) {
+            console.error("Failed to inject login page class", e);
+        }
+    </script>
+    """, unsafe_allow_html=True)
+
+    # Scoped Premium Cyberpunk & 3D CSS Styles
+    st.markdown("""
+    <style>
+    /* =============================================================
+       1. GLOBAL VIEWER & BACKGROUND Overrides (Scoped to Login Page)
+       ============================================================= */
+    .login-page-active .stApp {
+        background: radial-gradient(circle at 50% 50%, #0d0d21 0%, #050510 100%) !important;
+        overflow: hidden !important;
+        position: relative !important;
+    }
+
+    /* Cyberpunk Grid Scroll Animation */
+    .login-bg-grid {
+        position: fixed;
+        top: -50%; left: -50%; width: 200vw; height: 200vh;
+        background-image: 
+            linear-gradient(rgba(99, 102, 241, 0.05) 1.5px, transparent 1.5px),
+            linear-gradient(90deg, rgba(99, 102, 241, 0.05) 1.5px, transparent 1.5px);
+        background-size: 60px 60px;
+        background-position: center;
+        pointer-events: none;
+        z-index: 1;
+        transform: perspective(600px) rotateX(45deg) translateY(-200px) translateZ(-150px);
+        opacity: 0.7;
+        animation: gridScroll 35s linear infinite;
+    }
+    
+    @keyframes gridScroll {
+        0% { background-position: 0 0; }
+        100% { background-position: 0 1000px; }
+    }
+
+    /* Floating Deep Space Neon Orbs */
+    .orb-container {
+        position: fixed;
+        top: 0; left: 0; width: 100vw; height: 100vh;
+        pointer-events: none;
+        z-index: 2;
+        overflow: hidden;
+    }
+    
+    .login-orb {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(100px);
+        opacity: 0.14;
+        animation: floatOrb 20s ease-in-out infinite alternate;
+    }
+    
+    .orb-indigo {
+        width: 450px; height: 450px;
+        background: radial-gradient(circle, #6366f1, #312e81);
+        top: 10%; left: 10%;
+        animation-duration: 30s;
+    }
+    
+    .orb-pink {
+        width: 500px; height: 500px;
+        background: radial-gradient(circle, #ec4899, #500724);
+        bottom: 10%; right: 10%;
+        animation-duration: 25s;
+        animation-delay: -5s;
+    }
+    
+    .orb-emerald {
+        width: 380px; height: 380px;
+        background: radial-gradient(circle, #10b981, #064e3b);
+        top: 40%; left: 65%;
+        animation-duration: 22s;
+        animation-delay: -10s;
+    }
+    
+    @keyframes floatOrb {
+        0% { transform: translate(0, 0) scale(1); }
+        50% { transform: translate(60px, 50px) scale(1.15); }
+        100% { transform: translate(-40px, -60px) scale(0.9); }
+    }
+
+    /* Outer Streamlit Layout Configurations */
+    .login-page-active .block-container {
+        perspective: 1500px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        min-height: 85vh !important;
+        padding-top: 2rem !important;
+        z-index: 10 !important;
+    }
+
+    /* =============================================================
+       2. 3D GLASSMORPHIC CARD OVERRIDES (Transforming stTabs)
+       ============================================================= */
+    .login-page-active div.stTabs {
+        background: rgba(10, 10, 26, 0.45) !important;
+        border: 1px solid rgba(255, 255, 255, 0.08) !important;
+        border-radius: 28px !important;
+        padding: 40px 35px !important;
+        backdrop-filter: blur(35px) !important;
+        box-shadow: 
+            0 35px 70px rgba(0, 0, 0, 0.55), 
+            0 0 50px rgba(99, 102, 241, 0.12),
+            inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+        transform: perspective(1000px) rotateX(8deg) rotateY(-10deg) translateZ(0);
+        transform-style: preserve-3d !important;
+        transition: transform 0.12s cubic-bezier(0.25, 1, 0.5, 1), border-color 0.4s ease, box-shadow 0.6s ease !important;
+        width: 100% !important;
+        max-width: 480px !important;
+        margin: 0 auto !important;
+        position: relative !important;
+        z-index: 100 !important;
+    }
+    
+    .login-page-active div.stTabs:hover {
+        border-color: rgba(129, 140, 248, 0.35) !important;
+        box-shadow: 
+            0 45px 90px rgba(0, 0, 0, 0.65), 
+            0 0 65px rgba(99, 102, 241, 0.22),
+            inset 0 1px 0 rgba(255, 255, 255, 0.15) !important;
+    }
+
+    /* Strip stForm defaults so it integrates seamlessly on the Card */
+    .login-page-active [data-testid="stForm"] {
+        background: transparent !important;
+        border: none !important;
+        padding: 0 !important;
+        box-shadow: none !important;
+        transform: none !important;
+        transform-style: preserve-3d !important;
+    }
+
+    /* =============================================================
+       3. FLOATING 3D LAYERING & TYPOGRAPHY
+       ============================================================= */
+    .login-header {
+        text-align: center;
+        margin-bottom: 25px;
+        transform: translateZ(50px) !important;
+    }
+    
+    .float-icon {
+        background: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
+        width: 68px;
+        height: 68px;
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 32px;
+        color: white;
+        margin: 0 auto 16px auto;
+        box-shadow: 0 12px 28px rgba(99, 102, 241, 0.38);
+        transform: translateZ(75px) rotate(0deg) !important;
+        transition: transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1) !important;
+    }
+    
+    .stTabs:hover .float-icon {
+        transform: translateZ(95px) rotate(8deg) !important;
+    }
+    
+    .float-title {
+        font-size: 25px;
+        font-weight: 800;
+        color: white;
+        margin: 0 0 6px 0;
+        background: linear-gradient(45deg, #c7d2fe, #f472b6);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        transform: translateZ(60px) !important;
+        letter-spacing: -0.5px;
+    }
+    
+    .float-subtitle {
+        font-size: 13px;
+        color: #9ca3af;
+        margin: 0;
+        transform: translateZ(40px) !important;
+        line-height: 1.4;
+    }
+
+    /* =============================================================
+       4. HIGH-TECH HOLOGRAPHIC CONSOLE TABS
+       ============================================================= */
+    .login-page-active div.stTabs [data-testid="stTabBar"] {
+        background: rgba(0, 0, 0, 0.3) !important;
+        border: 1px solid rgba(255, 255, 255, 0.05) !important;
+        border-radius: 14px !important;
+        padding: 5px !important;
+        margin-bottom: 30px !important;
+        transform: translateZ(35px) !important;
+    }
+    
+    .login-page-active div.stTabs button[data-baseweb="tab"] {
+        color: #9ca3af !important;
+        font-weight: 600 !important;
+        font-size: 13px !important;
+        border: none !important;
+        border-radius: 9px !important;
+        padding: 10px 16px !important;
+        background: transparent !important;
+        transition: all 0.3s ease !important;
+        flex: 1 !important;
+        text-align: center !important;
+    }
+    
+    .login-page-active div.stTabs button[aria-selected="true"] {
+        background: linear-gradient(135deg, rgba(99, 102, 241, 0.18) 0%, rgba(168, 85, 247, 0.18) 100%) !important;
+        color: #c7d2fe !important;
+        box-shadow: 
+            0 4px 12px rgba(0, 0, 0, 0.3),
+            inset 0 1px 0 rgba(255, 255, 255, 0.06),
+            0 0 10px rgba(99, 102, 241, 0.12) !important;
+        border: 1px solid rgba(99, 102, 241, 0.28) !important;
+    }
+    
+    .login-page-active div.stTabs [data-testid="stTabBarHighlight"] {
+        display: none !important;
+    }
+
+    /* =============================================================
+       5. FUTURISTIC INPUT & LABELS CUSTOMIZATION
+       ============================================================= */
+    .login-page-active .stTextInput > div > div > input {
+        background-color: rgba(0, 0, 0, 0.35) !important;
+        border: 1px solid rgba(255, 255, 255, 0.08) !important;
+        border-radius: 11px !important;
+        color: white !important;
+        padding: 12px 16px !important;
+        font-size: 14px !important;
+        transition: all 0.3s ease !important;
+        transform: translateZ(20px) !important;
+    }
+    
+    .login-page-active .stTextInput > div > div > input:focus {
+        border-color: #6366f1 !important;
+        box-shadow: 
+            0 0 15px rgba(99, 102, 241, 0.25),
+            inset 0 1px 0 rgba(255, 255, 255, 0.04) !important;
+        background-color: rgba(0, 0, 0, 0.5) !important;
+    }
+    
+    .login-page-active .stTextInput label {
+        color: #a5b4fc !important;
+        font-size: 11px !important;
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.8px !important;
+        transform: translateZ(25px) !important;
+        margin-bottom: 6px !important;
+    }
+    
+    /* Textarea formatting for Registration */
+    .login-page-active .stTextArea > div > textarea {
+        background-color: rgba(0, 0, 0, 0.35) !important;
+        border: 1px solid rgba(255, 255, 255, 0.08) !important;
+        border-radius: 11px !important;
+        color: white !important;
+        padding: 12px 16px !important;
+        font-size: 14px !important;
+        transition: all 0.3s ease !important;
+        transform: translateZ(20px) !important;
+    }
+    
+    .login-page-active .stTextArea > div > textarea:focus {
+        border-color: #6366f1 !important;
+        box-shadow: 0 0 15px rgba(99, 102, 241, 0.25) !important;
+        background-color: rgba(0, 0, 0, 0.5) !important;
+    }
+    
+    .login-page-active .stTextArea label {
+        color: #a5b4fc !important;
+        font-size: 11px !important;
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.8px !important;
+        transform: translateZ(25px) !important;
+        margin-bottom: 6px !important;
+    }
+
+    /* =============================================================
+       6. SPECTACULAR GRADIENT SUBMIT BUTTONS
+       ============================================================= */
+    .login-page-active [data-testid="stFormSubmitButton"] button {
+        background: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%) !important;
+        color: white !important;
+        border: 1px solid rgba(255, 255, 255, 0.12) !important;
+        border-radius: 11px !important;
+        padding: 13px 24px !important;
+        font-weight: 700 !important;
+        font-size: 14px !important;
+        text-transform: uppercase !important;
+        letter-spacing: 1.2px !important;
+        box-shadow: 0 8px 24px rgba(99, 102, 241, 0.35) !important;
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+        transform: translateZ(35px) !important;
+        width: 100% !important;
+        margin-top: 15px !important;
+    }
+    
+    .login-page-active [data-testid="stFormSubmitButton"] button:hover {
+        transform: translateZ(50px) scale(1.025) !important;
+        box-shadow: 
+            0 12px 32px rgba(99, 102, 241, 0.5),
+            0 0 25px rgba(236, 72, 153, 0.3) !important;
+        opacity: 1 !important;
+    }
+    
+    .login-page-active [data-testid="stFormSubmitButton"] button:active {
+        transform: translateZ(25px) scale(0.97) !important;
+    }
+
+    /* =============================================================
+       7. CORPORATE FLOATING EXPANDER OVERRIDES
+       ============================================================= */
+    .login-page-active [data-testid="stExpander"] {
+        background: rgba(10, 10, 26, 0.3) !important;
+        border: 1px solid rgba(255, 255, 255, 0.05) !important;
+        border-radius: 18px !important;
+        max-width: 480px !important;
+        margin: 24px auto 0 auto !important;
+        backdrop-filter: blur(20px) !important;
+        transform: perspective(1000px) rotateX(4deg) rotateY(-5deg) translateZ(0);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.35) !important;
+        transition: all 0.5s ease-out !important;
+        z-index: 99 !important;
+    }
+    
+    .login-page-active [data-testid="stExpander"]:hover {
+        transform: perspective(1000px) rotateX(0deg) rotateY(0deg) translateZ(8px) !important;
+        border-color: rgba(255, 255, 255, 0.1) !important;
+        box-shadow: 0 22px 45px rgba(0, 0, 0, 0.45) !important;
+    }
+    
+    .login-page-active [data-testid="stExpander"] details {
+        border: none !important;
+    }
+    
+    .login-page-active [data-testid="stExpander"] summary {
+        color: #a5b4fc !important;
+        font-weight: 600 !important;
+        font-size: 13px !important;
+    }
+    </style>
+
+    <!-- Background Elements Structuring -->
+    <div class="login-bg-grid"></div>
+    <div class="orb-container">
+        <div class="login-orb orb-indigo"></div>
+        <div class="login-orb orb-pink"></div>
+        <div class="login-orb orb-emerald"></div>
+    </div>
     """, unsafe_allow_html=True)
     
     tab_login, tab_register = st.tabs(["🔑 Giriş Yap", "📝 Kayıt Ol"])
     
     with tab_login:
         with st.form("login_form"):
+            st.markdown("""
+            <div class="login-header">
+                <div class="float-icon">🚀</div>
+                <h1 class="float-title">DeDev Command Center</h1>
+                <p class="float-subtitle">Giriş yapın veya yeni bir simülasyon hesabı oluşturun</p>
+            </div>
+            """, unsafe_allow_html=True)
             username = st.text_input("👤 Kullanıcı Adı", placeholder="Kullanıcı adınızı girin", key="login_username")
             password = st.text_input("🔑 Şifre", placeholder="Şifrenizi girin", type="password", key="login_password")
             
@@ -232,6 +595,13 @@ if st.session_state["logged_in_user"] is None:
                         
     with tab_register:
         with st.form("register_form"):
+            st.markdown("""
+            <div class="login-header">
+                <div class="float-icon">📝</div>
+                <h1 class="float-title">Yeni Kayıt Oluştur</h1>
+                <p class="float-subtitle">Kendi izole siber çalışma alanınızı anında başlatın</p>
+            </div>
+            """, unsafe_allow_html=True)
             r_name = st.text_input("👤 Ad Soyad", placeholder="Örn: Simge Yılmaz", key="reg_name")
             r_role = st.text_input("💼 Rol / Ünvan", placeholder="Örn: Yazılım Geliştirici", key="reg_role")
             r_username = st.text_input("🆔 Kullanıcı Adı", placeholder="Giriş yapmak için kullanılacak", key="reg_username")
@@ -257,6 +627,7 @@ if st.session_state["logged_in_user"] is None:
                         from utils.encryption import hash_password
                         from utils.data_handler import ROOT_DIR, init_defaults
                         import json
+                        import os
                         
                         h_val, s_val = hash_password(r_password)
                         new_acc = {
@@ -313,7 +684,7 @@ if st.session_state["logged_in_user"] is None:
                         st.toast(f"Tebrikler! Hesabınız başarıyla oluşturuldu ve giriş yapıldı. 👋")
                         st.rerun()
                         
-    st.markdown("<div style='height: 20px;'></div>", unsafe_allow_html=True)
+    st.markdown("<div style='height: 10px;'></div>", unsafe_allow_html=True)
     with st.expander("🏢 Kurumsal Demo Hesabı — Canlı Deneyim"):
         st.markdown("""
         <div style="font-family: 'Inter', sans-serif; font-size: 13px; text-align: left; line-height: 1.8; color: #d1d5db;">
@@ -327,11 +698,76 @@ if st.session_state["logged_in_user"] is None:
         </div>
         """, unsafe_allow_html=True)
         
+    # Real-Time 3D Interactive Cursor Tilt Parallax Listener Script
     st.markdown("""
-        </div>
-    </div>
+    <script>
+        (function() {
+            var doc = window.parent.document;
+            
+            function initTilt() {
+                var cards = doc.querySelectorAll('.stTabs');
+                var expander = doc.querySelector('[data-testid="stExpander"]');
+                
+                if (cards.length === 0) return;
+                
+                doc.addEventListener('mousemove', function(e) {
+                    cards.forEach(function(card) {
+                        var rect = card.getBoundingClientRect();
+                        
+                        // Normalized pointer distance from card center (-1 to 1)
+                        var cardCenterX = rect.left + rect.width / 2;
+                        var cardCenterY = rect.top + rect.height / 2;
+                        
+                        var dirX = e.clientX - cardCenterX;
+                        var dirY = e.clientY - cardCenterY;
+                        
+                        // Limit angle of tilt to a safe 10 degrees maximum
+                        var tiltX = -(dirY / (window.innerHeight / 2)) * 10;
+                        var tiltY = (dirX / (window.innerWidth / 2)) * 10;
+                        
+                        // Update style in 3D perspective space
+                        card.style.transform = 'perspective(1000px) rotateX(' + tiltX + 'deg) rotateY(' + tiltY + 'deg) translateZ(0)';
+                    });
+                    
+                    if (expander) {
+                        var rectExp = expander.getBoundingClientRect();
+                        var expCenterX = rectExp.left + rectExp.width / 2;
+                        var expCenterY = rectExp.top + rectExp.height / 2;
+                        var dirXExp = e.clientX - expCenterX;
+                        var dirYExp = e.clientY - expCenterY;
+                        var tiltXExp = -(dirYExp / (window.innerHeight / 2)) * 5;
+                        var tiltYExp = (dirXExp / (window.innerWidth / 2)) * 5;
+                        expander.style.transform = 'perspective(1000px) rotateX(' + tiltXExp + 'deg) rotateY(' + tiltYExp + 'deg) translateZ(0)';
+                    }
+                });
+            }
+            
+            // Allow DOM to settle, then initialize
+            setTimeout(initTilt, 400);
+            
+            // Loop checker to catch dynamic React rendering shifts
+            var checkInterval = setInterval(function() {
+                var cards = doc.querySelectorAll('.stTabs');
+                if (cards.length > 0) {
+                    initTilt();
+                    clearInterval(checkInterval);
+                }
+            }, 1000);
+        })();
+    </script>
     """, unsafe_allow_html=True)
     st.stop()
+
+# Inject JavaScript to clean up body tag to ensure no style leakage
+st.markdown("""
+<script>
+    try {
+        window.parent.document.body.classList.remove('login-page-active');
+    } catch (e) {
+        console.error("Failed to remove login page class", e);
+    }
+</script>
+""", unsafe_allow_html=True)
 
 # ==========================================
 # SIDEBAR NAVIGATION
@@ -579,10 +1015,10 @@ with st.sidebar:
 import streamlit.components.v1 as components
 
 components.html(
-    f"""
+    """
     <script>
-        function resetScroll() {{
-            try {{
+        function resetScroll() {
+            try {
                 var doc = window.parent.document;
                 // Ana scroll container'ları
                 var selectors = [
@@ -593,27 +1029,27 @@ components.html(
                     '[data-testid="stMain"]',
                     'section.main'
                 ];
-                selectors.forEach(function(selector) {{
+                selectors.forEach(function(selector) {
                     var el = doc.querySelector(selector);
-                    if (el) {{
+                    if (el) {
                         el.scrollTop = 0;
-                    }}
-                }});
+                    }
+                });
                 // Genel pencere scroll'unu sıfırla
                 window.parent.scrollTo(0, 0);
                 doc.documentElement.scrollTop = 0;
                 doc.body.scrollTop = 0;
-            }} catch (e) {{
+            } catch (e) {
                 console.error("Scroll reset hatasi:", e);
-            }}
-        }}
+            }
+        }
         
         // Hızlı tetikleyiciler (İlk 300ms içinde tamamlanır, kaydırma hissini bozmaz)
         resetScroll();
         var intervals = [5, 20, 50, 100, 200, 300];
-        intervals.forEach(function(t) {{
+        intervals.forEach(function(t) {
             setTimeout(resetScroll, t);
-        }});
+        });
 
         // -------------------------------------------------------------
         // Global Keyboard Shortcut: Ctrl + S (or Cmd + S on Mac)
@@ -710,7 +1146,7 @@ components.html(
         }
     </script>
     <!-- Streamlit Scroll Key: {page} -->
-    """,
+    """.replace("{page}", str(page)),
     height=0,
     width=0
 )
