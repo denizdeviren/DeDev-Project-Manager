@@ -80,10 +80,10 @@ def show_kanban(data):
                     }
                     data["tasks"].append(new_task)
                     
-                    # Proje istatistiğini güncelle
+                    # Proje istatistiğini güncelle (KeyError korumalı)
                     for p in data["projects"]:
                         if p["id"] == proj_id:
-                            p["tasks_total"] += 1
+                            p["tasks_total"] = p.get("tasks_total", 0) + 1
                             break
                             
                     save_data(data)
@@ -210,7 +210,7 @@ def show_kanban(data):
                                         if ns == "Done":
                                             for p in data["projects"]:
                                                 if p["id"] == task["project_id"]:
-                                                    p["tasks_completed"] += 1
+                                                    p["tasks_completed"] = p.get("tasks_completed", 0) + 1
                                                     break
                                             # Aktivite ekle
                                             data["activities"].insert(0, {
@@ -222,7 +222,7 @@ def show_kanban(data):
                                         elif status == "Done":
                                             for p in data["projects"]:
                                                 if p["id"] == task["project_id"]:
-                                                    p["tasks_completed"] -= 1
+                                                    p["tasks_completed"] = max(0, p.get("tasks_completed", 0) - 1)
                                                     break
                                         save_data(data)
                                         st.rerun()
