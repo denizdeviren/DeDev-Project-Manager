@@ -258,7 +258,7 @@ def show_timeline(data):
                 
                 for t_idx, t in enumerate(sorted_tasks):
                     p_name = proj_id_to_name.get(t["project_id"], "Bilinmeyen Proje")
-                    asg = t.get("assignee", "").strip()
+                    asg = (t.get("assignee") or "").strip()
                     if not asg or asg in ["Atanmadı", "Atanmamış", "Atanmış Değil"]:
                         proj = next((p for p in projects if p["id"] == t.get("project_id")), None)
                         assignee_name = proj.get("owner_name") if proj else "Atanmamış"
@@ -457,7 +457,7 @@ def show_timeline(data):
                 resolved_visible_tasks = []
                 for t in visible_tasks:
                     t_copy = dict(t)
-                    asg = t_copy.get("assignee", "").strip()
+                    asg = (t_copy.get("assignee") or "").strip()
                     if not asg or asg == "Atanmamış":
                         proj = next((p for p in projects if p["id"] == t_copy.get("project_id")), None)
                         t_copy["assignee"] = proj.get("owner_name") if proj else "Atanmamış"
@@ -468,7 +468,7 @@ def show_timeline(data):
                 # Görevlileri (assignee) çıkarıp sayalım
                 assignee_counts = {}
                 for t in resolved_visible_tasks:
-                    asg = t.get("assignee", "Atanmamış").strip()
+                    asg = (t.get("assignee") or "Atanmamış").strip()
                     if not asg:
                         asg = "Atanmamış"
                     assignee_counts[asg] = assignee_counts.get(asg, 0) + 1

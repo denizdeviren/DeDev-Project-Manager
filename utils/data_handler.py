@@ -146,13 +146,13 @@ def init_defaults(data, is_primary_prod=True):
                   "ahmet yilmaz", "elif demır"}
     data["team"] = [
         m for m in data["team"]
-        if m.get("name", "").strip().lower() not in mock_names
+        if (m.get("name") or "").strip().lower() not in mock_names
     ]
     for t in data["tasks"]:
-        if t.get("assignee", "").strip().lower() in mock_names:
+        if (t.get("assignee") or "").strip().lower() in mock_names:
             t["assignee"] = "Deniz Deviren"
     for p in data["projects"]:
-        if p.get("owner_name", "").strip().lower() in mock_names:
+        if (p.get("owner_name") or "").strip().lower() in mock_names:
             p["owner_name"] = "Deniz Deviren"
 
     if not data.get("bank_accounts"):

@@ -184,7 +184,7 @@ def show_archive(data):
                     tasks_html += f"""
                     <tr>
                         <td>{t['title']}</td>
-                        <td>{t.get('assignee', 'Bilinmeyen')}</td>
+                        <td>{t.get('assignee') or 'Bilinmeyen'}</td>
                         <td>{t.get('priority', 'Medium')}</td>
                         <td style="text-align: right;">{t['status']}</td>
                     </tr>

@@ -133,7 +133,7 @@ def show_kanban(data):
                         is_locked = False
                         
                     prio_color = "#ef4444" if task['priority'] in ["High", "Critical"] else "#f59e0b" if task['priority'] == "Medium" else "#22c55e"
-                    assignee_name = "Şifreli" if is_locked else task.get("assignee", "Atanmadı")
+                    assignee_name = "Şifreli" if is_locked else (task.get("assignee") or "Atanmadı")
                     assignee_initial = "?" if is_locked else (assignee_name[0].upper() if assignee_name and assignee_name != "Atanmadı" else "?")
                     
                     if is_locked:

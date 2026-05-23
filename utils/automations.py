@@ -46,7 +46,7 @@ def run_automations(data):
     if rules.get("auto_crit"):
         for task in data.get("tasks", []):
             if task.get("priority") == "Critical" and task.get("assignee") != auto_assignee:
-                old_assignee = task.get("assignee", "Atanmamış")
+                old_assignee = task.get("assignee") or "Atanmamış"
                 task["assignee"] = auto_assignee
                 
                 # Log Activity
