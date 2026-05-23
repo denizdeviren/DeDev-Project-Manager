@@ -549,7 +549,7 @@ if st.session_state["logged_in_user"] is None:
             <div class="login-header">
                 <div class="float-icon">🚀</div>
                 <h1 class="float-title">DeDev Command Center</h1>
-                <p class="float-subtitle">Giriş yapın veya yeni bir simülasyon hesabı oluşturun</p>
+                <p class="float-subtitle">Sisteme giriş yapın veya yeni bir hesap oluşturun</p>
             </div>
             """, unsafe_allow_html=True)
             username = st.text_input("👤 Kullanıcı Adı", placeholder="Kullanıcı adınızı girin", key="login_username")
