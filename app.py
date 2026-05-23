@@ -878,46 +878,98 @@ with st.sidebar:
     st.markdown("<div style='height: 30px;'></div>", unsafe_allow_html=True)
 
     active_owner_name = data.get("active_owner", "Deniz Deviren")
-    owner = next((acc for acc in data.get("accounts", []) if acc["name"] == active_owner_name), data.get("owner", {}))
+    owner_acc = next((acc for acc in data.get("accounts", []) if acc["name"] == active_owner_name), data.get("owner", {}))
     is_demo_user = (current_user == "demo_erpsim")
+    
+    # Load profile of the actually logged-in user
+    current_acc = next((acc for acc in data.get("accounts", []) if acc.get("username") == current_user), None)
+    profile_acc = current_acc if current_acc else owner_acc
+    profile_name = profile_acc.get("name", "Bilinmiyor")
+    profile_role = profile_acc.get("role", "")
+    profile_bio = profile_acc.get("bio", "")
+    
+    # Company is ALWAYS the workspace owner's company!
+    workspace_company = owner_acc.get("company", "DeDev" if active_owner_name == "Deniz Deviren" else "Aura Yazılım Teknolojileri")
 
     if is_demo_user:
         # Demo/simulation account: show a clean corporate profile without personal social links
-        owner_company = owner.get('company', 'Aura Yazılım Teknolojileri')
+        owner_company = owner_acc.get('company', 'Aura Yazılım Teknolojileri')
         st.markdown("### 🏢 Aktif Kullanıcı")
         st.markdown(f"""
         <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.03);">
-            <div style="font-weight: 700; color: white;">{owner.get('name', 'Bilinmiyor')}</div>
-            <div style="font-size: 12px; color: #667eea; margin-bottom: 6px;">{owner.get('role', '')}</div>
+            <div style="font-weight: 700; color: white;">{profile_name}</div>
+            <div style="font-size: 12px; color: #667eea; margin-bottom: 6px;">{profile_role}</div>
             <div style="font-size: 11px; color: #f59e0b; margin-bottom: 8px; font-weight: 600;">🏢 {owner_company}</div>
-            <div style="font-size: 11px; color: #9ca3af; line-height: 1.4;">{owner.get('bio', '')}</div>
+            <div style="font-size: 11px; color: #9ca3af; line-height: 1.4;">{profile_bio}</div>
         </div>
         """, unsafe_allow_html=True)
     else:
-        # Real users: show full profile with social links
-        st.markdown("### 👨‍💻 Geliştirici")
+        # Real users: show full profile of logged-in user with dynamic social links, phone, email
+        st.markdown("### 👤 Aktif Kullanıcı")
+        
+        socials_html = ""
+        
+        if profile_acc.get("email"):
+            socials_html += f"""
+            <a href="mailto:{profile_acc['email']}" target="_blank" title="E-posta Gönder" style="text-decoration: none; display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 8px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08); color: #e5e7eb; transition: all 0.3s ease;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1H2zm13 2.383-4.758 2.855L15 11.114v-5.73zm-.034 6.878L9.271 8.82 8 9.583 6.728 8.82l-5.694 3.44A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.739zM1 11.114l4.758-2.876L1 5.383v5.73z"/>
+                </svg>
+            </a>
+            """
+            
+        if profile_acc.get("phone"):
+            socials_html += f"""
+            <a href="tel:{profile_acc['phone']}" target="_blank" title="Arama Yap" style="text-decoration: none; display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 8px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08); color: #e5e7eb; transition: all 0.3s ease;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M1.885.511a1.745 1.745 0 0 1 2.61.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.678.678 0 0 0 .178.643l2.457 2.457a.678.678 0 0 0 .644.178l2.189-.547a1.745 1.745 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.634 18.634 0 0 1-7.01-4.42 18.634 18.634 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877L1.885.511z"/>
+                </svg>
+            </a>
+            """
+            
+        if profile_acc.get("linkedin"):
+            socials_html += f"""
+            <a href="{profile_acc['linkedin']}" target="_blank" title="LinkedIn Profili" style="text-decoration: none; display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 8px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08); color: #e5e7eb; transition: all 0.3s ease;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M0 1.146C0 .513.526 0 1.175 0h13.65C15.474 0 16 .513 16 1.146v13.708c0 .633-.526 1.146-1.175 1.146H1.175C.526 16 0 15.487 0 14.854V1.146zm4.943 12.248V6.169H2.542v7.225h2.401zm-1.2-8.212c.837 0 1.358-.554 1.358-1.248-.015-.709-.52-1.248-1.342-1.248-.822 0-1.359.54-1.359 1.248 0 .694.521 1.248 1.327 1.248h.016zm4.908 8.212V9.359c0-.216.016-.432.08-.586.173-.431.568-.878 1.232-.878.869 0 1.216.662 1.216 1.634v3.865h2.401V9.25c0-2.22-1.184-3.252-2.764-3.252-1.274 0-1.845.7-2.165 1.193v.025h-.016a5.54 5.54 0 0 1 .016-.025V6.169h-2.4c.03.678 0 7.225 0 7.225h2.4z"/>
+                </svg>
+            </a>
+            """
+            
+        if profile_acc.get("instagram"):
+            socials_html += f"""
+            <a href="{profile_acc['instagram']}" target="_blank" title="Instagram Profili" style="text-decoration: none; display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 8px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08); color: #e5e7eb; transition: all 0.3s ease;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M8 0C5.829 0 5.556.01 4.703.048 3.85.088 3.269.222 2.76.42a3.917 3.917 0 0 0-1.417.923A3.917 3.917 0 0 0 .42 2.76C.222 3.268.087 3.85.048 4.7.01 5.555 0 5.827 0 8.001c0 2.172.01 2.444.048 3.297.04.853.174 1.433.372 1.941.198.508.462.94.923 1.417.5.4.87.726 1.417.923.508.198 1.088.333 1.94.372.853.038 1.125.048 3.297.048 2.17 0 2.443-.01 3.296-.048.853-.039 1.433-.174 1.94-.372a3.916 3.916 0 0 0 1.417-.923c.5-.4.87-1.18 1.09-1.693.2-.508.33-1.08.369-1.93.038-.853.047-1.125.047-3.297 0-2.17-.01-2.443-.047-3.296-.039-.852-.17-1.433-.369-1.94a3.916 3.916 0 0 0-.923-1.417A3.916 3.916 0 0 0 13.24.42c-.51-.198-1.092-.333-1.943-.372C10.443.01 10.172 0 7.998 0h.003zm-.717 1.442h.718c2.136 0 2.389.007 3.232.046.78.035 1.204.166 1.486.275.373.145.64.319.92.599.28.28.453.546.598.92.11.281.24.705.275 1.485.039.843.047 1.096.047 3.231s-.008 2.389-.047 3.232c-.035.78-.166 1.203-.275 1.485a2.47 2.47 0 0 1-.599.919c-.28.28-.546.453-.92.598-.28.11-.704.24-1.485.276-.843.038-1.096.047-3.232.047s-2.39-.009-3.233-.047c-.78-.036-1.203-.166-1.485-.276a2.478 2.478 0 0 1-.92-.598 2.48 2.48 0 0 1-.6-.92c-.109-.281-.24-.705-.275-1.485-.038-.843-.046-1.096-.046-3.233 0-2.136.008-2.388.046-3.231.036-.78.166-1.204.276-1.486.145-.373.319-.64.599-.92.28-.28.546-.453.92-.598.282-.11.705-.24 1.485-.276.738-.034 1.024-.044 2.515-.045v.002zm4.988 1.328a.96.96 0 1 0 0 1.92.96.96 0 0 0 0-1.92zm-4.27 1.122a4.109 4.109 0 1 0 0 8.217 4.109 4.109 0 0 0 0-8.217zm0 1.441a2.667 2.667 0 1 1 0 5.334 2.667 2.667 0 0 1 0-5.334z"/>
+                </svg>
+            </a>
+            """
+            
+        if profile_acc.get("twitter"):
+            socials_html += f"""
+            <a href="{profile_acc['twitter']}" target="_blank" title="Twitter/X Profili" style="text-decoration: none; display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 8px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08); color: #e5e7eb; transition: all 0.3s ease;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.6.75zm-.86 13.028h1.36L4.323 2.145H2.865z"/>
+                </svg>
+            </a>
+            """
+            
+        if profile_acc.get("github"):
+            socials_html += f"""
+            <a href="{profile_acc['github']}" target="_blank" title="GitHub Profili" style="text-decoration: none; display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 8px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08); color: #e5e7eb; transition: all 0.3s ease;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
+                </svg>
+            </a>
+            """
+            
         st.markdown(f"""
         <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.03);">
-            <div style="font-weight: 700; color: white;">{owner.get('name', 'Bilinmiyor')}</div>
-            <div style="font-size: 12px; color: #667eea; margin-bottom: 10px;">{owner.get('role', '')}</div>
-            <div style="font-size: 11px; color: #9ca3af; margin-bottom: 15px; line-height: 1.4;">{owner.get('bio', '')}</div>
-            <div class="developer-social-links" style="display: flex; gap: 10px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 12px;">
-                <a href="mailto:devirendeniz21@gmail.com" target="_blank" title="E-posta Gönder" style="text-decoration: none; display: flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 8px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08); color: #e5e7eb; transition: all 0.3s ease;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                        <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1H2zm13 2.383-4.758 2.855L15 11.114v-5.73zm-.034 6.878L9.271 8.82 8 9.583 6.728 8.82l-5.694 3.44A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.739zM1 11.114l4.758-2.876L1 5.383v5.73z"/>
-                    </svg>
-                </a>
-                <a href="https://www.linkedin.com/in/deniz-deviren-160b74297?utm_source=share_via&utm_content=profile&utm_medium=member_android" target="_blank" title="LinkedIn Profili" style="text-decoration: none; display: flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 8px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08); color: #e5e7eb; transition: all 0.3s ease;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                        <path d="M0 1.146C0 .513.526 0 1.175 0h13.65C15.474 0 16 .513 16 1.146v13.708c0 .633-.526 1.146-1.175 1.146H1.175C.526 16 0 15.487 0 14.854V1.146zm4.943 12.248V6.169H2.542v7.225h2.401zm-1.2-8.212c.837 0 1.358-.554 1.358-1.248-.015-.709-.52-1.248-1.342-1.248-.822 0-1.359.54-1.359 1.248 0 .694.521 1.248 1.327 1.248h.016zm4.908 8.212V9.359c0-.216.016-.432.08-.586.173-.431.568-.878 1.232-.878.869 0 1.216.662 1.216 1.634v3.865h2.401V9.25c0-2.22-1.184-3.252-2.764-3.252-1.274 0-1.845.7-2.165 1.193v.025h-.016a5.54 5.54 0 0 1 .016-.025V6.169h-2.4c.03.678 0 7.225 0 7.225h2.4z"/>
-                    </svg>
-                </a>
-                <a href="https://www.instagram.com/1denizdeviren" target="_blank" title="Instagram Profili" style="text-decoration: none; display: flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 8px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08); color: #e5e7eb; transition: all 0.3s ease;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                        <path d="M8 0C5.829 0 5.556.01 4.703.048 3.85.088 3.269.222 2.76.42a3.917 3.917 0 0 0-1.417.923A3.917 3.917 0 0 0 .42 2.76C.222 3.268.087 3.85.048 4.7.01 5.555 0 5.827 0 8.001c0 2.172.01 2.444.048 3.297.04.853.174 1.433.372 1.941.198.508.462.94.923 1.417.5.4.87.726 1.417.923.508.198 1.088.333 1.94.372.853.038 1.125.048 3.297.048 2.17 0 2.443-.01 3.296-.048.853-.039 1.433-.174 1.94-.372a3.916 3.916 0 0 0 1.417-.923c.5-.4.87-1.18 1.09-1.693.2-.508.33-1.08.369-1.93.038-.853.047-1.125.047-3.297 0-2.17-.01-2.443-.047-3.296-.039-.852-.17-1.433-.369-1.94a3.916 3.916 0 0 0-.923-1.417A3.916 3.916 0 0 0 13.24.42c-.51-.198-1.092-.333-1.943-.372C10.443.01 10.172 0 7.998 0h.003zm-.717 1.442h.718c2.136 0 2.389.007 3.232.046.78.035 1.204.166 1.486.275.373.145.64.319.92.599.28.28.453.546.598.92.11.281.24.705.275 1.485.039.843.047 1.096.047 3.231s-.008 2.389-.047 3.232c-.035.78-.166 1.203-.275 1.485a2.47 2.47 0 0 1-.599.919c-.28.28-.546.453-.92.598-.28.11-.704.24-1.485.276-.843.038-1.096.047-3.232.047s-2.39-.009-3.233-.047c-.78-.036-1.203-.166-1.485-.276a2.478 2.478 0 0 1-.92-.598 2.48 2.48 0 0 1-.6-.92c-.109-.281-.24-.705-.275-1.485-.038-.843-.046-1.096-.046-3.233 0-2.136.008-2.388.046-3.231.036-.78.166-1.204.276-1.486.145-.373.319-.64.599-.92.28-.28.546-.453.92-.598.282-.11.705-.24 1.485-.276.738-.034 1.024-.044 2.515-.045v.002zm4.988 1.328a.96.96 0 1 0 0 1.92.96.96 0 0 0 0-1.92zm-4.27 1.122a4.109 4.109 0 1 0 0 8.217 4.109 4.109 0 0 0 0-8.217zm0 1.441a2.667 2.667 0 1 1 0 5.334 2.667 2.667 0 0 1 0-5.334z"/>
-                    </svg>
-                </a>
-            </div>
+            <div style="font-weight: 700; color: white;">{profile_name}</div>
+            <div style="font-size: 12px; color: #667eea; margin-bottom: 10px;">{profile_role}</div>
+            <div style="font-size: 11px; color: #f59e0b; margin-bottom: 8px; font-weight: 600;">🏢 {workspace_company}</div>
+            <div style="font-size: 11px; color: #9ca3af; margin-bottom: 15px; line-height: 1.4;">{profile_bio}</div>
+            {"<div class='developer-social-links' style='display: flex; gap: 8px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 12px; margin-top: 10px;'>" + socials_html + "</div>" if socials_html else ""}
         </div>
         """, unsafe_allow_html=True)
 
@@ -925,12 +977,35 @@ with st.sidebar:
     
     # ⚙️ Profil Ayarları (Self-Service)
     with st.expander("⚙️ Profil Ayarları"):
-        st.markdown("##### 👤 Bilgilerimi Güncelle")
+        st.markdown("##### 👤 Kurumsal Profilimi Güncelle")
         current_acc = next((acc for acc in data.get("accounts", []) if acc.get("username") == current_user), None)
         if current_acc:
             with st.form("profile_settings_form"):
                 new_uname = st.text_input("Kullanıcı Adı", value=current_acc.get("username", ""))
                 new_name = st.text_input("Ad Soyad", value=current_acc.get("name", ""))
+                
+                col_p1, col_p2 = st.columns(2)
+                new_email = col_p1.text_input("E-posta Adresi", value=current_acc.get("email", ""))
+                new_phone = col_p2.text_input("Telefon Numarası", value=current_acc.get("phone", ""))
+                
+                new_address = st.text_area("Fiziksel Adres / Konum", value=current_acc.get("address", ""))
+                
+                col_p3, col_p4 = st.columns(2)
+                new_role = col_p3.text_input("Rol / Ünvan", value=current_acc.get("role", ""))
+                new_company = col_p4.text_input("Şirket / Kurum", value=current_acc.get("company", ""))
+                
+                new_bio = st.text_area("Kısa Biyografi (Maks 300 Karakter)", value=current_acc.get("bio", ""), max_chars=300)
+                
+                st.markdown("###### 🌐 Sosyal Medya Bağlantıları")
+                col_s1, col_s2 = st.columns(2)
+                new_linkedin = col_s1.text_input("LinkedIn URL", value=current_acc.get("linkedin", ""))
+                new_instagram = col_s2.text_input("Instagram URL", value=current_acc.get("instagram", ""))
+                
+                col_s3, col_s4 = st.columns(2)
+                new_twitter = col_s3.text_input("Twitter / X URL", value=current_acc.get("twitter", ""))
+                new_github = col_s4.text_input("GitHub URL", value=current_acc.get("github", ""))
+                
+                st.markdown("###### 🔒 Giriş Şifresi Güncelleme")
                 new_pwd = st.text_input("Yeni Şifre", type="password", placeholder="Değiştirmek istemiyorsanız boş bırakın")
                 new_pwd_confirm = st.text_input("Şifre Doğrulama", type="password", placeholder="Yeni şifrenizi doğrulayın")
                 
@@ -950,6 +1025,16 @@ with st.sidebar:
                             old_name = current_acc.get("name")
                             current_acc["username"] = new_uname
                             current_acc["name"] = new_name
+                            current_acc["email"] = new_email
+                            current_acc["phone"] = new_phone
+                            current_acc["address"] = new_address
+                            current_acc["role"] = new_role
+                            current_acc["company"] = new_company
+                            current_acc["bio"] = new_bio
+                            current_acc["linkedin"] = new_linkedin
+                            current_acc["instagram"] = new_instagram
+                            current_acc["twitter"] = new_twitter
+                            current_acc["github"] = new_github
                             
                             # If password changed
                             if new_pwd:
@@ -964,10 +1049,19 @@ with st.sidebar:
                             if data.get("active_owner") == old_name:
                                 data["active_owner"] = new_name
                             
-                            # Also update names of team members in team array if names match!
+                            # Also update names, details in team array if names match!
                             for member in data.get("team", []):
                                 if member.get("name") == old_name:
                                     member["name"] = new_name
+                                    member["email"] = new_email
+                                    member["role"] = new_role
+                                    member["phone"] = new_phone
+                                    member["address"] = new_address
+                                    member["bio"] = new_bio
+                                    member["linkedin"] = new_linkedin
+                                    member["instagram"] = new_instagram
+                                    member["twitter"] = new_twitter
+                                    member["github"] = new_github
                             
                             # Also update owner of projects/tasks/logs if names match
                             for p in data.get("projects", []):

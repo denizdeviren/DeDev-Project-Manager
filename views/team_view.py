@@ -81,7 +81,33 @@ def show_team(data):
                             <div style="font-size: 11px; color: #6b7280; margin-top: 10px;">{owner_company}</div>
                         </div>
                         """), unsafe_allow_html=True)
-                        st.markdown('<div style="height: 38px;"></div>', unsafe_allow_html=True)
+                        
+                        with st.expander("📋 İletişim & Kurumsal Detaylar"):
+                            st.markdown(f"""
+                            <div style="font-family: 'Inter', sans-serif; font-size: 13px; text-align: left; line-height: 1.6; color: #d1d5db;">
+                                📞 <b>Telefon:</b> {owner_acc.get('phone', '<i>Belirtilmemiş</i>')}<br>
+                                ✉️ <b>E-posta:</b> {owner_acc.get('email', '<i>Belirtilmemiş</i>')}<br>
+                                📍 <b>Adres:</b> {owner_acc.get('address', '<i>Belirtilmemiş</i>')}<br>
+                                📝 <b>Biyografi:</b> {owner_acc.get('bio', '<i>Belirtilmemiş</i>')}
+                                <hr style="border-color: rgba(255,255,255,0.08); margin: 10px 0;">
+                            </div>
+                            """, unsafe_allow_html=True)
+                            
+                            socials = []
+                            if owner_acc.get("linkedin"):
+                                socials.append(f"🔗 <a href='{owner_acc['linkedin']}' target='_blank' style='color:#667eea; text-decoration:none; font-weight:600;'>LinkedIn</a>")
+                            if owner_acc.get("instagram"):
+                                socials.append(f"📸 <a href='{owner_acc['instagram']}' target='_blank' style='color:#ec4899; text-decoration:none; font-weight:600;'>Instagram</a>")
+                            if owner_acc.get("twitter"):
+                                socials.append(f"🐦 <a href='{owner_acc['twitter']}' target='_blank' style='color:#1da1f2; text-decoration:none; font-weight:600;'>Twitter/X</a>")
+                            if owner_acc.get("github"):
+                                socials.append(f"💻 <a href='{owner_acc['github']}' target='_blank' style='color:#e5e7eb; text-decoration:none; font-weight:600;'>GitHub</a>")
+                            
+                            if socials:
+                                st.markdown(" | ".join(socials), unsafe_allow_html=True)
+                            else:
+                                st.markdown("<span style='color:#6b7280; font-size:11px;'>Sosyal medya bağlantısı girilmemiş.</span>", unsafe_allow_html=True)
+                        st.markdown('<div style="height: 15px;"></div>', unsafe_allow_html=True)
                         
                 start_col = 1 if selected_filter in ["Tüm Departmanlar", "Yönetim"] else 0
                 
@@ -115,6 +141,32 @@ def show_team(data):
                             </div>
                         </div>
                         """), unsafe_allow_html=True)
+                        
+                        with st.expander("📋 İletişim & Kurumsal Detaylar"):
+                            st.markdown(f"""
+                            <div style="font-family: 'Inter', sans-serif; font-size: 13px; text-align: left; line-height: 1.6; color: #d1d5db;">
+                                📞 <b>Telefon:</b> {member.get('phone', '<i>Belirtilmemiş</i>')}<br>
+                                ✉️ <b>E-posta:</b> {member.get('email', '<i>Belirtilmemiş</i>')}<br>
+                                📍 <b>Adres:</b> {member.get('address', '<i>Belirtilmemiş</i>')}<br>
+                                📝 <b>Biyografi:</b> {member.get('bio', '<i>Belirtilmemiş</i>')}
+                                <hr style="border-color: rgba(255,255,255,0.08); margin: 10px 0;">
+                            </div>
+                            """, unsafe_allow_html=True)
+                            
+                            socials = []
+                            if member.get("linkedin"):
+                                socials.append(f"🔗 <a href='{member['linkedin']}' target='_blank' style='color:#667eea; text-decoration:none; font-weight:600;'>LinkedIn</a>")
+                            if member.get("instagram"):
+                                socials.append(f"📸 <a href='{member['instagram']}' target='_blank' style='color:#ec4899; text-decoration:none; font-weight:600;'>Instagram</a>")
+                            if member.get("twitter"):
+                                socials.append(f"🐦 <a href='{member['twitter']}' target='_blank' style='color:#1da1f2; text-decoration:none; font-weight:600;'>Twitter/X</a>")
+                            if member.get("github"):
+                                socials.append(f"💻 <a href='{member['github']}' target='_blank' style='color:#e5e7eb; text-decoration:none; font-weight:600;'>GitHub</a>")
+                            
+                            if socials:
+                                st.markdown(" | ".join(socials), unsafe_allow_html=True)
+                            else:
+                                st.markdown("<span style='color:#6b7280; font-size:11px;'>Sosyal medya bağlantısı girilmemiş.</span>", unsafe_allow_html=True)
                         
                         # Login credentials lifecycle
                         from utils.data_handler import get_all_accounts
