@@ -120,7 +120,10 @@ def init_defaults(data):
             acc["password_hash"] = h_val
             acc["password_salt"] = s_val
 
-    data.setdefault("active_owner", "Deniz Deviren")
+    if any(a.get("username") == "1denizdeviren" for a in data.get("accounts", [])):
+        data["active_owner"] = "Deniz Deviren"
+    else:
+        data.setdefault("active_owner", "Deniz Deviren")
     for key in ("projects", "tasks", "notes", "time_logs", "finances",
                 "deployments", "activities", "team"):
         data.setdefault(key, [])
@@ -203,9 +206,7 @@ def init_demo_defaults(data):
             "role_type": "admin",
         })
 
-    data.setdefault("active_owner", "Murat Yıldırım")
-    if data["active_owner"] in ("Örnek Simülasyon", ""):
-        data["active_owner"] = "Murat Yıldırım"
+    data["active_owner"] = "Murat Yıldırım"
 
     # 2. Team (only if empty)
     data.setdefault("team", [])

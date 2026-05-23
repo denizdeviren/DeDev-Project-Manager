@@ -586,8 +586,6 @@ if st.session_state["logged_in_user"] is None:
                         st.query_params["user"] = matched_acc["username"]
                         # Reload data dynamically from the isolated database
                         data = load_data()
-                        data["active_owner"] = matched_acc["name"]
-                        save_data(data)
                         st.toast(f"Hoş geldiniz, {matched_acc['name']}! 👋")
                         st.rerun()
                     else:
