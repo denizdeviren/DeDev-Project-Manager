@@ -272,7 +272,7 @@ def show_projects(data):
                     new_tech_str = st.text_input("Teknolojiler (Virgülle ayırın)", value=", ".join(proj.get("tech_stack", [])))
                     
                     # Team assignment in edit form
-                    team_list = [data.get('owner', {}).get('name', 'Deniz Deviren')] + [m['name'] for m in data.get('team', [])]
+                    team_list = [data.get('active_owner', 'Deniz Deviren')] + [m['name'] for m in data.get('team', [])]
                     current_team = proj.get("team", [])
                     new_team = st.multiselect("Sorumlu Geliştiriciler / Ekip Üyeleri", team_list, default=[t for t in current_team if t in team_list])
 
@@ -413,7 +413,7 @@ def show_projects(data):
         p_tech = st.text_input("Teknolojiler (Virgülle ayırın)", placeholder="Python, Streamlit, Scikit-learn...")
         
         # Team selection in creation form
-        team_list = [data.get('owner', {}).get('name', 'Deniz Deviren')] + [m['name'] for m in data.get('team', [])]
+        team_list = [data.get('active_owner', 'Deniz Deviren')] + [m['name'] for m in data.get('team', [])]
         p_team = st.multiselect("Ekip / Ortak Atayın", team_list)
 
         col_np5, col_np6 = st.columns(2)

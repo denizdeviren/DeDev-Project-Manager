@@ -173,9 +173,13 @@ def render_task_details(task, data):
         col_space, col_btn = st.columns([4, 1])
         c_submitted = col_btn.form_submit_button("✍️ Yorum Yaz", use_container_width=True)
         if c_submitted and comment_text:
+            current_user = st.session_state.get("logged_in_user")
+            current_acc = next((a for a in data.get("accounts", []) if a.get("username") == current_user), None)
+            author_name = current_acc.get("name") if current_acc else data.get("active_owner", "Deniz Deviren")
+            
             task["comments"].append({
                 "id": f"C-{datetime.now().strftime('%M%S%f')[:6]}",
-                "author": data.get("owner", {}).get("name", "Deniz Deviren"),
+                "author": author_name,
                 "text": comment_text,
                 "date": datetime.now().strftime("%Y-%m-%d %H:%M")
             })

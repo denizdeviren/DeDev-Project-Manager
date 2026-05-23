@@ -59,10 +59,11 @@ def show_team(data):
                 # Show Owner first if in "Tüm" or "Yönetim"
                 owner_dept = "Yönetim"
                 if selected_filter in ["Tüm Departmanlar", "Yönetim"]:
-                    owner = data.get("owner", {})
-                    owner_name = owner.get("name", "Deniz Deviren")
-                    owner_role = owner.get("role", "Solo Developer")
-                    owner_company = owner.get("company", "DeDev")
+                    active_owner_name = data.get("active_owner", "Deniz Deviren")
+                    owner_acc = next((a for a in data.get("accounts", []) if a.get("name") == active_owner_name), {})
+                    owner_name = active_owner_name
+                    owner_role = owner_acc.get("role", "Solo Developer" if active_owner_name == "Deniz Deviren" else "CEO & Software Architect")
+                    owner_company = owner_acc.get("company", "DeDev" if active_owner_name == "Deniz Deviren" else "Aura Yazılım Teknolojileri")
                     
                     with cols[0]:
                         st.markdown(clean_html(f"""
