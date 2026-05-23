@@ -40,76 +40,89 @@ def migrate_dates_to_2026(data):
 # ---------------------------------------------------------------------------
 # Production account initialisation (1denizdeviren + furkan)
 # ---------------------------------------------------------------------------
-def init_defaults(data):
+def init_defaults(data, is_primary_prod=True):
     from utils.encryption import hash_password
 
     data.setdefault("accounts", [])
 
-    # --- Deniz Deviren ---
-    deniz_acc = next(
-        (a for a in data["accounts"]
-         if a.get("username") == "1denizdeviren" or a.get("name") == "Deniz Deviren"),
-        None,
-    )
-    if deniz_acc:
-        deniz_acc["username"] = "1denizdeviren"
-        deniz_acc["name"] = "Deniz Deviren"
-        deniz_acc.setdefault("role", "Solo Full-Stack Developer & AI Engineer")
-        deniz_acc.setdefault("company", "DeDev")
-        deniz_acc.setdefault("location", "Remote / Global")
-        deniz_acc.setdefault("since", "2023")
-        deniz_acc.setdefault("bio", "Tek kişilik ekip. Yapay zeka, web, mobil ve oyun geliştirme projeleri.")
-        if "password_hash" not in deniz_acc:
-            deniz_acc["password_hash"] = "6a13b67f7ff4538333b55e6800d33ced0b897f9a75612319c3631b9e8ab67b13"
-            deniz_acc["password_salt"] = "019769293f90510166382122020ef513"
-            deniz_acc.pop("password", None)
-    else:
-        data["accounts"].append({
-            "username": "1denizdeviren",
-            "password_hash": "6a13b67f7ff4538333b55e6800d33ced0b897f9a75612319c3631b9e8ab67b13",
-            "password_salt": "019769293f90510166382122020ef513",
-            "name": "Deniz Deviren",
-            "role": "Solo Full-Stack Developer & AI Engineer",
-            "company": "DeDev",
-            "location": "Remote / Global",
-            "since": "2023",
-            "bio": "Tek kişilik ekip. Yapay zeka, web, mobil ve oyun geliştirme projeleri.",
-            "role_type": "admin",
-        })
+    if is_primary_prod:
+        # --- Deniz Deviren ---
+        deniz_acc = next(
+            (a for a in data["accounts"]
+             if a.get("username") == "1denizdeviren" or a.get("name") == "Deniz Deviren"),
+            None,
+        )
+        if deniz_acc:
+            deniz_acc["username"] = "1denizdeviren"
+            deniz_acc["name"] = "Deniz Deviren"
+            deniz_acc.setdefault("role", "Solo Full-Stack Developer & AI Engineer")
+            deniz_acc.setdefault("company", "DeDev")
+            deniz_acc.setdefault("location", "Remote / Global")
+            deniz_acc.setdefault("since", "2023")
+            deniz_acc.setdefault("bio", "Tek kişilik ekip. Yapay zeka, web, mobil ve oyun geliştirme projeleri.")
+            if "password_hash" not in deniz_acc:
+                deniz_acc["password_hash"] = "6a13b67f7ff4538333b55e6800d33ced0b897f9a75612319c3631b9e8ab67b13"
+                deniz_acc["password_salt"] = "019769293f90510166382122020ef513"
+                deniz_acc.pop("password", None)
+        else:
+            data["accounts"].append({
+                "username": "1denizdeviren",
+                "password_hash": "6a13b67f7ff4538333b55e6800d33ced0b897f9a75612319c3631b9e8ab67b13",
+                "password_salt": "019769293f90510166382122020ef513",
+                "name": "Deniz Deviren",
+                "role": "Solo Full-Stack Developer & AI Engineer",
+                "company": "DeDev",
+                "location": "Remote / Global",
+                "since": "2023",
+                "bio": "Tek kişilik ekip. Yapay zeka, web, mobil ve oyun geliştirme projeleri.",
+                "role_type": "admin",
+            })
 
-    # --- M. Furkan Işık ---
-    furkan_acc = next(
-        (a for a in data["accounts"]
-         if a.get("username") == "furkan" or a.get("name") in ["Furkan", "M. Furkan Işık"]),
-        None,
-    )
-    if furkan_acc:
-        furkan_acc.setdefault("username", "furkan")
-        furkan_acc.setdefault("name", "M. Furkan Işık")
-        furkan_acc.setdefault("role", "Co-Founder & Developer")
-        furkan_acc.setdefault("company", "DeDev")
-        furkan_acc.setdefault("location", "Remote / Global")
-        furkan_acc.setdefault("since", "2024")
-        furkan_acc.setdefault("bio", "M. Furkan Işık, DeDev ortağı ve yazılım geliştiricisi.")
-        if "password_hash" not in furkan_acc:
+        # --- M. Furkan Işık ---
+        furkan_acc = next(
+            (a for a in data["accounts"]
+             if a.get("username") == "furkan" or a.get("name") in ["Furkan", "M. Furkan Işık"]),
+            None,
+        )
+        if furkan_acc:
+            furkan_acc.setdefault("username", "furkan")
+            furkan_acc.setdefault("name", "M. Furkan Işık")
+            furkan_acc.setdefault("role", "Co-Founder & Developer")
+            furkan_acc.setdefault("company", "DeDev")
+            furkan_acc.setdefault("location", "Remote / Global")
+            furkan_acc.setdefault("since", "2024")
+            furkan_acc.setdefault("bio", "M. Furkan Işık, DeDev ortağı ve yazılım geliştiricisi.")
+            if "password_hash" not in furkan_acc:
+                h_val, s_val = hash_password("123456")
+                furkan_acc["password_hash"] = h_val
+                furkan_acc["password_salt"] = s_val
+                furkan_acc.pop("password", None)
+        else:
             h_val, s_val = hash_password("123456")
-            furkan_acc["password_hash"] = h_val
-            furkan_acc["password_salt"] = s_val
-            furkan_acc.pop("password", None)
+            data["accounts"].append({
+                "username": "furkan",
+                "password_hash": h_val,
+                "password_salt": s_val,
+                "name": "M. Furkan Işık",
+                "role": "Co-Founder & Developer",
+                "company": "DeDev",
+                "location": "Remote / Global",
+                "since": "2024",
+                "bio": "M. Furkan Işık, DeDev ortağı ve yazılım geliştiricisi.",
+                "role_type": "admin",
+                "permissions": [
+                    "dashboard", "projects", "kanban", "timeline", "calendar", 
+                    "time_tracking", "archive", "portfolio_rating", "secret_vault", 
+                    "team", "reports", "notes", "finance", "admin"
+                ]
+            })
     else:
-        h_val, s_val = hash_password("123456")
-        data["accounts"].append({
-            "username": "furkan",
-            "password_hash": h_val,
-            "password_salt": s_val,
-            "name": "M. Furkan Işık",
-            "role": "Co-Founder & Developer",
-            "company": "DeDev",
-            "location": "Remote / Global",
-            "since": "2024",
-            "bio": "M. Furkan Işık, DeDev ortağı ve yazılım geliştiricisi.",
-            "role_type": "admin",
-        })
+        # Prevent profile hijacking & cross-tenant account leakage!
+        # Automatically clean up any default production accounts from isolated user databases.
+        data["accounts"] = [
+            a for a in data.get("accounts", [])
+            if a.get("username") not in ("1denizdeviren", "furkan")
+        ]
 
     # Keep all production and team member accounts. Filtering is removed to preserve team logins.
 
@@ -500,6 +513,7 @@ def get_filtered_elements(data):
 def load_data():
     filepath = get_data_file_path()
     is_demo = "demo_erpsim" in os.path.basename(filepath)
+    is_primary_prod = "1denizdeviren" in os.path.basename(filepath) or "furkan" in os.path.basename(filepath) or os.path.basename(filepath) == "data.json"
 
     if not os.path.exists(filepath):
         if is_demo:
@@ -514,7 +528,7 @@ def load_data():
             data, _ = pull_from_sheets()
             if data:
                 try:
-                    data = init_defaults(data)
+                    data = init_defaults(data, is_primary_prod=is_primary_prod)
                     data = migrate_dates_to_2026(data)
                     with open(filepath, "w", encoding="utf-8") as f:
                         json.dump(data, f, ensure_ascii=False, indent=2)
@@ -524,7 +538,7 @@ def load_data():
 
         default = {"projects": [], "tasks": [], "notes": [], "time_logs": [],
                    "finances": [], "deployments": [], "activities": []}
-        return init_defaults(default)
+        return init_defaults(default, is_primary_prod=is_primary_prod)
 
     try:
         with open(filepath, "r", encoding="utf-8") as f:
@@ -534,7 +548,7 @@ def load_data():
         if is_demo:
             data = init_demo_defaults(data)   # safe: only fills missing keys
         else:
-            data = init_defaults(data)
+            data = init_defaults(data, is_primary_prod=is_primary_prod)
         data = migrate_dates_to_2026(data)
 
         if json.dumps(data) != snapshot:
@@ -545,7 +559,7 @@ def load_data():
     except Exception:
         default = {"projects": [], "tasks": [], "notes": [], "time_logs": [],
                    "finances": [], "deployments": [], "activities": []}
-        return init_demo_defaults(default) if is_demo else init_defaults(default)
+        return init_demo_defaults(default) if is_demo else init_defaults(default, is_primary_prod=is_primary_prod)
 
 
 def save_data(data):

@@ -661,7 +661,7 @@ if st.session_state["logged_in_user"] is None:
                             "team": []
                         }
                         
-                        default_data = init_defaults(default_data)
+                        default_data = init_defaults(default_data, is_primary_prod=False)
                         
                         # Ensure the newly created account remains as admin in accounts list
                         if not any(a.get("username") == r_username for a in default_data["accounts"]):
