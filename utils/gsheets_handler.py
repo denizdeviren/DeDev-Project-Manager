@@ -8,6 +8,17 @@ BACKUP_SHEET_NAME = "__json_db__"
 READABLE_PROJECTS_SHEET = "Projeler"
 READABLE_TASKS_SHEET = "Görevler"
 
+def get_suffixed_sheet_name(base_name):
+    try:
+        import streamlit as st
+        username = st.session_state.get("logged_in_user")
+        if username:
+            cleaned = "".join([c if c.isalnum() or c == "_" else "_" for c in username])
+            return f"{base_name}_{cleaned}"
+    except Exception:
+        pass
+    return f"{base_name}_default"
+
 def is_gsheets_configured():
     """Checks if Google Sheets connection is fully configured in secrets."""
     try:
@@ -95,8 +106,14 @@ def push_to_sheets(data):
         gc, spreadsheet_url = get_gsheets_client()
         sh = gc.open_by_url(spreadsheet_url)
         
+        backup_sheet_name = get_suffixed_sheet_name(BACKUP_SHEET_NAME)
+        projects_sheet_name = get_suffixed_sheet_name(READABLE_PROJECTS_SHEET)
+        tasks_sheet_name = get_suffixed_sheet_name(READABLE_TASKS_SHEET)
+        ledger_sheet_name = get_suffixed_sheet_name("Muhasebe_Defteri")
+        bank_sheet_name = get_suffixed_sheet_name("Hesap_Bakiyeleri")
+        
         # 1. Update the JSON database backup tab
-        json_backup_ws = get_worksheet(sh, BACKUP_SHEET_NAME, default_cols=2, default_rows=10)
+        json_backup_ws = get_worksheet(sh, backup_sheet_name, default_cols=2, default_rows=10)
         
         # Serialize the entire dictionary
         serialized_data = json.dumps(data, ensure_ascii=False, indent=2)
@@ -108,10 +125,10 @@ def push_to_sheets(data):
         ])
         
         # 2. Update Human-Readable Sheets (Best-effort, don't crash if they fail)
-        update_readable_projects(sh, data.get("projects", []))
-        update_readable_tasks(sh, data.get("tasks", []))
-        update_readable_ledger(sh, data.get("accounting_ledger", []))
-        update_readable_bank_accounts(sh, data.get("bank_accounts", []))
+        update_readable_projects(sh, data.get("projects", []), projects_sheet_name)
+        update_readable_tasks(sh, data.get("tasks", []), tasks_sheet_name)
+        update_readable_ledger(sh, data.get("accounting_ledger", []), ledger_sheet_name)
+        update_readable_bank_accounts(sh, data.get("bank_accounts", []), bank_sheet_name)
         
         return True, "Successfully synchronized with Google Sheets."
     except Exception as e:
@@ -128,8 +145,9 @@ def pull_from_sheets():
         gc, spreadsheet_url = get_gsheets_client()
         sh = gc.open_by_url(spreadsheet_url)
         
+        backup_sheet_name = get_suffixed_sheet_name(BACKUP_SHEET_NAME)
         # Access the JSON backup tab
-        json_backup_ws = get_worksheet(sh, BACKUP_SHEET_NAME, default_cols=2, default_rows=10)
+        json_backup_ws = get_worksheet(sh, backup_sheet_name, default_cols=2, default_rows=10)
         
         # Get A2 which contains the JSON_DATA payload
         cell_val = json_backup_ws.acell('B2').value
@@ -141,10 +159,10 @@ def pull_from_sheets():
     except Exception as e:
         return None, f"Failed to pull from Google Sheets: {str(e)}"
 
-def update_readable_projects(sh, projects):
+def update_readable_projects(sh, projects, sheet_name):
     """Updates a user-friendly 'Projeler' worksheet with flat project details."""
     try:
-        ws = get_worksheet(sh, READABLE_PROJECTS_SHEET, default_cols=12, default_rows=len(projects) + 10)
+        ws = get_worksheet(sh, sheet_name, default_cols=12, default_rows=len(projects) + 10)
         ws.clear()
         
         headers = [
@@ -175,10 +193,10 @@ def update_readable_projects(sh, projects):
         # Silently log errors for secondary views
         print(f"Error updating readable projects sheet: {e}")
 
-def update_readable_tasks(sh, tasks):
+def update_readable_tasks(sh, tasks, sheet_name):
     """Updates a user-friendly 'Görevler' worksheet with flat task details."""
     try:
-        ws = get_worksheet(sh, READABLE_TASKS_SHEET, default_cols=8, default_rows=len(tasks) + 10)
+        ws = get_worksheet(sh, sheet_name, default_cols=8, default_rows=len(tasks) + 10)
         ws.clear()
         
         headers = ["Görev ID", "Başlık", "Proje ID", "Durum", "Öncelik", "Atanan", "Bitiş Tarihi", "Açıklama"]
@@ -201,10 +219,10 @@ def update_readable_tasks(sh, tasks):
         # Silently log errors for secondary views
         print(f"Error updating readable tasks sheet: {e}")
 
-def update_readable_ledger(sh, ledger):
+def update_readable_ledger(sh, ledger, sheet_name):
     """Updates a user-friendly 'Muhasebe_Defteri' worksheet with general ledger details."""
     try:
-        ws = get_worksheet(sh, "Muhasebe_Defteri", default_cols=12, default_rows=len(ledger) + 10)
+        ws = get_worksheet(sh, sheet_name, default_cols=12, default_rows=len(ledger) + 10)
         ws.clear()
         
         headers = [
@@ -235,10 +253,10 @@ def update_readable_ledger(sh, ledger):
     except Exception as e:
         print(f"Error updating readable ledger sheet: {e}")
 
-def update_readable_bank_accounts(sh, bank_accounts):
+def update_readable_bank_accounts(sh, bank_accounts, sheet_name):
     """Updates a user-friendly 'Hesap_Bakiyeleri' worksheet with bank details."""
     try:
-        ws = get_worksheet(sh, "Hesap_Bakiyeleri", default_cols=4, default_rows=len(bank_accounts) + 10)
+        ws = get_worksheet(sh, sheet_name, default_cols=4, default_rows=len(bank_accounts) + 10)
         ws.clear()
         
         headers = ["Hesap ID", "Hesap Adı", "Mevcut Bakiye", "Para Birimi"]

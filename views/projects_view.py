@@ -103,6 +103,7 @@ def show_projects(data):
             end_date = proj.get("end_date", "")
             lines_of_code = proj.get("lines_of_code", 0)
             commits = proj.get("commits", 0)
+            budget = float(proj.get("budget", 0.0))
             
             proj_tasks = [t for t in active_tasks if t.get("project_id") == proj_id]
             tasks_total = len(proj_tasks)
@@ -181,8 +182,12 @@ def show_projects(data):
                         <div style="font-size: 12.5px; color: white; font-weight: 600; margin-top: 4px;">{start_date} / {end_date}</div>
                     </div>
                     <div>
-                        <div style="font-size: 10.5px; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.5px;">💻 Geliştirme Boyutu</div>
-                        <div style="font-size: 12.5px; color: white; font-weight: 600; margin-top: 4px;">{lines_of_code:,} LOC | {commits} Commit</div>
+                        <div style="font-size: 10.5px; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.5px;">💰 Sözleşme Bedeli</div>
+                        <div style="font-size: 12.5px; color: #10b981; font-weight: 700; margin-top: 4px;">{budget:,.2f} TRY</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 10.5px; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.5px;">💻 Kod / Commit</div>
+                        <div style="font-size: 12.5px; color: white; font-weight: 600; margin-top: 4px;">{lines_of_code:,} LOC | {commits} C</div>
                     </div>
                     <div>
                         <div style="font-size: 10.5px; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.5px;">🎯 Görev Oranı</div>
@@ -275,9 +280,10 @@ def show_projects(data):
                     new_live = col_ep5.text_input("Canlı Link", value=proj.get("live_url", ""))
                     new_repo = col_ep6.text_input("Repo Linki", value=proj.get("repo_url", ""))
                     
-                    col_ep7, col_ep8 = st.columns(2)
+                    col_ep7, col_ep8, col_ep9 = st.columns(3)
                     new_loc = col_ep7.number_input("Kod Satırı (LOC)", value=int(proj.get("lines_of_code", 0)), min_value=0)
                     new_commits = col_ep8.number_input("Commit Sayısı", value=int(proj.get("commits", 0)), min_value=0)
+                    new_budget = col_ep9.number_input("Sözleşme Bedeli (TRY)", value=float(proj.get("budget", 0.0)), min_value=0.0)
                     
                     save_btn = st.form_submit_button("Değişiklikleri Kaydet")
                     if save_btn:
@@ -292,6 +298,7 @@ def show_projects(data):
                         proj["repo_url"] = new_repo
                         proj["lines_of_code"] = new_loc
                         proj["commits"] = new_commits
+                        proj["budget"] = new_budget
                         
                         save_data(data)
                         st.success("Proje başarıyla güncellendi!")
@@ -413,9 +420,10 @@ def show_projects(data):
         p_live = col_np5.text_input("Canlı Link (Opsiyonel)", placeholder="https://example.com")
         p_repo = col_np6.text_input("Repo Linki (Opsiyonel)", placeholder="https://github.com/...")
         
-        col_np7, col_np8 = st.columns(2)
+        col_np7, col_np8, col_np9 = st.columns(3)
         p_loc = col_np7.number_input("Kod Satırı (LOC) Başlangıç", value=0, min_value=0)
         p_commits = col_np8.number_input("Commit Sayısı Başlangıç", value=0, min_value=0)
+        p_budget = col_np9.number_input("Proje Bütçesi / Sözleşme Bedeli (TRY)", value=0.0, min_value=0.0)
         
         p_milestones = st.text_input("Başlangıç Kilometre Taşları (Virgülle ayırın, Opsiyonel)", placeholder="Örn: Veri Analizi, API Entegrasyonu, Beta Sürümü")
         
@@ -453,7 +461,8 @@ def show_projects(data):
                     "tasks_completed": 0,
                     "milestones": final_milestones,
                     "is_secret": False,
-                    "owner_name": active_owner
+                    "owner_name": active_owner,
+                    "budget": p_budget
                 }
                 data["projects"].append(new_proj)
                 

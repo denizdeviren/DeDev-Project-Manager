@@ -212,6 +212,12 @@ def show_team(data):
                 w_email = st.text_input("E-posta", placeholder="Örn: elif@dedev.com")
                 w_status = st.selectbox("Durum", ["Aktif", "İzinli", "Ayrıldı"])
                 
+                # Username and password fields for automatic login credentials creation
+                st.markdown("---")
+                st.markdown("##### 🔑 Giriş Yetkisi Tanımla (İsteğe Bağlı)")
+                w_username = st.text_input("Giriş Kullanıcı Adı", placeholder="Örn: elif_demir")
+                w_password = st.text_input("Giriş Şifresi", type="password", placeholder="Örn: 123456")
+                
                 if st.form_submit_button("Çalışanı Ekip Listesine Ekle"):
                     if w_name:
                         new_member = {
@@ -223,6 +229,33 @@ def show_team(data):
                             "status": w_status
                         }
                         data["team"].append(new_member)
+                        
+                        if w_username and w_password:
+                            from utils.data_handler import get_all_accounts
+                            from utils.encryption import hash_password
+                            
+                            all_accs = get_all_accounts()
+                            username_taken = any(acc.get("username").lower() == w_username.lower() for acc in all_accs)
+                            if username_taken:
+                                st.warning("⚠️ Çalışan eklendi ancak bu kullanıcı adı zaten mevcut olduğu için giriş yetkisi oluşturulamadı! Lütfen listeden başka bir kullanıcı adı verin.")
+                            else:
+                                h_val, s_val = hash_password(w_password)
+                                new_acc = {
+                                    "username": w_username,
+                                    "password_hash": h_val,
+                                    "password_salt": s_val,
+                                    "name": w_name,
+                                    "role": w_role if w_role else "Geliştirici",
+                                    "company": data.get("accounts", [{}])[0].get("company", "DeDev") if data.get("accounts") else "DeDev",
+                                    "location": "Remote",
+                                    "since": "2026",
+                                    "bio": f"{w_name} - Ekip Üyesi Profili.",
+                                    "role_type": "member",
+                                    "permissions": ["dashboard", "projects", "kanban", "timeline", "calendar", "time_tracking", "reports"]
+                                }
+                                data.setdefault("accounts", []).append(new_acc)
+                                st.success(f"🔑 {w_name} için '{w_username}' kullanıcı adı ile giriş yetkisi başarıyla tanımlandı!")
+                        
                         save_data(data)
                         st.success(f"🎉 {w_name} başarıyla ekibe dahil edildi!")
                         st.rerun()

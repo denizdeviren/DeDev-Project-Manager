@@ -29,6 +29,7 @@ from views.finance_view import show_finance
 from views.admin_view import show_admin
 from views.archive_view import show_archive
 from views.portfolio_rating import show_portfolio_rating
+from views.about_view import show_about
 
 
 
@@ -361,7 +362,8 @@ with st.sidebar:
         "📝 Hızlı Notlar": "notes",
         "⏱️ Zaman Takibi": "time_tracking",
         "💰 Bütçe & Giderler": "finance",
-        "⚙️ Admin Paneli": "admin"
+        "⚙️ Admin Paneli": "admin",
+        "ℹ️ Hakkında & Yasal Uyarı": "about"
     }
     
     all_pages = list(PAGE_KEYS.keys())
@@ -373,7 +375,10 @@ with st.sidebar:
         is_admin_user = (current_acc.get("username") in ["1denizdeviren", "furkan"]) or (current_acc.get("role_type", "admin") == "admin")
         
     if current_acc and current_acc.get("username") not in ["1denizdeviren", "furkan"] and current_acc.get("role_type", "admin") == "member":
-        allowed_keys = current_acc.get("permissions", ["dashboard", "projects", "kanban", "timeline", "calendar", "time_tracking"])
+        allowed_keys = list(current_acc.get("permissions", ["dashboard", "projects", "kanban", "timeline", "calendar", "time_tracking"]))
+        # Always allow the About & Disclaimer page for legal transparency
+        if "about" not in allowed_keys:
+            allowed_keys.append("about")
         available_pages = [p for p in all_pages if PAGE_KEYS.get(p) in allowed_keys]
         if not available_pages:
             available_pages = ["🏠 Dashboard"]
@@ -636,6 +641,8 @@ elif page == "💰 Bütçe & Giderler":
     show_finance(data)
 elif page == "⚙️ Admin Paneli":
     show_admin(data)
+elif page == "ℹ️ Hakkında & Yasal Uyarı":
+    show_about(data)
 
 # Footer
 _footer_demo = st.session_state.get("logged_in_user") == "demo_erpsim"
