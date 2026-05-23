@@ -158,15 +158,20 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ==========================================
-# VERİ YÜKLEME
-# ==========================================
-data = load_data()
-
-# ==========================================
 # GÜVENLİ GİRİŞ KONTROLÜ & EKRANI
 # ==========================================
 if "logged_in_user" not in st.session_state:
-    st.session_state["logged_in_user"] = None
+    # Try to restore session from query parameters to prevent logout on refresh
+    params = st.query_params
+    if "user" in params:
+        st.session_state["logged_in_user"] = params["user"]
+    else:
+        st.session_state["logged_in_user"] = None
+
+# ==========================================
+# VERİ YÜKLEME
+# ==========================================
+data = load_data()
 
 if st.session_state["logged_in_user"] is None:
     st.markdown("""
@@ -214,6 +219,7 @@ if st.session_state["logged_in_user"] is None:
                     
                     if matched_acc:
                         st.session_state["logged_in_user"] = matched_acc["username"]
+                        st.query_params["user"] = matched_acc["username"]
                         # Reload data dynamically from the isolated database
                         data = load_data()
                         data["active_owner"] = matched_acc["name"]
@@ -248,6 +254,9 @@ if st.session_state["logged_in_user"] is None:
                         st.error("❌ Bu isimle veya kullanıcı adıyla kayıtlı bir profil zaten mevcut!")
                     else:
                         from utils.encryption import hash_password
+                        from utils.data_handler import ROOT_DIR, init_defaults
+                        import json
+                        
                         h_val, s_val = hash_password(r_password)
                         new_acc = {
                             "username": r_username,
@@ -259,16 +268,47 @@ if st.session_state["logged_in_user"] is None:
                             "location": r_location if r_location else "Remote",
                             "since": "2026",
                             "bio": r_bio if r_bio else "Yeni simülasyon kullanıcısı.",
-                            "role_type": "member",
-                            "permissions": ["dashboard", "projects", "kanban", "timeline", "calendar", "time_tracking"]
+                            "role_type": "admin",
+                            "permissions": [
+                                "dashboard", "projects", "kanban", "timeline", "calendar", 
+                                "time_tracking", "archive", "portfolio_rating", "secret_vault", 
+                                "team", "reports", "notes", "finance", "admin"
+                            ]
                         }
-                        data.setdefault("accounts", []).append(new_acc)
+                        
+                        # Initialize their own workspace database file
+                        user_file = os.path.normpath(os.path.join(ROOT_DIR, f"data_user_{r_username}.json"))
+                        default_data = {
+                            "accounts": [new_acc],
+                            "active_owner": r_name,
+                            "projects": [],
+                            "tasks": [],
+                            "notes": [],
+                            "time_logs": [],
+                            "finances": [],
+                            "deployments": [],
+                            "activities": [],
+                            "team": []
+                        }
+                        
+                        default_data = init_defaults(default_data)
+                        
+                        # Ensure the newly created account remains as admin in accounts list
+                        if not any(a.get("username") == r_username for a in default_data["accounts"]):
+                            default_data["accounts"].append(new_acc)
+                        else:
+                            # Update existing if already merged by init_defaults
+                            for a in default_data["accounts"]:
+                                if a.get("username") == r_username:
+                                    a["role_type"] = "admin"
+                        
+                        with open(user_file, "w", encoding="utf-8") as f:
+                            json.dump(default_data, f, ensure_ascii=False, indent=2)
+                        
                         # Immediately log in the newly registered user for a seamless premium experience!
                         st.session_state["logged_in_user"] = r_username
-                        # Reload data dynamically from the isolated database
-                        data = load_data()
-                        data["active_owner"] = r_name
-                        save_data(data)
+                        st.query_params["user"] = r_username
+                        
                         st.toast(f"Tebrikler! Hesabınız başarıyla oluşturuldu ve giriş yapıldı. 👋")
                         st.rerun()
                         
@@ -498,15 +538,17 @@ with st.sidebar:
                             for act in data.get("activities", []):
                                 if act.get("spent_by") == old_name:
                                     act["spent_by"] = new_name
-                            
+                                    
                             save_data(data)
                             st.session_state["logged_in_user"] = new_uname
+                            st.query_params["user"] = new_uname
                             st.success("Profiliniz başarıyla güncellendi!")
                             st.rerun()
 
     st.markdown("<div style='height: 15px;'></div>", unsafe_allow_html=True)
     if st.button("🔒 Oturumu Kapat", use_container_width=True, type="secondary"):
         st.session_state["logged_in_user"] = None
+        st.query_params.pop("user", None)
         st.toast("Oturum güvenli bir şekilde kapatıldı.", icon="🔒")
         st.rerun()
 

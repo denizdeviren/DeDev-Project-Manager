@@ -111,12 +111,7 @@ def init_defaults(data):
             "role_type": "admin",
         })
 
-    # Keep only the two primary production accounts in data.json
-    # (team member login accounts live in their own data_user_<username>.json)
-    data["accounts"] = [
-        a for a in data["accounts"]
-        if a.get("username") in ("1denizdeviren", "furkan")
-    ]
+    # Keep all production and team member accounts. Filtering is removed to preserve team logins.
 
     # Password migration for any plain-text passwords
     for acc in data["accounts"]:
@@ -336,19 +331,39 @@ def get_data_file_path(username=None):
             pass
 
     if username:
-        user_file = os.path.normpath(os.path.join(ROOT_DIR, f"data_user_{username}.json"))
+        # Check if the user is a main owner / default database workspace owner
+        if username in ("1denizdeviren", "furkan", "demo_erpsim"):
+            user_file = os.path.normpath(os.path.join(ROOT_DIR, f"data_user_{username}.json"))
 
-        # One-time migration from legacy single-file layout
-        if not os.path.exists(user_file):
-            if username == "demo_erpsim":
-                legacy = os.path.normpath(os.path.join(ROOT_DIR, "data_demo.json"))
-                if os.path.exists(legacy):
-                    shutil.copy2(legacy, user_file)
-            elif username == "1denizdeviren":
-                if os.path.exists(DATA_FILE):
-                    shutil.copy2(DATA_FILE, user_file)
+            # One-time migration from legacy single-file layout
+            if not os.path.exists(user_file):
+                if username == "demo_erpsim":
+                    legacy = os.path.normpath(os.path.join(ROOT_DIR, "data_demo.json"))
+                    if os.path.exists(legacy):
+                        shutil.copy2(legacy, user_file)
+                elif username == "1denizdeviren":
+                    if os.path.exists(DATA_FILE):
+                        shutil.copy2(DATA_FILE, user_file)
 
-        return user_file
+            return user_file
+
+        # If it's a team member, search all data_user_*.json files for this username
+        try:
+            for fname in os.listdir(ROOT_DIR):
+                if fname.startswith("data_user_") and fname.endswith(".json"):
+                    fpath = os.path.join(ROOT_DIR, fname)
+                    try:
+                        with open(fpath, "r", encoding="utf-8") as f:
+                            accs = json.load(f).get("accounts", [])
+                            if any(a.get("username") == username for a in accs):
+                                return fpath
+                    except Exception:
+                        pass
+        except Exception:
+            pass
+
+        # If not found anywhere, fallback to their own file path
+        return os.path.normpath(os.path.join(ROOT_DIR, f"data_user_{username}.json"))
 
     return DATA_FILE  # fallback (should only happen before login)
 

@@ -84,6 +84,7 @@ def show_admin(data):
                 selected_username = selected_acc.get("username")
                 # Swap workspace database by changing logged_in_user
                 st.session_state["logged_in_user"] = selected_username
+                st.query_params["user"] = selected_username
                 
                 # Load the new database context so we can modify its active_owner
                 from utils.data_handler import load_data, save_data
